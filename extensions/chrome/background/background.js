@@ -1,29 +1,52 @@
 /* global chrome */
 
-var devPanelConnection = null;
+const connections = {};
+const catchInitData = {};
 
-chrome.runtime.onConnect.addListener(function(devToolsConnection) {
-  console.log(devToolsConnection);
-  devPanelConnection = devToolsConnection;
-  // assign the listener function to a variable so we can remove it later
-  var devToolsListener = function(message, sender, sendResponse) {
-      // Inject a content script into the identified tab
-      // chrome.tabs.executeScript(message.tabId,
-      //     { file: message.scriptToInject });
-      console.log('fron background scipt', message);
-  }
-  // add the listener
-  devToolsConnection.onMessage.addListener(devToolsListener);
+chrome.runtime.onConnect.addListener(port => {
+  const panelListener = message => {
+    if (message.type === "INIT") {
+      connections[message.tabId] = port;
+      if (catchInitData[message.tabId]) {
+        port.postMessage(catchInitData[message.tabId]);
+        delete catchInitData[message.tabId];
+      }
+      return;
+    }
+  };
 
-  devToolsConnection.onDisconnect.addListener(function() {
-       devToolsConnection.onMessage.removeListener(devToolsListener);
+  port.onMessage.addListener(panelListener);
+
+  port.onDisconnect.addListener(function() {
+    port.onMessage.removeListener(panelListener);
+
+    // remove connection object
+    const tabs = Object.keys(connections);
+    for (let i=0, len=tabs.length; i < len; i++) {
+      if (connections[tabs[i]] == port) {
+        delete connections[tabs[i]]
+        break;
+      }
+    }
   });
 });
 
+chrome.tabs.onRemoved.addListener(tabId => {
+  if (catchInitData[tabId]) {
+    delete catchInitData[tabId];
+  }
+});
 
 chrome.runtime.onMessage.addListener((request, sender) => {
-  console.log(request, sender);
-  if (devPanelConnection) {
-    devPanelConnection.postMessage(request);
+  console.log(request);
+  console.log(sender.tab);
+  if (sender.tab) {
+    const tabId = sender.tab.id;
+    if (tabId in connections) {
+      connections[tabId].postMessage(request);
+    } else {
+      catchInitData[tabId] = request;
+    }
   }
+  return true;
 });
