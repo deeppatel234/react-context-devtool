@@ -1,0 +1,51 @@
+const webpack = require('webpack');
+const PATHS = require('./paths');
+const CopyPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+const { EXTENSIONS_DIR, DIST_DIR } = require('./paths');
+const pkg = require('../package.json');
+
+module.exports = {
+  entry: {
+    app: `${PATHS.SRC_DIR}/index.js`,
+  },
+  output: {
+    path: PATHS.DIST_DIR,
+    filename: 'bundles/[name].[hash:8].js',
+    sourceMapFilename: 'maps/[name].[hash:8].map.js',
+    publicPath: '/',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: PATHS.SRC_DIR,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-inline-loader',
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.js'],
+    alias: {
+      Components: PATHS.COMPONENTS,
+      Utilities: PATHS.UTILITIES,
+      Src: PATHS.SRC_DIR,
+    },
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new webpack.DefinePlugin({
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      PACKAGE_VERSION: JSON.stringify(pkg.version),
+    }),
+    new CopyPlugin([
+      { from: EXTENSIONS_DIR, to: `${DIST_DIR}/build` },
+    ]),
+  ],
+};

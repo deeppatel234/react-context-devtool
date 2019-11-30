@@ -1,0 +1,25 @@
+{
+  "name": "React Context dev-tool",
+  "version": "1.0",
+  "description": "Build an Extension!",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "devtools_page": "devtools.html",
+  "permissions": [ "declarativeContent", "notifications", "contextMenus", "tabs", "storage", "<all_urls>" ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
+}
