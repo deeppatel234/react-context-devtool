@@ -4,20 +4,20 @@
   "description": "Build an Extension!",
   "manifest_version": 2,
   "browser_action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   },
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["background/background.js"],
     "persistent": false
   },
-  "devtools_page": "devtools.html",
+  "devtools_page": "devtool/devtool.html",
   "permissions": [ "declarativeContent", "notifications", "contextMenus", "tabs", "storage", "<all_urls>" ],
   "content_scripts": [
     {
       "matches": [
         "<all_urls>"
       ],
-      "js": ["content.js"],
+      "js": ["content/content.js"],
       "run_at": "document_start",
       "all_frames": true
     }

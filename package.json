@@ -4,14 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:dev": "webpack --config build/webpack.dev.js",
-    "build:prod": "webpack --config build/webpack.prod.js",
-    "start": "NODE_ENV='production' node server/index.js",
-    "dev": "NODE_ENV='development' nodemon --watch server server/index.js",
-    "debug:dev": "NODE_ENV='development' node --nolazy --inspect-brk=9229 server server/index.js",
-    "debug:prod": "NODE_ENV='production' node --nolazy --inspect-brk=9229 server server/index.js",
-    "heroku-postbuild": "npm run build:prod",
-    "state": "npm run build:dev -- --profile --json > compilation-stats.json"
+    "build:dev": "npm run clean && webpack --config build/webpack.dev.js",
+    "build:prod": "npm run clean && webpack --config build/webpack.prod.js",
+    "clean": "rimraf dist/",
+    "start": "npm run build:dev"
   },
   "repository": {
     "type": "git",
@@ -31,12 +27,10 @@
     "@babel/preset-react": "^7.7.4",
     "babel-loader": "^8.0.6",
     "babel-plugin-styled-components": "^1.10.6",
-    "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.0.5",
-    "terser-webpack-plugin": "^2.2.1",
+    "rimraf": "^3.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {

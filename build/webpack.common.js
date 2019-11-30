@@ -1,19 +1,17 @@
 const webpack = require('webpack');
 const PATHS = require('./paths');
 const CopyPlugin = require('copy-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const { EXTENSIONS_DIR, DIST_DIR } = require('./paths');
 const pkg = require('../package.json');
 
 module.exports = {
   entry: {
-    app: `${PATHS.SRC_DIR}/index.js`,
+    'chrome/devpanel/devpanel': `${PATHS.SRC_DIR}/devpanel.index.js`,
   },
   output: {
     path: PATHS.DIST_DIR,
-    filename: 'bundles/[name].[hash:8].js',
-    sourceMapFilename: 'maps/[name].[hash:8].map.js',
+    filename: '[name].js',
     publicPath: '/',
   },
   module: {
@@ -39,13 +37,12 @@ module.exports = {
     },
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       PACKAGE_VERSION: JSON.stringify(pkg.version),
     }),
     new CopyPlugin([
-      { from: EXTENSIONS_DIR, to: `${DIST_DIR}/build` },
+      { from: EXTENSIONS_DIR, to: DIST_DIR },
     ]),
   ],
 };
