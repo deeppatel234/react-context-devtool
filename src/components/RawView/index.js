@@ -9,7 +9,7 @@ import 'codemirror/theme/monokai.css';
 
 import { RawViewWrapper } from "./styled";
 
-const JsonTree = props => {
+const RawView = props => {
   const editorRef = useRef(null);
   const editor = useRef();
 
@@ -24,7 +24,7 @@ const JsonTree = props => {
       readOnly: true
     });
   }, []);
-  
+
   useEffect(() => {
     editor.current.setValue(JSON.stringify(props.data, null, 4));
   }, [props.data]);
@@ -34,4 +34,4 @@ const JsonTree = props => {
   );
 };
 
-export default JsonTree;
+export default RawView;

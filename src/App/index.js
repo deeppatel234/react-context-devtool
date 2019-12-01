@@ -3,7 +3,7 @@ import JSONTree from "../components/JsonTree";
 
 import SideBar from "../components/SideBar";
 
-import RawView from "../components/RawView";
+import RawView from "../components/RawDiffView";
 
 import {
   GlobalStyle,
@@ -16,7 +16,7 @@ import {
 
 const App = ({ appData }) => {
   const [contextList, setContextList] = useState([]);
-  const [selectedContext, setSelectedContext] = useState('');
+  const [selectedContext, setSelectedContext] = useState("");
 
   useEffect(() => {
     if (!appData) {
@@ -50,8 +50,11 @@ const App = ({ appData }) => {
           />
         </LayoutSideBar>
         <LayoutContent>
-          {/* <JSONTree data={appData[selectedContext].newValue.values} /> */}
-          <RawView data={appData[selectedContext].newValue.values} />
+          <RawView
+            data={appData[selectedContext].newValue.values}
+            oldValue={appData[selectedContext].oldValue.values}
+          />
+          <JSONTree data={appData[selectedContext].newValue.values} />
         </LayoutContent>
       </LayoutBody>
     </AppLayout>

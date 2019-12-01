@@ -44,7 +44,6 @@ export const LayoutSideBar = styled.div`
 
 export const LayoutContent = styled.div`
   flex: 1;
-  padding: 0 10px;
   height: 100%;
   overflow: auto;
 `;
