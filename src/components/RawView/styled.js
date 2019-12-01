@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-export const JsonTreeWrapper = styled.div`
-  height: 100%;
+export const RawViewWrapper = styled.div`
   font-size: 1.5em;
+  height: 100%;
 
-  .react-json-view {
+  .CodeMirror {
     height: 100%;
   }
 `;

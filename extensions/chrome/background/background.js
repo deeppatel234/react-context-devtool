@@ -1,15 +1,14 @@
 /* global chrome */
 
 const connections = {};
-const catchInitData = {};
+const catchData = {};
 
 chrome.runtime.onConnect.addListener(port => {
   const panelListener = message => {
     if (message.type === "INIT") {
       connections[message.tabId] = port;
-      if (catchInitData[message.tabId]) {
-        port.postMessage(catchInitData[message.tabId]);
-        delete catchInitData[message.tabId];
+      if (catchData[message.tabId]) {
+        port.postMessage(getCatchData(message.tabId));
       }
       return;
     }
@@ -32,21 +31,40 @@ chrome.runtime.onConnect.addListener(port => {
 });
 
 chrome.tabs.onRemoved.addListener(tabId => {
-  if (catchInitData[tabId]) {
-    delete catchInitData[tabId];
+  if (catchData[tabId]) {
+    delete catchData[tabId];
   }
 });
 
 chrome.runtime.onMessage.addListener((request, sender) => {
-  console.log(request);
-  console.log(sender.tab);
   if (sender.tab) {
     const tabId = sender.tab.id;
+    saveCatchData(request, tabId);
     if (tabId in connections) {
-      connections[tabId].postMessage(request);
-    } else {
-      catchInitData[tabId] = request;
+      connections[tabId].postMessage(getCatchData(tabId));
     }
   }
   return true;
 });
+
+
+const saveCatchData = (dataToCatch, tabId) => {
+  if (!catchData[tabId]) {
+    catchData[tabId] = {};
+  }
+
+  const { id } = dataToCatch;
+
+  if (!catchData[tabId][id]) {
+    catchData[tabId][id] = { oldValue: {}, newValue: {}};
+  }
+
+  catchData[tabId][id].oldValue = catchData[tabId][id].newValue;
+  catchData[tabId][id].newValue = dataToCatch;
+
+  console.log(catchData);
+};
+
+const getCatchData = (tabId) => {
+  return catchData[tabId];
+};

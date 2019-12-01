@@ -11,7 +11,13 @@ function inject(fn) {
 function scriptToInject () {
   window._REACT_CONTEXT_DEVTOOL = data => {
     console.log('Data to send ', data);
-    window.postMessage({ type: "FROM_PAGE", data }, "*")
+    const parsedData = JSON.stringify(data, function(k, v) {
+      if (typeof v === 'function') {
+        return 'function () {}';
+      }
+      return v;
+    });
+    window.postMessage({ type: "FROM_PAGE", data: JSON.parse(parsedData) }, "*")
   };
 }
 
