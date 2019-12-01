@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import JSONTree from "../components/JsonTree";
+
+import { GlobalStyle } from "./styled";
 
 const registerTab = onMessage => {
   const tabId = chrome.devtools.inspectedWindow.tabId;
@@ -30,7 +33,12 @@ const DevPanel = () => {
     return null;
   }
 
-  return <div>Hello World : {appData.values.b}</div>;
+  return (
+    <>
+      <GlobalStyle />
+      <JSONTree data={appData.values} />
+    </>
+  );
 };
 
 export default DevPanel;
