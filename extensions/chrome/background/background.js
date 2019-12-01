@@ -5,7 +5,7 @@ const catchData = {};
 
 chrome.runtime.onConnect.addListener(port => {
   const panelListener = message => {
-    if (message.type === "INIT") {
+    if (message.type === "REACT_CONTEXT_DEVTOOL_INIT") {
       connections[message.tabId] = port;
       if (catchData[message.tabId]) {
         port.postMessage(getCatchData(message.tabId));
@@ -37,11 +37,21 @@ chrome.tabs.onRemoved.addListener(tabId => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender) => {
-  if (sender.tab) {
+  if (request.type === 'REACT_CONTEXT_DEVTOOL_POPUP_DATA_REQUEST') {
+    chrome.runtime.sendMessage({
+      type: 'REACT_CONTEXT_DEVTOOL_POPUP_DATA',
+      data: getCatchData(request.tabId),
+    });
+    return true;
+  }
+  if (request.type === 'REACT_CONTEXT_DEVTOOL_DATA' && sender.tab) {
     const tabId = sender.tab.id;
-    saveCatchData(request, sender.tab);
+    saveCatchData(request.data, sender.tab);
     if (tabId in connections) {
-      connections[tabId].postMessage(getCatchData(tabId));
+      connections[tabId].postMessage({
+        type: 'REACT_CONTEXT_DEVTOOL_DEVPANEL_DATA',
+        data: getCatchData(tabId),
+      });
     }
   }
   return true;

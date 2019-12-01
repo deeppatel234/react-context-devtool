@@ -2,8 +2,13 @@ import styled, { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
 
-  html, body, #devPanelRoot {
+  html, body, #devPanelRoot, #popupRoot {
     height: 100%;
+  }
+
+  #popupRoot {
+    width: 800px;
+    height: 440px;
   }
 
   body {

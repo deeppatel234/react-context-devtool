@@ -14,11 +14,9 @@ const registerTab = onMessage => {
 
   backgroundPageConnection.postMessage({
     tabId,
-    type: "INIT"
+    type: "REACT_CONTEXT_DEVTOOL_INIT"
   });
 };
-
-// const AppDataTemp = JSON.parse('{"hello":{"oldValue":{},"newValue":{"id":"hello","displayName":"Hello","values":{"a":"hello","b":0}}},"cont2":{"oldValue":{},"newValue":{"id":"cont2","displayName":"Cont2","values":{"a":0,"b":"world"}}}}')
 
 const DevPanel = () => {
   const [appData, setAppData] = useState(null);
@@ -28,8 +26,10 @@ const DevPanel = () => {
   }, []);
 
   const onMessage = message => {
-    console.log("message from devpanel", message);
-    setAppData(message);
+    if (message.type === 'REACT_CONTEXT_DEVTOOL_DEVPANEL_DATA') {
+      console.log("message from devpanel", message);
+      setAppData(message.data);
+    }
   };
 
   return <App appData={appData} />;

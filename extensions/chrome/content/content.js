@@ -38,7 +38,10 @@ window.addEventListener("message", function(event) {
 
   if (event.data.type && (event.data.type == "FROM_PAGE")) {
     console.log("Content script received: ", event.data.data);
-    chrome.runtime.sendMessage(event.data.data);
+    chrome.runtime.sendMessage({
+      type: 'REACT_CONTEXT_DEVTOOL_DATA',
+      data: event.data.data
+    });
     // port.postMessage(event.data.text);
   }
 }, false);
