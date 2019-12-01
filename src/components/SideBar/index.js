@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SideBarWrapper, SideBarItem } from "./styled";
+import { SideBarWrapper, SideBarItem, SideBarTitle } from "./styled";
 
 const SideBar = ({ contextList, selectedContext, onChangeSelectedContext }) => {
 
@@ -11,6 +11,9 @@ const SideBar = ({ contextList, selectedContext, onChangeSelectedContext }) => {
 
   return (
     <SideBarWrapper>
+      <SideBarTitle>
+        Context List
+      </SideBarTitle>
       {contextList.map(({ value, displayName }) => (
         <SideBarItem
           key={value}

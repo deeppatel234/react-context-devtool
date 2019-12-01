@@ -43,6 +43,8 @@ export const LayoutSideBar = styled.div`
 `;
 
 export const LayoutContent = styled.div`
+  display: flex;
+  flex-direction: column;
   flex: 1;
   height: 100%;
   overflow: auto;

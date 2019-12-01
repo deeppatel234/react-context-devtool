@@ -21,7 +21,7 @@ const highlightSyntax = str => (
   />
 );
 
-const RawDiffView = ({ oldValue, data }) => {
+const DiffView = ({ oldValue, data }) => {
   return (
     <RawViewWrapper>
       <ReactDiffViewer
@@ -37,4 +37,4 @@ const RawDiffView = ({ oldValue, data }) => {
   );
 };
 
-export default RawDiffView;
+export default DiffView;

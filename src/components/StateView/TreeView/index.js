@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import ReactJson from "react-json-view";
 
-import { JsonTreeWrapper } from "./styled";
+import { TreeViewWrapper } from "./styled";
 
-const JsonTree = props => {
+const TreeView = props => {
   return (
-    <JsonTreeWrapper>
+    <TreeViewWrapper>
       <ReactJson
         name={null}
         theme="monokai"
@@ -14,8 +14,8 @@ const JsonTree = props => {
         src={props.data}
         enableClipboard
       />
-    </JsonTreeWrapper>
+    </TreeViewWrapper>
   );
 };
 
-export default JsonTree;
+export default TreeView;

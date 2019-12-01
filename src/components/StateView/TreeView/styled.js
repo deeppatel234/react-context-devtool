@@ -1,11 +1,14 @@
 import styled from 'styled-components';
 
-export const JsonTreeWrapper = styled.div`
+export const TreeViewWrapper = styled.div`
+  flex: 1;
+  overflow: auto;
   height: 100%;
   font-size: 1.5em;
 
   .react-json-view {
     height: 100%;
+    overflow: auto;
   }
 `;
 

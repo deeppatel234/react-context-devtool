@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import JSONTree from "../components/JsonTree";
-
 import SideBar from "../components/SideBar";
-
-import RawView from "../components/RawDiffView";
+import DataView from "../components/DataView";
 
 import {
   GlobalStyle,
@@ -22,8 +19,9 @@ const App = ({ appData }) => {
     if (!appData) {
       return;
     }
-    const conList = Object.keys(appData).map(key => ({
-      displayName: appData[key].newValue.displayName,
+    const { context } = appData;
+    const conList = Object.keys(context).map(key => ({
+      displayName: context[key].newValue.displayName,
       value: key
     }));
 
@@ -40,7 +38,9 @@ const App = ({ appData }) => {
   return (
     <AppLayout>
       <GlobalStyle />
-      <LayoutHeader> Tab Title</LayoutHeader>
+      <LayoutHeader>
+        {appData.tab.title || "React Context Devtool"}
+      </LayoutHeader>
       <LayoutBody>
         <LayoutSideBar>
           <SideBar
@@ -50,11 +50,10 @@ const App = ({ appData }) => {
           />
         </LayoutSideBar>
         <LayoutContent>
-          <RawView
-            data={appData[selectedContext].newValue.values}
-            oldValue={appData[selectedContext].oldValue.values}
+          <DataView
+            data={appData.context[selectedContext].newValue.values}
+            oldValue={appData.context[selectedContext].oldValue.values}
           />
-          <JSONTree data={appData[selectedContext].newValue.values} />
         </LayoutContent>
       </LayoutBody>
     </AppLayout>

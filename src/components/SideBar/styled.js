@@ -4,11 +4,17 @@ export const SideBarWrapper = styled.div`
   width: 200px;
 `;
 
+export const SideBarTitle = styled.div`
+  color: #fff;
+  padding: 25px 20px;
+  font-size: 1.5em;
+`;
+
 export const SideBarItem = styled.div`
   padding: 10px 20px;
   color: #fff;
   font-size: 1.3em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
   cursor: pointer;
 
   ${props => props.isSelected && css`
