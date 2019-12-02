@@ -2,6 +2,10 @@ import styled, { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
 
+  html {
+    font-size: 16px;
+  }
+
   html, body, #devPanelRoot, #popupRoot {
     height: 100%;
   }
@@ -30,7 +34,7 @@ export const AppLayout = styled.div`
 export const LayoutHeader = styled.div`
   padding: 10px;
   color: #fff;
-  font-size: 1.5em;
+  font-size: 1.3em;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 `;

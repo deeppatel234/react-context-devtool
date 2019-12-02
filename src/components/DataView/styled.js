@@ -16,7 +16,7 @@ export const DataViewTabItem = styled.div`
   text-align: center;
   padding: 10px;
   color: #fff;
-  font-size: 1.3em;
+  font-size: 1.2em;
   cursor: pointer;
 
   &::first-child {

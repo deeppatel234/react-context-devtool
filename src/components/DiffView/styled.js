@@ -1,13 +1,10 @@
 import styled from 'styled-components';
 
-export const RawViewWrapper = styled.div`
+export const DiffViewWrapper = styled.div`
   flex: 1;
   overflow: auto;
-  font-size: 1.5em;
+  font-size: 1.2em;
   height: 100%;
-
-  .CodeMirror {
-    height: 100%;
-  }
+  background: rgb(39,40,34);
 `;
 

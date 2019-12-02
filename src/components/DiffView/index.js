@@ -4,7 +4,7 @@ import Prism from "prismjs";
 
 import "prismjs/themes/prism.css";
 
-import { RawViewWrapper } from "./styled";
+import { DiffViewWrapper } from "./styled";
 
 const newStyles = {
   variables: {
@@ -23,7 +23,7 @@ const highlightSyntax = str => (
 
 const DiffView = ({ oldValue, data }) => {
   return (
-    <RawViewWrapper>
+    <DiffViewWrapper>
       <ReactDiffViewer
         oldValue={JSON.stringify(oldValue, null, 4)}
         newValue={JSON.stringify(data, null, 4)}
@@ -33,7 +33,7 @@ const DiffView = ({ oldValue, data }) => {
         extraLinesSurroundingDiff={Infinity}
         renderContent={highlightSyntax}
       />
-    </RawViewWrapper>
+    </DiffViewWrapper>
   );
 };
 
