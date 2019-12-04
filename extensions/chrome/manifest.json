@@ -3,21 +3,31 @@
   "version": "1.0",
   "description": "Build an Extension!",
   "manifest_version": 2,
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
   "browser_action": {
-    "default_popup": "popup/popup.html"
+    "default_icon": {
+      "16": "assets/icons/icon16-disabled.png",
+      "32": "assets/icons/icon32-disabled.png",
+      "48": "assets/icons/icon48-disabled.png",
+      "128": "assets/icons/icon128-disabled.png"
+    },
+    "default_popup": "popup/disabled.html"
   },
   "background": {
     "scripts": ["background/background.js"],
     "persistent": false
   },
   "devtools_page": "devtool/devtool.html",
-  "permissions": [ "declarativeContent", "notifications", "contextMenus", "tabs", "storage", "<all_urls>" ],
+  "permissions": ["file:///*", "http://*/*", "https://*/*"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;",
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["content/content.js"],
       "run_at": "document_start",
       "all_frames": true

@@ -37,6 +37,11 @@ chrome.tabs.onRemoved.addListener(tabId => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender) => {
+  if (request.type === 'REACT_CONTEXT_DEVTOOL_DETECTED') {
+    setAppPopup(true, sender.tab.id);
+    return;
+  }
+
   if (request.type === 'REACT_CONTEXT_DEVTOOL_POPUP_DATA_REQUEST') {
     chrome.runtime.sendMessage({
       type: 'REACT_CONTEXT_DEVTOOL_POPUP_DATA',
@@ -86,3 +91,19 @@ const saveCatchData = (dataToCatch, { id: tabId, title }) => {
 const getCatchData = tabId => {
   return catchData[tabId];
 };
+
+const setAppPopup = (isActive, tabId) => {
+  chrome.browserAction.setIcon({
+    tabId,
+    path: {
+      '16': `assets/icons/icon16${isActive ? '' : '-disabled'}.png`,
+      '32': `assets/icons/icon32${isActive ? '' : '-disabled'}.png`,
+      '48': `assets/icons/icon48${isActive ? '' : '-disabled'}.png`,
+      '128': `assets/icons/icon128${isActive ? '' : '-disabled'}.png`,
+    },
+  });
+  chrome.browserAction.setPopup({
+    tabId,
+    popup: 'popup/popup.html',
+  });
+}
