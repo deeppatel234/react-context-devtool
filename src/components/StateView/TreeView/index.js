@@ -1,6 +1,8 @@
 import React from "react";
 import ReactJson from "react-json-view";
 
+import { isObject } from "../../../utilities";
+
 import { TreeViewWrapper } from "./styled";
 
 const TreeView = props => {
@@ -11,7 +13,7 @@ const TreeView = props => {
         theme="monokai"
         indentWidth={2}
         collapsed={1}
-        src={props.data}
+        src={isObject(props.data) ? props.data : { root: props.data }}
         enableClipboard
       />
     </TreeViewWrapper>
