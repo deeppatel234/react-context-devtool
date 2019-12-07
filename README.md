@@ -4,7 +4,8 @@
 
 <h2 align="center">Devtool for React Context</h2>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![NPM Download](https://img.shields.io/npm/dt/react-context-devtool.svg)](https://www.npmjs.com/package/react-context-devtool) [![NPM](https://img.shields.io/npm/v/react-context-devtool.svg)](https://www.npmjs.com/package/react-context-devtool)
+
 
 ## Installation
 
