@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SideBar from "../components/SideBar";
 import DataView from "../components/DataView";
+import ConfigureMessage from "./ConfigureMessage";
 
 import {
   GlobalStyle,
@@ -32,7 +33,12 @@ const App = ({ appData }) => {
   }, [appData]);
 
   if (!appData || !selectedContext) {
-    return null;
+    return (
+      <>
+        <GlobalStyle />
+        <ConfigureMessage />
+      </>
+    );
   }
 
   return (

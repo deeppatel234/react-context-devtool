@@ -58,3 +58,21 @@ export const LayoutContent = styled.div`
   height: 100%;
   overflow: auto;
 `;
+
+export const ConfigureText = styled.div`
+  color: #ffffff;
+  text-align: center;
+
+  p {
+    white-space: nowrap;
+    font-size: 1.3em;
+  }
+
+  .setup-text {
+    font-size: 1.1em;
+  }
+
+  a {
+    color: #ffffff;
+  }
+`;
