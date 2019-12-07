@@ -3,7 +3,7 @@ import styled, { createGlobalStyle, css } from 'styled-components';
 export const GlobalStyle = createGlobalStyle`
 
   html {
-    font-size: 16px;
+    font-size: 12px;
   }
 
   ${props => props.fullHeight && css`
@@ -36,7 +36,7 @@ export const AppLayout = styled.div`
 export const LayoutHeader = styled.div`
   padding: 10px;
   color: #fff;
-  font-size: 1.3em;
+  font-size: 1.3rem;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 `;
@@ -67,11 +67,11 @@ export const ConfigureText = styled.div`
 
   p {
     white-space: nowrap;
-    font-size: 1.3em;
+    font-size: 1.3rem;
   }
 
   .setup-text {
-    font-size: 1.1em;
+    font-size: 1.1rem;
   }
 
   a {

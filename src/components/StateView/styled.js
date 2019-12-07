@@ -9,7 +9,7 @@ export const StateViewTabItem = styled.div`
   position: relative;
   padding: 10px 30px;
   color: #fff;
-  font-size: 1.2em;
+  font-size: 1.2rem;
   cursor: pointer;
 
   &:hover {

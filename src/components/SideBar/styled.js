@@ -7,13 +7,13 @@ export const SideBarWrapper = styled.div`
 export const SideBarTitle = styled.div`
   color: #fff;
   padding: 25px 20px;
-  font-size: 1.2em;
+  font-size: 1.2rem;
 `;
 
 export const SideBarItem = styled.div`
   padding: 10px 20px;
   color: #fff;
-  font-size: 1.1em;
+  font-size: 1.1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.5);
   cursor: pointer;
 
