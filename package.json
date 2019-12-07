@@ -1,7 +1,7 @@
 {
   "name": "react-context-devtool",
   "version": "1.0.0",
-  "description": "",
+  "description": "Devtool for React Context",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
