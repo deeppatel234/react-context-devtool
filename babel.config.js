@@ -18,8 +18,10 @@ module.exports = {
     [
       '@babel/preset-env',
       {
+        loose: true,
+        modules: process.env.BABEL_ENV === 'cjs' ? 'commonjs' : false,
         targets: {
-          node: 'current',
+          node: 10,
         },
       },
     ],
