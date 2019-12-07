@@ -16,7 +16,8 @@
     "build:cjs": "BABEL_ENV=cjs npm run compile -- --out-dir dist/cjs",
     "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build-extension:prod",
     "clean": "rimraf dist/",
-    "start": "npm run build-extension:dev"
+    "start": "npm run build-extension:dev",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
