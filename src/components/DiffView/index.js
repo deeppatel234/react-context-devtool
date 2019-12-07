@@ -30,7 +30,7 @@ const DiffView = ({ oldValue, data }) => {
         splitView={false}
         hideLineNumbers
         styles={newStyles}
-        extraLinesSurroundingDiff={Infinity}
+        extraLinesSurroundingDiff={500}
         renderContent={highlightSyntax}
       />
     </DiffViewWrapper>

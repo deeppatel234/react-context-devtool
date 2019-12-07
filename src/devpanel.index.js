@@ -27,7 +27,6 @@ const DevPanel = () => {
 
   const onMessage = message => {
     if (message.type === 'REACT_CONTEXT_DEVTOOL_DEVPANEL_DATA') {
-      console.log("message from devpanel", message);
       setAppData(message.data);
     }
   };

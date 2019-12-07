@@ -8,7 +8,10 @@ chrome.runtime.onConnect.addListener(port => {
     if (message.type === "REACT_CONTEXT_DEVTOOL_INIT") {
       connections[message.tabId] = port;
       if (catchData[message.tabId]) {
-        port.postMessage(getCatchData(message.tabId));
+        port.postMessage({
+          type: 'REACT_CONTEXT_DEVTOOL_DEVPANEL_DATA',
+          data: getCatchData(message.tabId),
+        });
       }
       return;
     }
@@ -39,28 +42,38 @@ chrome.tabs.onRemoved.addListener(tabId => {
 chrome.runtime.onMessage.addListener((request, sender) => {
   if (request.type === 'REACT_CONTEXT_DEVTOOL_DETECTED') {
     setAppPopup(true, sender.tab.id);
-    return;
+    return true;
   }
 
   if (request.type === 'REACT_CONTEXT_DEVTOOL_POPUP_DATA_REQUEST') {
-    chrome.runtime.sendMessage({
-      type: 'REACT_CONTEXT_DEVTOOL_POPUP_DATA',
-      data: getCatchData(request.tabId),
-    });
+    sendMessageToPopup(request.tabId);
     return true;
   }
   if (request.type === 'REACT_CONTEXT_DEVTOOL_DATA' && sender.tab) {
     const tabId = sender.tab.id;
     saveCatchData(request.data, sender.tab);
-    if (tabId in connections) {
-      connections[tabId].postMessage({
-        type: 'REACT_CONTEXT_DEVTOOL_DEVPANEL_DATA',
-        data: getCatchData(tabId),
-      });
-    }
+    sendMessageToDevPanel(tabId);
+    sendMessageToPopup(tabId);
   }
   return true;
 });
+
+const sendMessageToPopup = tabId => {
+  chrome.runtime.sendMessage({
+    type: 'REACT_CONTEXT_DEVTOOL_POPUP_DATA',
+    data: getCatchData(tabId),
+    tabId,
+  });
+};
+
+const sendMessageToDevPanel = tabId => {
+  if (tabId in connections) {
+    connections[tabId].postMessage({
+      type: 'REACT_CONTEXT_DEVTOOL_DEVPANEL_DATA',
+      data: getCatchData(tabId),
+    });
+  }
+};
 
 const saveCatchData = (dataToCatch, { id: tabId, title }) => {
   if (!catchData[tabId]) {
@@ -84,8 +97,6 @@ const saveCatchData = (dataToCatch, { id: tabId, title }) => {
 
   catchData[tabId].context[id].oldValue = catchData[tabId].context[id].newValue;
   catchData[tabId].context[id].newValue = dataToCatch;
-
-  console.log(catchData);
 };
 
 const getCatchData = tabId => {
