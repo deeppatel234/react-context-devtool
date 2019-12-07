@@ -10,6 +10,8 @@ module.exports = {
   entry: {
     'chrome/devpanel/devpanel': `${PATHS.SRC_DIR}/devpanel.index.js`,
     'chrome/popup/popup': `${PATHS.SRC_DIR}/popup.index.js`,
+    'firefox/devpanel/devpanel': `${PATHS.SRC_DIR}/devpanel.index.js`,
+    'firefox/popup/popup': `${PATHS.SRC_DIR}/popup.index.js`,
   },
   output: {
     path: PATHS.DIST_DIR,
@@ -48,7 +50,10 @@ module.exports = {
       PACKAGE_VERSION: JSON.stringify(pkg.version),
     }),
     new CopyPlugin([
-      { from: EXTENSIONS_DIR, to: DIST_DIR },
+      { from: `${EXTENSIONS_DIR}/chrome`, to: `${DIST_DIR}/chrome` },
+      { from: `${EXTENSIONS_DIR}/firefox`, to: `${DIST_DIR}/firefox` },
+      { from: `${EXTENSIONS_DIR}/common`, to: `${DIST_DIR}/chrome` },
+      { from: `${EXTENSIONS_DIR}/common`, to: `${DIST_DIR}/firefox` },
     ]),
     new MiniCssExtractPlugin({
       filename: '[name].css',
