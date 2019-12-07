@@ -8,7 +8,7 @@
 
 ## Installation
 
-1. Download extenstion from [Chrome Web Store](https://chrome.google.com/webstore/) or [Firefox addons store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool/).
+1. Download extension from [Chrome Web Store](https://chrome.google.com/webstore/detail/oddhnidmicpefilikhgeagedibnefkcf) or [Firefox addons store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool/).
 
 2. Add _REACT_CONTEXT_DEVTOOL method in your Consumer.
 
