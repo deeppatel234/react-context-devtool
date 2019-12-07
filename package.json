@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build-extension:dev": "npm run clean && webpack --config build/webpack.dev.js",
-    "build-extension:prod": "npm run clean && webpack --config build/webpack.prod.js",
+    "build-extension:prod": "webpack --config build/webpack.prod.js",
     "compile": "babel index.js --config-file ./babel.config.js --extensions '.js'",
     "build:esm": "BABEL_ENV=esm npm run compile -- --out-dir dist/esm",
     "build:cjs": "BABEL_ENV=cjs npm run compile -- --out-dir dist/cjs",
