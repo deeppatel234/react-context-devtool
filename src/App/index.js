@@ -43,7 +43,7 @@ const App = ({ appData }) => {
 
   return (
     <AppLayout>
-      <GlobalStyle />
+      <GlobalStyle fullHeight />
       <LayoutHeader>
         {appData.tab.title || "React Context Devtool"}
       </LayoutHeader>

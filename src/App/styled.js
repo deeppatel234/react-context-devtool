@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle, css } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
 
@@ -6,9 +6,11 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 16px;
   }
 
-  html, body, #devPanelRoot, #popupRoot {
-    height: 100%;
-  }
+  ${props => props.fullHeight && css`
+    html, body, #devPanelRoot, #popupRoot {
+      height: 100%;
+    }
+  `}
 
   #popupRoot {
     width: 800px;
