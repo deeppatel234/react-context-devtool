@@ -1,7 +1,7 @@
 {
-  "name": "React Context dev-tool",
+  "name": "React Context DevTool",
   "version": "1.0",
-  "description": "Build an Extension!",
+  "description": "Devtool for React Context",
   "manifest_version": 2,
   "icons": {
     "16": "assets/icons/icon16.png",

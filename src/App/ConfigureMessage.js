@@ -18,7 +18,7 @@ const ConfigureMessage = () => {
         please{" "}
         <a
           target="_blank"
-          href="https://github.com/deeppatel234/react-context-devtool/blob/master/CONFIGURE.md"
+          href="https://github.com/deeppatel234/react-context-devtool/blob/master/README.md"
         >
           click here
         </a>{" "}
