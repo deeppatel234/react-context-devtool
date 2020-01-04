@@ -9,6 +9,7 @@ export const TreeViewWrapper = styled.div`
   .react-json-view {
     height: 100%;
     overflow: auto;
+    background-color: ${props => props.theme.editorBackground} !important;
   }
 `;
 

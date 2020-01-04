@@ -8,26 +8,26 @@ export const LayoutContent = styled.div`
 
 export const DataViewTab = styled.div`
   display: flex;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid ${props => props.theme.borderColor};
 `;
 
 export const DataViewTabItem = styled.div`
   flex: 1;
   text-align: center;
   padding: 10px;
-  color: #fff;
+  color: ${props => props.theme.whiteText};
   font-size: 1.2rem;
   cursor: pointer;
 
   &::first-child {
-    border-right: 1px solid rgba(255, 255, 255, 0.5);
+    border-right: 1px solid ${props => props.theme.borderColor};
   }
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: ${props => props.theme.hoverBackground};
   }
 
   ${props => props.isSelected && css`
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: ${props => props.theme.selectedBackground};
   `}
 `;

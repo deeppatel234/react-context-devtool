@@ -1,16 +1,11 @@
 import React from "react";
 import ReactDiffViewer from "react-diff-viewer";
 import Prism from "prismjs";
+import { withTheme } from 'styled-components';
 
 import "prismjs/themes/prism.css";
 
 import { DiffViewWrapper } from "./styled";
-
-const newStyles = {
-  variables: {
-    diffViewerBackground: "rgb(39, 40, 34)",
-  }
-};
 
 const highlightSyntax = str => (
   <pre
@@ -21,7 +16,7 @@ const highlightSyntax = str => (
   />
 );
 
-const DiffView = ({ oldValue, data }) => {
+const DiffView = ({ oldValue, data, theme }) => {
   return (
     <DiffViewWrapper>
       <ReactDiffViewer
@@ -29,7 +24,11 @@ const DiffView = ({ oldValue, data }) => {
         newValue={JSON.stringify(data, null, 4)}
         splitView={false}
         hideLineNumbers
-        styles={newStyles}
+        styles={{
+          variables: {
+            diffViewerBackground: theme.editorBackground,
+          }
+        }}
         extraLinesSurroundingDiff={500}
         renderContent={highlightSyntax}
       />
@@ -37,4 +36,4 @@ const DiffView = ({ oldValue, data }) => {
   );
 };
 
-export default DiffView;
+export default withTheme(DiffView);
