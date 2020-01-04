@@ -22,6 +22,14 @@ const App = ({ appData }) => {
   const [selectedTheme, changeTheme] = useState(THEME.DARK);
 
   useEffect(() => {
+    chrome.storage.local.get(['theme'], function(result) {
+      if (result && result.theme) {
+        changeTheme(result.theme);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     if (!appData) {
       return;
     }
@@ -38,7 +46,9 @@ const App = ({ appData }) => {
   }, [appData]);
 
   const onChangeTheme = event => {
-    changeTheme(event.target.checked ? THEME.DARK : THEME.LIGHT);
+    const themeMode = event.target.checked ? THEME.DARK : THEME.LIGHT;
+    changeTheme(themeMode);
+    chrome.storage.local.set({theme: themeMode});
   };
 
   if (!appData || !selectedContext) {

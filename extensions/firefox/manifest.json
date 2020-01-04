@@ -22,7 +22,7 @@
     "scripts": ["background/background.js"]
   },
   "devtools_page": "devtool/devtool.html",
-  "permissions": ["file:///*", "http://*/*", "https://*/*"],
+  "permissions": ["storage", "file:///*", "http://*/*", "https://*/*"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;",
   "content_scripts": [
     {
