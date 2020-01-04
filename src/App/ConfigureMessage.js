@@ -14,7 +14,7 @@ const ConfigureMessage = () => {
         </a>{" "}
         is not configured for this site
       </p>
-      <p class="setup-text">
+      <p className="setup-text">
         please{" "}
         <a
           target="_blank"

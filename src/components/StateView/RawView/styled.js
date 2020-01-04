@@ -5,7 +5,7 @@ export const RawViewWrapper = styled.div`
   overflow: auto;
   font-size: 1.2rem;
   height: 100%;
-  background: rgb(39,40,34);
+  background: ${props => props.theme.editorBackground};
 
   .CodeMirror {
     height: 100%;

@@ -18,7 +18,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background-color: #292D3E;
+    background-color: ${props => props.theme.background};
     margin: 0;
   }
 
@@ -35,10 +35,15 @@ export const AppLayout = styled.div`
 
 export const LayoutHeader = styled.div`
   padding: 10px;
-  color: #fff;
   font-size: 1.3rem;
+  color: ${props => props.theme.whiteText};
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid ${props => props.theme.borderColor};
+
+  .theme-switcher {
+    float: right;
+    margin-right: 10px;
+  }
 `;
 
 export const LayoutBody = styled.div`
@@ -50,7 +55,7 @@ export const LayoutBody = styled.div`
 export const LayoutSideBar = styled.div`
   height: 100%;
   overflow: auto;
-  border-right: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid ${props => props.theme.borderColor};
 `;
 
 export const LayoutContent = styled.div`
@@ -62,7 +67,7 @@ export const LayoutContent = styled.div`
 `;
 
 export const ConfigureText = styled.div`
-  color: #ffffff;
+  color: ${props => props.theme.whiteText};
   text-align: center;
 
   p {
@@ -75,6 +80,6 @@ export const ConfigureText = styled.div`
   }
 
   a {
-    color: #ffffff;
+    color: ${props => props.theme.whiteText};
   }
 `;

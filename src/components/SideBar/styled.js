@@ -5,19 +5,23 @@ export const SideBarWrapper = styled.div`
 `;
 
 export const SideBarTitle = styled.div`
-  color: #fff;
+  color: ${props => props.theme.whiteText};
   padding: 25px 20px;
   font-size: 1.2rem;
 `;
 
 export const SideBarItem = styled.div`
   padding: 10px 20px;
-  color: #fff;
+  color: ${props => props.theme.whiteText};
   font-size: 1.1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-top: 1px solid ${props => props.theme.borderColor};
   cursor: pointer;
 
+  &:hover {
+    background-color: ${props => props.theme.hoverBackground};
+  }
+
   ${props => props.isSelected && css`
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: ${props => props.theme.selectedBackground};
   `}
 `;
