@@ -1,7 +1,7 @@
 const path = require('path');
 
 const EXTENSIONS_DIR = path.resolve(__dirname, '../extensions');
-const DIST_DIR = path.resolve(__dirname, '../dist');
+const DIST_DIR = path.resolve(__dirname, '../dist/extensions');
 const SRC_DIR = path.resolve(__dirname, '../src');
 const COMPONENTS = path.resolve(SRC_DIR, 'components');
 const UTILITIES = path.resolve(SRC_DIR, 'utilities');

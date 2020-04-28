@@ -2,20 +2,20 @@
   "name": "react-context-devtool",
   "version": "1.0.1",
   "description": "Devtool for React Context",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/plugin/cjs/index.js",
+  "module": "dist/plugin/esm/index.js",
   "files": [
-    "dist/cjs",
-    "dist/esm"
+    "dist/plugin"
   ],
   "scripts": {
-    "build-extension:dev": "npm run clean && webpack --config build/webpack.dev.js",
+    "build-extension:dev": "npm run clean-extensions && webpack --config build/webpack.dev.js",
     "build-extension:prod": "webpack --config build/webpack.prod.js",
     "compile": "babel index.js --config-file ./babel.config.js --extensions '.js'",
-    "build:esm": "BABEL_ENV=esm npm run compile -- --out-dir dist/esm",
-    "build:cjs": "BABEL_ENV=cjs npm run compile -- --out-dir dist/cjs",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build-extension:prod",
-    "clean": "rimraf dist/",
+    "build:esm": "BABEL_ENV=esm npm run compile -- --out-dir dist/plugin/esm",
+    "build:cjs": "BABEL_ENV=cjs npm run compile -- --out-dir dist/plugin/cjs",
+    "build": "npm run clean-extensions && npm run clean-plugin && npm run build:esm && npm run build:cjs && npm run build-extension:prod",
+    "clean-extensions": "rimraf dist/extensions",
+    "clean-plugin": "rimraf dist/plugin",
     "start": "npm run build-extension:dev",
     "prepublishOnly": "npm run build"
   },
