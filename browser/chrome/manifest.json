@@ -28,9 +28,12 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["injectGlobalHook.js", "helper.js"],
+      "js": ["injectGlobalHook.js"],
       "run_at": "document_start",
       "all_frames": true
     }
+  ],
+  "web_accessible_resources": [
+    "react-context-devtool-helper.js"
   ]
 }
