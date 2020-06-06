@@ -27,7 +27,7 @@ const injectCode = (code) => {
  *
  * @param {window} target
  */
-const injectReactDevtoolHook = (target) => {
+function injectReactDevtoolHook (target) {
   if (target.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
     return;
   }
@@ -50,7 +50,12 @@ const injectReactDevtoolHook = (target) => {
   };
 };
 
+/**
+ * Issue with loading order in react developer tool and
+ * react-context-devtool so currenly not using this feature
+ */
+// ;(${injectReactDevtoolHook.toString()}(window))
+
 injectCode(`
-    (${injectReactDevtoolHook.toString()}(windows));
-    (${installHook.toString()}(windows));
+    ;(${installHook.toString()}(window))
 `);
