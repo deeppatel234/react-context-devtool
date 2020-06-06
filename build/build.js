@@ -1,115 +1,103 @@
 const archiver = require("archiver");
-const { execSync } = require("child_process");
-const { readFileSync, writeFileSync, createWriteStream } = require("fs");
+const webpack = require("webpack");
+const chalk = require("chalk");
+
+const { createWriteStream } = require("fs");
 const { copy, ensureDir, move, remove } = require("fs-extra");
-const { join } = require("path");
+const path = require("path");
 
-// These files are copied along with Webpack-bundled files
-// to produce the final web extension
-const STATIC_FILES = ["icons", "popups", "main.html", "panel.html"];
+const {
+  BROWSER_DIR,
+  DIST_DIR,
+  EXTENSION_DIR,
+} = require('./paths');
 
-const preProcess = async (destinationPath, tempPath) => {
-  await remove(destinationPath); // Clean up from previously completed builds
-  await remove(tempPath); // Clean up from any previously failed builds
-  await ensureDir(tempPath); // Create temp dir for this new build
+const webpackConfig = require('./webpack.config');
+
+const EXTENSTION_FILES = ["assets", "devtool", "popup"];
+const EXTENSION_CORE_FILES = ["contentScript.js", "background.js"];
+
+const env = process.env.NODE_ENV || 'development';
+
+const preBuild = async ({ distPath, tmpPath }) => {
+  console.log(chalk.green('\nclean dist directory'));
+  await remove(distPath);
+  await ensureDir(distPath);
+  await ensureDir(tmpPath);
 };
 
-const build = async (tempPath, manifestPath) => {
-  const binPath = join(tempPath, "bin");
-  const zipPath = join(tempPath, "zip");
+const buildProject = async ({ buildId, distPath, browserPath, tmpPath }) => {
 
-  const webpackPath = join(
-    __dirname,
-    "..",
-    "..",
-    "node_modules",
-    ".bin",
-    "webpack"
-  );
-  execSync(
-    `${webpackPath} --config webpack.config.js --output-path ${binPath}`,
-    {
-      cwd: __dirname,
-      env: process.env,
-      stdio: "inherit",
-    }
-  );
-  execSync(
-    `${webpackPath} --config webpack.backend.js --output-path ${binPath}`,
-    {
-      cwd: __dirname,
-      env: process.env,
-      stdio: "inherit",
-    }
-  );
+  await copy(browserPath, tmpPath);
+  await remove(path.resolve(tmpPath, 'build.js'));
 
-  // Make temp dir
-  await ensureDir(zipPath);
+  console.log(chalk.green('\ncopy extension files successfully'));
 
-  const copiedManifestPath = join(zipPath, "manifest.json");
-
-  // Copy unbuilt source files to zip dir to be packaged:
-  await copy(binPath, join(zipPath, "build"));
-  await copy(manifestPath, copiedManifestPath);
   await Promise.all(
-    STATIC_FILES.map((file) => copy(join(__dirname, file), join(zipPath, file)))
+    EXTENSTION_FILES.map(file => copy(path.join(EXTENSION_DIR, file), path.join(tmpPath, file)))
   );
 
-  const commit = getGitCommit();
-  const dateString = new Date().toLocaleDateString();
-  const manifest = JSON.parse(readFileSync(copiedManifestPath).toString());
-  const versionDateString = `${manifest.version} (${dateString})`;
-  if (manifest.version_name) {
-    manifest.version_name = versionDateString;
-  }
-  manifest.description += `\n\nCreated from revision ${commit} on ${dateString}.`;
+  await Promise.all(
+    EXTENSION_CORE_FILES.map(file => copy(path.join(EXTENSION_DIR, 'core', file), path.join(tmpPath, file)))
+  );
 
-  writeFileSync(copiedManifestPath, JSON.stringify(manifest, null, 2));
+  console.log('\nwebpack build started');
 
-  // Pack the extension
+  const compailer = webpack(webpackConfig({
+    mode: env,
+    distPath: tmpPath,
+  }));
+
+  await new Promise((resove, reject) => {
+    compailer.run((err, stats) => {
+      if (err) {
+        console.log(chalk.red("\nwebpack build failed", err));
+        reject();
+      } else {
+        resove();
+      }
+    });
+  });
+
+  console.log(chalk.green('\nwebpack build successfully'));
+
   const archive = archiver("zip", { zlib: { level: 9 } });
-  const zipStream = createWriteStream(join(tempPath, "ReactDevTools.zip"));
+  const zipStream = createWriteStream(path.join(distPath, `ReactContextDevtool_${buildId}.zip`));
+
   await new Promise((resolve, reject) => {
     archive
-      .directory(zipPath, false)
+      .directory(tmpPath, false)
       .on("error", (err) => reject(err))
       .pipe(zipStream);
     archive.finalize();
     zipStream.on("close", () => resolve());
   });
+
+  console.log(chalk.green('\nzip created successfully'));
 };
 
-const postProcess = async (tempPath, destinationPath) => {
-  const unpackedSourcePath = join(tempPath, "zip");
-  const packedSourcePath = join(tempPath, "ReactDevTools.zip");
-  const packedDestPath = join(destinationPath, "ReactDevTools.zip");
-  const unpackedDestPath = join(destinationPath, "unpacked");
+const postBuild = async ({ distPath, tmpPath }) => {
+  const unpackedDistPath = path.join(distPath, "unpacked");
 
-  await move(unpackedSourcePath, unpackedDestPath); // Copy built files to destination
-  await move(packedSourcePath, packedDestPath); // Copy built files to destination
-  await remove(tempPath); // Clean up temp directory and files
+  await move(tmpPath, unpackedDistPath);
 };
 
-const main = async (buildId) => {
-  const root = join(__dirname, buildId);
-  const manifestPath = join(root, "manifest.json");
-  const destinationPath = join(root, "build");
+const startBuild = async (buildId) => {
+
+  const distPath = path.join(DIST_DIR, buildId);
+  const tmpPath = path.join(distPath, 'tmp');
+  const browserPath = path.join(BROWSER_DIR, buildId);
 
   try {
-    const tempPath = join(__dirname, "build", buildId);
-    await preProcess(destinationPath, tempPath);
-    await build(tempPath, manifestPath);
+    await preBuild({ distPath, tmpPath });
 
-    const builtUnpackedPath = join(destinationPath, "unpacked");
-    await postProcess(tempPath, destinationPath);
+    await buildProject({ buildId, distPath, browserPath, tmpPath });
 
-    return builtUnpackedPath;
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
+    await postBuild({ distPath,  tmpPath });
+
+  } catch (err) {
+    console.log(chalk.red("build failed", err));
   }
-
-  return null;
 };
 
-module.exports = main;
+module.exports = startBuild;
