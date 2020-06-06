@@ -7,12 +7,11 @@ import { installHook } from "./hook";
  * @param {string} code
  */
 const injectCode = (code) => {
-    const script = document.createElement("script");
-    script.textContent = code;
+  const script = document.createElement("script");
+  script.textContent = code;
 
-
-    document.documentElement.appendChild(script);
-    script.parentNode.removeChild(script);
+  document.documentElement.appendChild(script);
+  script.parentNode.removeChild(script);
 };
 
 /**
@@ -29,26 +28,26 @@ const injectCode = (code) => {
  * @param {window} target
  */
 const injectReactDevtoolHook = (target) => {
-    if (target.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
-        return;
-    }
+  if (target.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+    return;
+  }
 
-    const renderers = new Map();
-    let uidCounter = 0;
+  const renderers = new Map();
+  let uidCounter = 0;
 
-    const inject = renderer => {
-        const id = ++uidCounter;
-        renderers.set(id, renderer);
-    }
+  const inject = (renderer) => {
+    const id = ++uidCounter;
+    renderers.set(id, renderer);
+  };
 
-    target.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
-        isDisabled: false,
-        supportsFiber: true,
-        renderers,
-        inject,
-        onCommitFiberRoot: function() {},
-        onCommitFiberUnmount: function() {},
-    };
+  target.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+    isDisabled: false,
+    supportsFiber: true,
+    renderers,
+    inject,
+    onCommitFiberRoot: function () {},
+    onCommitFiberUnmount: function () {},
+  };
 };
 
 injectCode(`
