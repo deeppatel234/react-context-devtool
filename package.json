@@ -2,22 +2,18 @@
   "name": "react-context-devtool",
   "version": "1.0.1",
   "description": "Devtool for React Context",
-  "main": "dist/plugin/cjs/index.js",
-  "module": "dist/plugin/esm/index.js",
+  "main": "dist/module/cjs/index.js",
+  "module": "dist/module/esm/index.js",
   "files": [
-    "dist/plugin"
+    "dist/module"
   ],
   "scripts": {
-    "build-extension:dev": "npm run clean-extensions && webpack --config build/webpack.dev.js",
-    "build-extension:prod": "webpack --config build/webpack.prod.js",
-    "compile": "babel index.js --config-file ./babel.config.js --extensions '.js'",
-    "build:esm": "BABEL_ENV=esm npm run compile -- --out-dir dist/plugin/esm",
-    "build:cjs": "BABEL_ENV=cjs npm run compile -- --out-dir dist/plugin/cjs",
-    "build": "npm run clean-extensions && npm run clean-plugin && npm run build:esm && npm run build:cjs && npm run build-extension:prod",
-    "clean-extensions": "rimraf dist/extensions",
-    "clean-plugin": "rimraf dist/plugin",
-    "start": "npm run build-extension:dev",
-    "prepublishOnly": "npm run build"
+    "compile:module": "babel module/index.js --config-file ./babel.config.js --extensions '.js'",
+    "clean:module": "rimraf dist/module",
+    "build:module:esm": "BABEL_ENV=esm npm run compile:module -- --out-dir dist/module/esm",
+    "build:module:cjs": "BABEL_ENV=cjs npm run compile:module -- --out-dir dist/module/cjs",
+    "build:module": "npm run clean:module && npm run build:module:esm && npm run build:module:cjs",
+    "prepublishOnly": "npm run build:module"
   },
   "repository": {
     "type": "git",
@@ -29,6 +25,17 @@
     "url": "https://github.com/deeppatel234/react-context-devtool/issues"
   },
   "homepage": "https://github.com/deeppatel234/react-context-devtool#readme",
+  "dependencies": {
+    "codemirror": "^5.49.2",
+    "error-stack-parser": "^2.0.6",
+    "object-assign": "^4.1.1",
+    "prismjs": "^1.17.1",
+    "react": "^16.12.0",
+    "react-diff-viewer": "^2.0.6",
+    "react-dom": "^16.12.0",
+    "react-json-view": "^1.19.1",
+    "styled-components": "^4.4.1"
+  },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
@@ -45,16 +52,5 @@
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-merge": "^4.2.2"
-  },
-  "dependencies": {
-    "codemirror": "^5.49.2",
-    "error-stack-parser": "^2.0.6",
-    "object-assign": "^4.1.1",
-    "prismjs": "^1.17.1",
-    "react": "^16.12.0",
-    "react-diff-viewer": "^2.0.6",
-    "react-dom": "^16.12.0",
-    "react-json-view": "^1.19.1",
-    "styled-components": "^4.4.1"
   }
 }
