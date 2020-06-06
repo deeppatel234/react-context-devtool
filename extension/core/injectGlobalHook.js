@@ -14,6 +14,27 @@ const injectCode = (code) => {
   script.parentNode.removeChild(script);
 };
 
+const loadHelpers = () => {
+  const helperUrl = chrome.runtime.getURL('react-context-devtool-helper.js');
+
+  fetch(helperUrl)
+    .then(res => res.text())
+    .then(text => {
+      injectCode(text);
+    });
+};
+
+// TODO: install helper when needed
+// function installHelpers (target) {
+//   if (!target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK) {
+//     target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK = {};
+//   }
+
+//   target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.loadHelpers = () => {
+//     target.postMessage({ type: "REACT_CONTEXT_DEVTOOL_HOOK_LOAD_HELPER" }, "*");
+//   };
+// }
+
 /**
  * use react devtool internals for debug
  *
@@ -55,7 +76,19 @@ function injectReactDevtoolHook (target) {
  * react-context-devtool so currenly not using this feature
  */
 // ;(${injectReactDevtoolHook.toString()}(window))
+// ;(${installHelpers.toString()}(window))
 
 injectCode(`
-    ;(${installHook.toString()}(window))
+  ;(${installHook.toString()}(window))
 `);
+
+loadHelpers();
+
+// window.addEventListener("message", function(event) {
+//   if (event.source != window)
+//     return;
+
+//   if (event.data.type == "REACT_CONTEXT_DEVTOOL_HOOK_LOAD_HELPER") {
+//     loadHelpers();
+//   }
+// }, false);

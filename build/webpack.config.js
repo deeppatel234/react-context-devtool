@@ -11,9 +11,10 @@ module.exports = ({
 
   return {
     mode,
+    devtool: mode === "production" ? false : 'cheap-module-eval-source-map',
     entry: {
       'injectGlobalHook': `${PATHS.EXTENSION_DIR}/core/injectGlobalHook.js`,
-      'helper': `${PATHS.EXTENSION_DIR}/core/helper.js`,
+      'react-context-devtool-helper': `${PATHS.EXTENSION_DIR}/core/helper.js`,
       'devtool/devpanel': `${PATHS.SRC_DIR}/devpanel.index.js`,
       'popup/popup': `${PATHS.SRC_DIR}/popup.index.js`,
     },
