@@ -113,10 +113,12 @@ export function installHook(target) {
 
     if (
       renderer &&
+      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers &&
+      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber &&
       memoizedState &&
       Object.hasOwnProperty.call(memoizedState, "baseState")
     ) {
-      window.reactDebugTool(fiberNode, renderer);
+      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber(fiberNode, renderer);
 
       let temp = memoizedState;
       while (temp && temp.queue) {
@@ -178,11 +180,19 @@ export function installHook(target) {
     let fiberRoot = null;
     if (container._internalRoot) {
       fiberRoot = container._internalRoot;
-    } else {
+    } else if (container._reactRootContainer) {
       const {
         _reactRootContainer: { _internalRoot },
       } = container;
       fiberRoot = _internalRoot;
+    }
+
+    if (!fiberRoot) {
+      const rootKey = Object.keys(container).find(k => k.startsWith('__reactContainer'));
+      if (rootKey) {
+        fiberRoot = container[rootKey];
+        fiberRoot = fiberRoot.stateNode;
+      }
     }
 
     if (!fiberRoot) {
@@ -192,11 +202,12 @@ export function installHook(target) {
       return;
     }
 
-    if (!window.reactDebugTool) {
-      console.error(
-        "react-debug-tool is not found. please report bug or create issue."
+    if (
+      !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers
+    ) {
+      console.log(
+        "useReducer hook is not working due to some internal issue. please report bug or create issue."
       );
-      return;
     }
 
     traverseFiberTree(fiberRoot);
@@ -205,7 +216,7 @@ export function installHook(target) {
     const reactDebtoolGlobalhook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 
     if (!reactDebtoolGlobalhook) {
-      console.error("Internal issue.");
+      console.log("Please install React Developer Tools extenstion.");
       return;
     }
 
@@ -250,5 +261,5 @@ export function installHook(target) {
     target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK = {};
   }
 
-  target._REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debugFiber = debugFiber;
+  target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debugFiber = debugFiber;
 }
