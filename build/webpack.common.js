@@ -8,6 +8,8 @@ const pkg = require('../package.json');
 
 module.exports = {
   entry: {
+    'injectGlobalHook': `${EXTENSIONS_DIR}/core/injectGlobalHook.js`,
+    'helper': `${EXTENSIONS_DIR}/core/helper.js`,
     'chrome/devpanel/devpanel': `${PATHS.SRC_DIR}/devpanel.index.js`,
     'chrome/popup/popup': `${PATHS.SRC_DIR}/popup.index.js`,
     'firefox/devpanel/devpanel': `${PATHS.SRC_DIR}/devpanel.index.js`,
