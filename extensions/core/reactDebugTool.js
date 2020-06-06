@@ -12,14 +12,9 @@
 (function () {
     "use strict";
 
-    var _assign = require("object-assign");
     var ErrorStackParser = require("error-stack-parser");
-    var React = require("react");
 
     var NoMode = 0;
-
-    var ReactSharedInternals =
-        React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
 
     // ATTENTION
     // When adding new symbols to this file,
@@ -679,12 +674,6 @@
     }
 
     function inspectHooks(renderFunction, props, currentDispatcher) {
-        // DevTools will pass the current renderer's injected dispatcher.
-        // Other apps might compile debug hooks as part of their app though.
-        if (currentDispatcher == null) {
-            currentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
-        }
-
         var previousDispatcher = currentDispatcher.current;
         var readHookLog;
         currentDispatcher.current = Dispatcher;
@@ -756,7 +745,7 @@
     function resolveDefaultProps(Component, baseProps) {
         if (Component && Component.defaultProps) {
             // Resolve default props. Taken from ReactElement
-            var props = _assign({}, baseProps);
+            var props = Object.assign({}, baseProps);
 
             var defaultProps = Component.defaultProps;
 
@@ -773,12 +762,6 @@
     }
 
     function inspectHooksOfFiber(fiber, currentDispatcher) {
-        // DevTools will pass the current renderer's injected dispatcher.
-        // Other apps might compile debug hooks as part of their app though.
-        if (currentDispatcher == null) {
-            currentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
-        }
-
         currentFiber = fiber;
 
         if (
