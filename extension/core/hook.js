@@ -33,14 +33,21 @@ export function installHook(target) {
       if (!debugId) {
         const currentReducer = hook.queue.lastRenderedReducer.bind(hook.queue);
         hook.queue.lastRenderedReducer = (state, action, ...rest) => {
-          if (
-            fiberNodeToDebug.useReducer[hook.queue.__reactContextDevtoolDebugId]
-          ) {
-            fiberNodeToDebug.useReducer[
-              hook.queue.__reactContextDevtoolDebugId
-            ].actions.push(action);
+          const debugObj = fiberNodeToDebug.useReducer[hook.queue.__reactContextDevtoolDebugId];
+          if (debugObj && !debugObj.useDispatch) {
+            debugObj.actions.push(action);
           }
           currentReducer(state, action, ...rest);
+        };
+
+        const currentDispatch = hook.queue.dispatch.bind(hook.queue);
+        hook.queue.dispatch = (action, ...rest) => {
+          const debugObj = fiberNodeToDebug.useReducer[hook.queue.__reactContextDevtoolDebugId];
+          if (debugObj) {
+            debugObj.actions.push(action);
+            debugObj.useDispatch = true;
+          }
+          currentDispatch(action, ...rest);
         };
 
         debugId = getUniqId();
@@ -51,8 +58,6 @@ export function installHook(target) {
           hook,
           state: [],
         };
-
-        return;
       }
 
       const debugObj = fiberNodeToDebug.useReducer[debugId];
@@ -60,9 +65,7 @@ export function installHook(target) {
       debugObj.hook = hook;
 
       if (debugObj.state.length) {
-        const valueChanged =
-          debugObj.state[debugObj.state.length - 1] !==
-          hook.queue.lastRenderedState;
+        const valueChanged = debugObj.state[debugObj.state.length - 1] !== hook.queue.lastRenderedState;
         if (!valueChanged) {
           return;
         }
@@ -118,7 +121,10 @@ export function installHook(target) {
       memoizedState &&
       Object.hasOwnProperty.call(memoizedState, "baseState")
     ) {
-      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber(fiberNode, renderer);
+      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber(
+        fiberNode,
+        renderer
+      );
 
       let temp = memoizedState;
       while (temp && temp.queue) {
@@ -188,7 +194,9 @@ export function installHook(target) {
     }
 
     if (!fiberRoot) {
-      const rootKey = Object.keys(container).find(k => k.startsWith('__reactContainer'));
+      const rootKey = Object.keys(container).find((k) =>
+        k.startsWith("__reactContainer")
+      );
       if (rootKey) {
         fiberRoot = container[rootKey];
         fiberRoot = fiberRoot.stateNode;
@@ -202,16 +210,11 @@ export function installHook(target) {
       return;
     }
 
-    if (
-      !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers
-    ) {
+    if (!window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers) {
       console.log(
         "useReducer hook is not working due to some internal issue. please report bug or create issue."
       );
     }
-
-    traverseFiberTree(fiberRoot);
-    sendDataToDevtool();
 
     const reactDebtoolGlobalhook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 
@@ -224,10 +227,8 @@ export function installHook(target) {
      * set react renderer
      */
     if (reactDebtoolGlobalhook.renderers) {
-      const firstRendererKey = reactDebtoolGlobalhook.renderers.keys().next()
-        .value;
-      renderer = reactDebtoolGlobalhook.renderers.get(firstRendererKey)
-        .currentDispatcherRef;
+      const firstRendererKey = reactDebtoolGlobalhook.renderers.keys().next().value;
+      renderer = reactDebtoolGlobalhook.renderers.get(firstRendererKey).currentDispatcherRef;
     }
 
     if (!renderer) {
@@ -235,6 +236,9 @@ export function installHook(target) {
         "useReducer hook debugger is not working due to some internal issue. please report an issue"
       );
     }
+
+    traverseFiberTree(fiberRoot);
+    sendDataToDevtool();
 
     /**
      * Register react dom commit fiber callback
