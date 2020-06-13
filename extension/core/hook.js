@@ -16,7 +16,47 @@ export function installHook(target) {
   const getUniqId = uniqId("debugId");
 
   const sendDataToDevtool = () => {
-    console.log(fiberNodeToDebug);
+    const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
+
+    const dataToSend = {};
+
+    dataToSend.context = Object.keys(fiberNodeToDebug.context).reduce((memo, key) => {
+      if (fiberNodeToDebug.context[key].valueChanged) {
+        memo[key] = {
+          value: fiberNodeToDebug.context[key].value,
+          displayName: fiberNodeToDebug.context[key].displayName,
+          valueChanged: fiberNodeToDebug.context[key].valueChanged,
+        };
+      } else {
+        memo[key] = {
+          valueChanged: fiberNodeToDebug.context[key].valueChanged,
+        }
+      }
+      return memo;
+    }, {});
+
+    dataToSend.useReducer = Object.keys(fiberNodeToDebug.useReducer).reduce((memo, key) => {
+      if (fiberNodeToDebug.useReducer[key].valueChanged) {
+        memo[key] = {
+          actions: fiberNodeToDebug.useReducer[key].actions,
+          state: fiberNodeToDebug.useReducer[key].state,
+          valueChanged: fiberNodeToDebug.useReducer[key].valueChanged,
+        };
+      } else {
+        memo[key] = {
+          valueChanged: fiberNodeToDebug.useReducer[key].valueChanged,
+        }
+      }
+      return memo;
+    }, {});
+
+    console.log(dataToSend);
+
+    window.postMessage({
+      type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT",
+      subType: "APP_DATA",
+      data: helpers.parseData(dataToSend),
+    }, "*")
   };
 
   let renderer = null;
@@ -57,6 +97,7 @@ export function installHook(target) {
           actions: [{ initialState: true }],
           hook,
           state: [],
+          valueChanged: true,
         };
       }
 
@@ -66,6 +107,7 @@ export function installHook(target) {
 
       if (debugObj.state.length) {
         const valueChanged = debugObj.state[debugObj.state.length - 1] !== hook.queue.lastRenderedState;
+        debugObj.valueChanged = valueChanged;
         if (!valueChanged) {
           return;
         }
@@ -116,8 +158,7 @@ export function installHook(target) {
 
     if (
       renderer &&
-      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers &&
-      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber &&
+      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded &&
       memoizedState &&
       Object.hasOwnProperty.call(memoizedState, "baseState")
     ) {
@@ -147,35 +188,54 @@ export function installHook(target) {
    *
    * https://github.com/facebook/react/issues/7942
    *
-   * @param {object} fiber
+   * TODO: remove recurstion and implement this.
+   * currenly find issues with fiber tree traversal algorithm
+   *
+   * @param {fiberNode} node
    */
-  const traverseFiberTree = (fiber) => {
-    let root = fiber.current;
-    let node = fiber.current;
+  // function traverseFiberTree(fiberRoot) {
+  //   let root = fiberRoot.current;
+  //   let node = fiberRoot.current;
 
-    while (true) {
-      doWorkWithFiberNode(node);
+  //   while (true) {
+  //     doWorkWithFiberNode(node);
 
-      if (node.child) {
-        node = node.child;
-        continue;
-      }
-      if (node === root) {
-        return;
-      }
-      while (!node.sibling) {
-        if (!node.return || node.return === root) {
-          return;
-        }
-        node = node.return;
-      }
-      node = node.sibling;
-    }
-  };
+  //     if (node.child) {
+  //       node = node.child;
+  //       continue;
+  //     }
+  //     if (node === root) {
+  //       return;
+  //     }
+  //     while (!node.sibling) {
+  //       if (!node.return || node.return === root) {
+  //         return;
+  //       }
+  //       node = node.return;
+  //     }
+  //     node = node.sibling;
+  //   }
+  // };
 
   const onCommitFiberRoot = (fiberRoot) => {
-    traverseFiberTree(fiberRoot);
-    sendDataToDevtool();
+    try {
+      function traverseFiberTree(node) {
+        if (!node) {
+            return null;
+        }
+        doWorkWithFiberNode(node);
+
+        traverseFiberTree(node.sibling);
+        traverseFiberTree(node.child);
+      }
+
+      traverseFiberTree(fiberRoot.current);
+      sendDataToDevtool();
+    } catch(err) {
+      if (err.message !== "Maximum call stack size exceeded") {
+        console.error(err);
+      }
+    }
   };
 
   const debugFiber = (container) => {
@@ -210,7 +270,7 @@ export function installHook(target) {
       return;
     }
 
-    if (!window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers) {
+    if (!window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
       console.log(
         "useReducer hook is not working due to some internal issue. please report bug or create issue."
       );
@@ -237,8 +297,7 @@ export function installHook(target) {
       );
     }
 
-    traverseFiberTree(fiberRoot);
-    sendDataToDevtool();
+    onCommitFiberRoot(fiberRoot);
 
     /**
      * Register react dom commit fiber callback
@@ -260,10 +319,6 @@ export function installHook(target) {
       console.error("onCommitFiberRoot is not available in ReactDOM library");
     }
   };
-
-  if (!target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK) {
-    target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK = {};
-  }
 
   target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debugFiber = debugFiber;
 }
