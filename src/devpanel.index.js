@@ -4,17 +4,43 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 
+const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
+const INIT_DEVPANEL_EVENT = "INIT_DEVPANEL";
+const DEVPANEL_DATA_EVENT = "DEVPANEL_DATA";
+
+let chunks = [];
+
 const registerTab = onMessage => {
   const tabId = chrome.devtools.inspectedWindow.tabId;
   const backgroundPageConnection = chrome.runtime.connect({
     name: tabId ? tabId.toString() : undefined
   });
 
-  backgroundPageConnection.onMessage.addListener(onMessage);
+  backgroundPageConnection.onMessage.addListener(event => {
+    if (
+      event.type === DATA_EVENT &&
+      event.subType === DEVPANEL_DATA_EVENT
+    ) {
+      let { data, split } = event;
+
+      if (split === "chunk") {
+        chunks.push(data);
+        return;
+      }
+
+      if (split === "end") {
+        data = chunks.join('') || "{}";
+        chunks = [];
+      }
+
+      onMessage(JSON.parse(data));
+    }
+  });
 
   backgroundPageConnection.postMessage({
     tabId,
-    type: "REACT_CONTEXT_DEVTOOL_INIT"
+    type: DATA_EVENT,
+    subType: INIT_DEVPANEL_EVENT,
   });
 };
 
@@ -25,13 +51,11 @@ const DevPanel = () => {
     registerTab(onMessage);
   }, []);
 
-  const onMessage = message => {
-    if (message.type === 'REACT_CONTEXT_DEVTOOL_DEVPANEL_DATA') {
-      setAppData(message.data);
-    }
+  const onMessage = data => {
+    console.log(data);
   };
 
-  return <App appData={appData} />;
+  return null; //<App appData={appData} />;
 };
 
 ReactDOM.render(<DevPanel />, document.getElementById("devPanelRoot"));
