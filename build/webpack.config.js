@@ -1,27 +1,29 @@
-const webpack = require('webpack');
-const PATHS = require('./paths');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require("path");
 
-const pkg = require('../package.json');
+const webpack = require("webpack");
+const PATHS = require("./paths");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-module.exports = ({
-  mode = "production",
-  distPath,
-}) => {
+const pkg = require("../package.json");
+
+module.exports = ({ mode, distPath } = {}) => {
+  if (!distPath && process.env.DEV_FOR) {
+    distPath = path.resolve(PATHS.DIST_DIR, process.env.DEV_FOR, "unpacked");
+  }
 
   return {
     mode,
-    devtool: mode === "production" ? false : 'cheap-module-source-map',
+    devtool: mode === "production" ? false : "cheap-module-source-map",
     entry: {
-      'injectGlobalHook': `${PATHS.EXTENSION_DIR}/core/injectGlobalHook.js`,
-      'react-context-devtool-helper': `${PATHS.EXTENSION_DIR}/core/helper.js`,
-      'devtool/devpanel': `${PATHS.SRC_DIR}/devpanel.index.js`,
-      'popup/popup': `${PATHS.SRC_DIR}/popup.index.js`,
+      injectGlobalHook: `${PATHS.EXTENSION_DIR}/core/injectGlobalHook.js`,
+      "react-context-devtool-helper": `${PATHS.EXTENSION_DIR}/core/helper.js`,
+      "devtool/devpanel": `${PATHS.SRC_DIR}/devpanel.index.js`,
+      "popup/popup": `${PATHS.SRC_DIR}/popup.index.js`,
     },
     output: {
       path: distPath,
-      filename: '[name].js',
-      publicPath: '/',
+      filename: "[name].js",
+      publicPath: "/",
     },
     module: {
       rules: [
@@ -29,20 +31,20 @@ module.exports = ({
           test: /\.js$/,
           include: PATHS.SRC_DIR,
           exclude: /node_modules/,
-          loader: 'babel-loader',
+          loader: "babel-loader",
         },
         {
           test: /\.svg$/,
-          loader: 'svg-inline-loader',
+          loader: "svg-inline-loader",
         },
         {
           test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader'],
+          use: [MiniCssExtractPlugin.loader, "css-loader"],
         },
       ],
     },
     resolve: {
-      extensions: ['.js'],
+      extensions: [".js"],
       alias: {
         Components: PATHS.COMPONENTS,
         Utilities: PATHS.UTILITIES,
@@ -55,8 +57,8 @@ module.exports = ({
         PACKAGE_VERSION: JSON.stringify(pkg.version),
       }),
       new MiniCssExtractPlugin({
-        filename: '[name].css',
+        filename: "[name].css",
       }),
     ],
-  }
-}
+  };
+};

@@ -19,7 +19,10 @@
     "build:firefox": "cross-env NODE_ENV=production node ./browser/firefox/build",
     "build:firefox:dev": "cross-env NODE_ENV=development node ./browser/firefox/build",
     "build:extension": "npm run build:chrome && npm run build:firefox",
-    "build:extension:dev": "npm run build:chrome:dev && npm run build:firefox:dev"
+    "build:extension:dev": "npm run build:chrome:dev && npm run build:firefox:dev",
+    "start:dev": "cross-env NODE_ENV=development webpack --config build/webpack.config.js --mode development --watch",
+    "start:dev:chrome": "npm run build:chrome:dev && cross-env DEV_FOR=chrome npm run start:dev",
+    "start:dev:firefox": "npm run build:firefox:dev && cross-env DEV_FOR=firefox npm run start:dev"
   },
   "repository": {
     "type": "git",
