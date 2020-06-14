@@ -4,6 +4,12 @@ export function installHook(target) {
     context: {},
   };
 
+  // copy object is used to detect compoment is removed
+  const fiberNodeToDebugCopy = {
+    useReducer: {},
+    context: {},
+  };
+
   const uniqId = (prefix) => {
     let counter = 0;
 
@@ -30,7 +36,7 @@ export function installHook(target) {
       } else {
         memo[key] = {
           valueChanged: fiberNodeToDebug.context[key].valueChanged,
-        }
+        };
       }
       return memo;
     }, {});
@@ -45,7 +51,7 @@ export function installHook(target) {
       } else {
         memo[key] = {
           valueChanged: fiberNodeToDebug.useReducer[key].valueChanged,
-        }
+        };
       }
       return memo;
     }, {});
@@ -56,7 +62,7 @@ export function installHook(target) {
       type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT",
       subType: "APP_DATA",
       data: helpers.parseData(dataToSend),
-    }, "*")
+    }, "*");
   };
 
   let renderer = null;
@@ -93,7 +99,7 @@ export function installHook(target) {
         debugId = getUniqId();
         hook.queue.__reactContextDevtoolDebugId = debugId;
 
-        fiberNodeToDebug.useReducer[debugId] = {
+        fiberNodeToDebugCopy.useReducer[debugId] = {
           actions: [{ initialState: true }],
           hook,
           state: [],
@@ -101,7 +107,9 @@ export function installHook(target) {
         };
       }
 
-      const debugObj = fiberNodeToDebug.useReducer[debugId];
+      const debugObj = fiberNodeToDebug.useReducer[debugId] || fiberNodeToDebugCopy.useReducer[debugId];
+
+      fiberNodeToDebugCopy.useReducer[debugId] = debugObj;
 
       debugObj.hook = hook;
 
@@ -134,7 +142,7 @@ export function installHook(target) {
       node.pendingProps.value === fiberNodeToDebug.context[debugId].value
     );
 
-    fiberNodeToDebug.context[debugId] = {
+    fiberNodeToDebugCopy.context[debugId] = {
       valueChanged,
       value: node.pendingProps.value,
       displayName:
@@ -221,7 +229,7 @@ export function installHook(target) {
     try {
       function traverseFiberTree(node) {
         if (!node) {
-            return null;
+          return null;
         }
         doWorkWithFiberNode(node);
 
@@ -229,7 +237,14 @@ export function installHook(target) {
         traverseFiberTree(node.child);
       }
 
+      fiberNodeToDebugCopy.useReducer = {};
+      fiberNodeToDebugCopy.context = {};
+
       traverseFiberTree(fiberRoot.current);
+
+      fiberNodeToDebug.useReducer = fiberNodeToDebugCopy.useReducer;
+      fiberNodeToDebug.context = fiberNodeToDebugCopy.context;
+
       sendDataToDevtool();
     } catch(err) {
       if (err.message !== "Maximum call stack size exceeded") {

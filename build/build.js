@@ -15,7 +15,7 @@ const {
 const webpackConfig = require('./webpack.config');
 
 const EXTENSTION_FILES = ["assets", "devtool", "popup"];
-const EXTENSION_CORE_FILES = ["contentScript.js", "background.js"];
+const EXTENSION_CORE_FILES = ["background.js"];
 
 const env = process.env.NODE_ENV || 'development';
 

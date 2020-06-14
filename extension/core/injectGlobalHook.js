@@ -61,7 +61,7 @@ function injectHelpers(target) {
         return "function () {}";
       }
       if (isHTMLElement(v)) {
-        return `<${root1.tagName}> HTMLElemet`;
+        return `<${v.tagName}> HTMLElemet`;
       }
       return v;
     });

@@ -4,23 +4,41 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 
+const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
+const INIT_POPUP_EVENT = "INIT_POPUP";
+const POPUP_DATA_EVENT = "POPUP_DATA";
+
 const registerTab = onMessage => {
   let tabId = null;
 
-  chrome.runtime.onMessage.addListener(function(message) {
+  chrome.runtime.onMessage.addListener(event => {
     if (
-      message.type === "REACT_CONTEXT_DEVTOOL_POPUP_DATA" &&
+      event.type === DATA_EVENT &&
+      event.subType === POPUP_DATA_EVENT &&
       tabId &&
-      tabId === message.tabId
+      tabId === event.tabId
     ) {
-      onMessage(message.data);
+      let { data, split } = event;
+
+      if (split === "chunk") {
+        chunks.push(data);
+        return;
+      }
+
+      if (split === "end") {
+        data = chunks.join('') || "{}";
+        chunks = [];
+      }
+
+      onMessage(JSON.parse(data));
     }
   });
 
   chrome.tabs.query({ active: true, currentWindow: true }, tab => {
     tabId = tab[0].id;
     chrome.runtime.sendMessage({
-      type: "REACT_CONTEXT_DEVTOOL_POPUP_DATA_REQUEST",
+      type: DATA_EVENT,
+      subType: INIT_POPUP_EVENT,
       tabId
     });
   });
@@ -33,11 +51,12 @@ const DevPanel = () => {
     registerTab(onMessage);
   }, []);
 
-  const onMessage = message => {
-    setAppData(message);
+  const onMessage = data => {
+    console.log(data);
+    // setAppData(data);
   };
 
-  return <App appData={appData} />;
+  return null; //<App appData={appData} />;
 };
 
 ReactDOM.render(<DevPanel />, document.getElementById("popupRoot"));
