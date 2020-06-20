@@ -13,6 +13,7 @@ const DIST_DIR = path.resolve(__dirname, '../dist');
 // src paths
 const SRC_DIR = path.resolve(__dirname, '../src');
 const COMPONENTS = path.resolve(SRC_DIR, 'components');
+const CONTAINERS = path.resolve(SRC_DIR, 'containers');
 const UTILS = path.resolve(SRC_DIR, 'utils');
 
 module.exports = {
@@ -21,5 +22,6 @@ module.exports = {
   SRC_DIR,
   COMPONENTS,
   UTILS,
+  CONTAINERS,
   BROWSER_DIR,
 };
