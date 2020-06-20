@@ -11,9 +11,11 @@ module.exports = ({ mode, distPath } = {}) => {
     distPath = path.resolve(PATHS.DIST_DIR, process.env.DEV_FOR, "unpacked");
   }
 
+  const isDevelopment = mode === "development";
+
   return {
     mode,
-    devtool: mode === "production" ? false : "cheap-module-source-map",
+    devtool: isDevelopment ? "cheap-module-source-map" : false,
     entry: {
       injectGlobalHook: `${PATHS.EXTENSION_DIR}/core/injectGlobalHook.js`,
       "react-context-devtool-helper": `${PATHS.EXTENSION_DIR}/core/helper.js`,
@@ -38,8 +40,30 @@ module.exports = ({ mode, distPath } = {}) => {
           loader: "svg-inline-loader",
         },
         {
-          test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, "css-loader"],
+          test: /\.(sa|sc|c)ss$/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                hmr: isDevelopment,
+              },
+            },
+            "css-loader",
+            {
+              loader: "postcss-loader",
+              options: {
+                ident: "postcss",
+                plugins: () => [
+                  require("postcss-flexbugs-fixes"),
+                  require("postcss-preset-env")({
+                    stage: 3,
+                  }),
+                  require("postcss-normalize"),
+                ],
+              },
+            },
+            "sass-loader",
+          ],
         },
       ],
     },
@@ -47,7 +71,7 @@ module.exports = ({ mode, distPath } = {}) => {
       extensions: [".js"],
       alias: {
         Components: PATHS.COMPONENTS,
-        Utilities: PATHS.UTILITIES,
+        Utils: PATHS.UTILS,
         Src: PATHS.SRC_DIR,
       },
     },
