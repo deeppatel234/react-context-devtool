@@ -5,6 +5,7 @@
     "paths": {
       "Src/*": ["src/*"],
       "Components/*": ["src/components/*"],
+      "Containers/*": ["src/containers/*"],
       "Utils/*": ["src/utils/*"],
     }
   },
