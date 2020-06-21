@@ -1,6 +1,7 @@
 const archiver = require("archiver");
 const webpack = require("webpack");
 const chalk = require("chalk");
+const replace = require('replace-in-file');
 
 const { createWriteStream } = require("fs");
 const { copy, ensureDir, move, remove } = require("fs-extra");
@@ -16,6 +17,7 @@ const webpackConfig = require('./webpack.config');
 
 const EXTENSTION_FILES = ["assets", "devtool", "popup"];
 const EXTENSION_CORE_FILES = ["background.js"];
+const BUILD_ID_REPLACE = ["popup/popup.html", "devtool/devpanel.html"];
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -40,6 +42,12 @@ const buildProject = async ({ buildId, distPath, browserPath, tmpPath }) => {
   await Promise.all(
     EXTENSION_CORE_FILES.map(file => copy(path.join(EXTENSION_DIR, 'core', file), path.join(tmpPath, file)))
   );
+
+  await replace({
+    files: BUILD_ID_REPLACE.map(file => path.join(tmpPath, file)),
+    from: /__BUILD_ID__/g,
+    to: buildId,
+  });
 
   console.log('\nwebpack build started');
 

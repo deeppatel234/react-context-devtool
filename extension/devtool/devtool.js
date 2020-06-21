@@ -1,6 +1,6 @@
 chrome.devtools.panels.create(
   "React Context",
   "",
-  "devtool/devpanel.html",
+  "/devtool/devpanel.html",
   function() {}
 );

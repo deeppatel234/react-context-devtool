@@ -63,6 +63,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-normalize": "^9.0.0",
     "postcss-preset-env": "^6.7.0",
+    "replace-in-file": "^6.1.0",
     "rimraf": "^3.0.2",
     "sass": "^1.26.8",
     "sass-loader": "^8.0.2",
