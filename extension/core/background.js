@@ -81,7 +81,7 @@ const transferTo = (to, tabId, params) => {
 }
 
 const sendData = (to, tabId) => {
-  const dataToSend = JSON.stringify(catchData[tabId]);
+  const dataToSend = JSON.stringify(catchData[tabId] || {});
 
   try {
     const params = {

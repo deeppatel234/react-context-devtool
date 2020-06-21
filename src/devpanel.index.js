@@ -56,7 +56,7 @@ const DevPanel = () => {
     setAppData(data);
   };
 
-  if (!appData) {
+  if (!appData || !appData.tab) {
     return "...loading...";
   }
 
