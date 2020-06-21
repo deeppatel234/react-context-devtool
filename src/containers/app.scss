@@ -142,15 +142,42 @@
   --disabled-font-color: rgba(255, 255, 255, 0.3);
   --primary-color: #00adb5;
   --hover-color: rgba(255, 255, 255, 0.1);
-  // --primary-color: #eeeeee;
+
+  font-size: 16px;
+}
+
+#firefox.devpanelHtml {
+  font-size: 12px;
+}
+
+#firefox.popupHtml {
+  font-size: 12px;
+}
+
+#chrome.popupHtml {
+  font-size: 12px;
+}
+
+#chrome.devpanelHtml {
+  font-size: 16px;
 }
 
 html,
 body,
 #devPanelRoot,
+#popupRoot,
 #main-app {
   height: 100%;
   margin: 0;
+}
+
+#popupRoot {
+  width: 750px;
+  height: 400px;
+
+  aside {
+    width: 190px;
+  }
 }
 
 #main-app {
