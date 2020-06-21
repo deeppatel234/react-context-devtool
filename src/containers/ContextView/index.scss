@@ -1,0 +1,16 @@
+.context-view {
+  .view-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 2rem 1rem 0 1rem;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+
+    .view-selector {
+      position: absolute;
+      right: 1rem;
+      bottom: 0.8rem;
+    }
+  }
+}
