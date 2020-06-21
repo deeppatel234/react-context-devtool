@@ -6,7 +6,7 @@
       "Src/*": ["src/*"],
       "Components/*": ["src/components/*"],
       "Containers/*": ["src/containers/*"],
-      "Utils/*": ["src/utils/*"],
+      "Utils/*": ["src/utils/*"]
     }
   },
   "exclude": ["node_modules", "dist"]
