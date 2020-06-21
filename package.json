@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/deeppatel234/react-context-devtool#readme",
   "dependencies": {
+    "classnames": "^2.2.6",
     "codemirror": "^5.54.0",
     "error-stack-parser": "^2.0.6",
     "object-assign": "^4.1.1",

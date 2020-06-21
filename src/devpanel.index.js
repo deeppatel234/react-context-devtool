@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+import App from "Containers/App";
 
 const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
 const INIT_DEVPANEL_EVENT = "INIT_DEVPANEL";
@@ -53,9 +53,14 @@ const DevPanel = () => {
 
   const onMessage = data => {
     console.log(data);
+    setAppData(data);
   };
 
-  return null; //<App appData={appData} />;
+  if (!appData) {
+    return "...loading...";
+  }
+
+  return <App appData={appData} />;
 };
 
 ReactDOM.render(<DevPanel />, document.getElementById("devPanelRoot"));
