@@ -1,0 +1,17 @@
+.tree-view {
+  height: 100%;
+
+  .react-json-view {
+    height: 100%;
+    overflow: auto;
+    background-color: var(--view-bg-color) !important;
+    padding: 1rem;
+    font-size: 1rem;
+
+    .copy-icon {
+      svg {
+        font-size: 1rem !important;
+      }
+    }
+  }
+}

@@ -160,7 +160,7 @@ class App extends React.Component {
             {/* {
               new Array(6000).fill().map((d, ind) => <div>{ind}</div>)
             } */}
-            <MyContext1.Provider value={{ d , id: counter1 }} sdisplayName="test">
+            <MyContext1.Provider value={{ d: 123 , id: counter1 }} sdisplayName="test">
             {/* <> */}
                 <button onClick={() => this.setState({ counter1: counter1 + 1 })}>Click Me {counter1}</button>
                 <button onClick={() => changeValue({type: 'increment'})}>ddddddddddddddddddddd</button>

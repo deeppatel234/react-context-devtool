@@ -1,4 +1,8 @@
 .context-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   .view-header {
     position: relative;
     display: flex;
@@ -12,5 +16,9 @@
       right: 1rem;
       bottom: 0.8rem;
     }
+  }
+
+  .data-view {
+    flex: 1;
   }
 }

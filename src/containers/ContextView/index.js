@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import ButtonGroup from "Components/ButtonGroup";
 import Tabs from "Components/Tabs";
+import JsonTree from "Components/JsonTree";
+import JsonEditor from "Components/JsonEditor";
 
 import "./index.scss";
 
@@ -69,15 +71,27 @@ const SubViews = [
   },
 ];
 
-const ContextView = () => {
+const DataViews = {
+  state: {
+    tree: JsonTree,
+    raw: JsonEditor,
+  },
+}
+
+const ContextView = ({ dubugData }) => {
   const [selectedView, setView] = useState("state");
   const [selectedSubview, setSubView] = useState("tree");
+
+  const View = DataViews[selectedView][selectedSubview];
 
   return (
     <div className="context-view">
       <div className="view-header">
         <Tabs selected={selectedSubview} onChange={setSubView} items={SubViews} />
         <ButtonGroup className="view-selector" selected={selectedView} onChange={setView} buttons={Views} />
+      </div>
+      <div className="data-view">
+        <View data={dubugData.newValue} />
       </div>
     </div>
   );
