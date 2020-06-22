@@ -60,23 +60,34 @@ const Views = [
   },
 ];
 
-const SubViews = [
-  {
-    text: "Tree",
-    value: "tree",
-  },
-  {
-    text: "Raw",
-    value: "raw",
-  },
-];
+const SubViews = {
+  state: [
+    {
+      text: "Tree",
+      value: "tree",
+    },
+    {
+      text: "Raw",
+      value: "raw",
+    },
+  ],
+  diff: [
+    {
+      text: "Raw",
+      value: "raw",
+    }
+  ]
+};
 
 const DataViews = {
   state: {
     tree: JsonTree,
     raw: JsonEditor,
   },
-}
+  diff: {
+    raw: JsonEditor,
+  }
+};
 
 const ContextView = ({ dubugData }) => {
   const [selectedView, setView] = useState("state");
@@ -84,11 +95,29 @@ const ContextView = ({ dubugData }) => {
 
   const View = DataViews[selectedView][selectedSubview];
 
+  const onChangeView = view => {
+    if (view === "diff") {
+      setSubView("raw");
+    } else {
+      setSubView("tree");
+    }
+    setView(view);
+  }
+
   return (
     <div className="context-view">
       <div className="view-header">
-        <Tabs selected={selectedSubview} onChange={setSubView} items={SubViews} />
-        <ButtonGroup className="view-selector" selected={selectedView} onChange={setView} buttons={Views} />
+        <Tabs
+          selected={selectedSubview}
+          onChange={setSubView}
+          items={SubViews[selectedView]}
+        />
+        <ButtonGroup
+          className="view-selector"
+          selected={selectedView}
+          onChange={onChangeView}
+          buttons={Views}
+        />
       </div>
       <div className="data-view">
         <View data={dubugData.newValue} />
