@@ -9,19 +9,19 @@ import AppContext from "Containers/AppContext";
 const Content = () => {
   const { appData, selectedDebug } = useContext(AppContext);
 
-  const dubugData = appData[selectedDebug.type]?.[selectedDebug.id];
+  const debugData = appData[selectedDebug.type]?.[selectedDebug.id];
 
-  console.log(dubugData);
+  console.log(debugData);
 
   return (
     <div id="content">
       <Sidebar />
       <section>
         {
-          selectedDebug.type === "context" && <ContextView dubugData={dubugData} />
+          selectedDebug.type === "context" && <ContextView debugData={debugData} />
         }
         {
-          selectedDebug.type === "useReducer" && <UseReducerView dubugData={dubugData} />
+          selectedDebug.type === "useReducer" && <UseReducerView debugData={debugData} />
         }
       </section>
     </div>
