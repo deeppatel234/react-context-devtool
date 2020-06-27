@@ -175,7 +175,14 @@ body,
   margin: 0;
 }
 
+.devpanelHtml,
+.popupHtml,
+#devPanelRoot,
 #popupRoot {
+  overflow: hidden;
+}
+
+.popupHtml {
   width: 750px;
   height: 400px;
 
