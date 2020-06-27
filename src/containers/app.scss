@@ -144,6 +144,8 @@
   --disabled-font-color: rgba(255, 255, 255, 0.3);
   --primary-color: #00adb5;
   --hover-color: rgba(255, 255, 255, 0.1);
+  --scroll-bg-color: rgba(255,255,255, 0.2);
+  --scroll-thumb-color: rgba(255,255,255, 0.3);
 
   font-size: 16px;
 }
@@ -193,23 +195,23 @@ body,
   #content {
     display: flex;
     flex: 1;
+    height: 100%;
+    min-height: 0;
 
     section {
       flex: 1;
+      min-width: 0;
     }
   }
 }
 
-// a {
-//   text-decoration: none;
-//   color: inherit;
-// }
-// *::-webkit-scrollbar {
-//   width: 8px;
-//   height: 8px;
-//   background-color: ${rgbaColor(0.12)};
-// }
-// *::-webkit-scrollbar-thumb {
-//   border-radius: 8px;
-//   background-color: ${rgbaColor(0.5)};
-// }
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: var(--scroll-bg-color);
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: var(--scroll-thumb-color);
+}

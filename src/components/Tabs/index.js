@@ -8,6 +8,7 @@ const Tabs = ({ items, selected, onChange, ...props }) => {
     <div className="tabs" {...props}>
       {items.map(({ text, value }) => (
         <div
+          key={value}
           className={classnames({
             tab: true,
             selected: selected === value,

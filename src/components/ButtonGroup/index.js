@@ -6,7 +6,7 @@ const ButtonGroup = ({ buttons, selected, onChange, ...props }) => {
   return (
     <div {...props}>
       {buttons.map(({ text, icon, value }) => (
-        <Button outline={selected !== value} onClick={() => onChange(value)}>
+        <Button key={value} outline={selected !== value} onClick={() => onChange(value)}>
           {icon}
           {text}
         </Button>
