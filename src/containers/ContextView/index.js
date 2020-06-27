@@ -4,6 +4,7 @@ import ButtonGroup from "Components/ButtonGroup";
 import Tabs from "Components/Tabs";
 import JsonTree from "Components/JsonTree";
 import JsonEditor from "Components/JsonEditor";
+import DiffView from "Components/DiffView";
 
 import "./index.scss";
 
@@ -85,11 +86,11 @@ const DataViews = {
     raw: JsonEditor,
   },
   diff: {
-    raw: JsonEditor,
+    raw: DiffView,
   }
 };
 
-const ContextView = ({ dubugData }) => {
+const ContextView = ({ debugData }) => {
   const [selectedView, setView] = useState("state");
   const [selectedSubview, setSubView] = useState("tree");
 
@@ -120,7 +121,7 @@ const ContextView = ({ dubugData }) => {
         />
       </div>
       <div className="data-view">
-        <View data={dubugData.newValue} />
+        <View data={debugData?.newValue?.value || {}} oldData={debugData?.oldValue?.value || {}} />
       </div>
     </div>
   );
