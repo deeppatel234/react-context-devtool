@@ -1,6 +1,19 @@
 import { installHook } from "./hook";
 
 /**
+ * Chrome limit sendMessage size to 64MB
+ */
+const MAX_DATA_SIZE = 5 * 1024 * 1024; // 50MB
+const HOOK_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT";
+const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
+const ADD_APP_DATA_EVENT = "ADD_APP_DATA";
+const APP_DATA_EVENT = "APP_DATA";
+const LOAD_HOOK_HELPER_EVENT = "LOAD_HOOK_HELPER";
+
+let isExtensionActive = false;
+
+
+/**
  * This script runs before the <head> element is created,
  * so we add the script to <html> instead.
  *
@@ -34,8 +47,18 @@ function lagecyScriptToInject() {
     const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
     window.postMessage(
       {
-        type: "REACT_CONTEXT_DEVTOOL_EXTENSION",
-        data: helpers.parseData(data),
+        type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT",
+        subType: "ADD_APP_DATA",
+        data: helpers.parseData({
+          context: {
+            [data.id]: {
+              displayName: data.displayName,
+              value: data.values,
+              valueChanged: true,
+              remove: false,
+            }
+          }
+        })
       },
       "*"
     );
@@ -146,24 +169,12 @@ injectCode(`
   ;(${installHook.toString()}(window))
 `);
 
-/**
- * Chrome limit sendMessage size to 64MB
- */
-const MAX_DATA_SIZE = 5 * 1024 * 1024; // 50MB
-const LEGACY_EVENT = "REACT_CONTEXT_DEVTOOL_EXTENSION";
-const HOOK_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT";
-const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
-const APP_DATA_EVENT = "APP_DATA";
-const LOAD_HOOK_HELPER_EVENT = "LOAD_HOOK_HELPER";
-
-let isExtensionActive = false;
-
 window.addEventListener(
   "message",
   function (event) {
     if (event.source != window) return;
 
-    if (event.data.type === LEGACY_EVENT || event.data.type === HOOK_EVENT) {
+    if (event.data.type === HOOK_EVENT) {
       if (!isExtensionActive) {
         chrome.runtime.sendMessage({
           type: DATA_EVENT,
@@ -179,12 +190,12 @@ window.addEventListener(
 
       if (
         event.data.subType === APP_DATA_EVENT ||
-        event.data.type === LEGACY_EVENT
+        event.data.subType === ADD_APP_DATA_EVENT
       ) {
         try {
           chrome.runtime.sendMessage({
             type: DATA_EVENT,
-            subType: APP_DATA_EVENT,
+            subType: event.data.subType,
             data: event.data.data,
           });
         } catch (err) {
@@ -199,7 +210,7 @@ window.addEventListener(
             for (let i = 0; i < chunkCount; i++) {
               chrome.runtime.sendMessage({
                 type: DATA_EVENT,
-                subType: APP_DATA_EVENT,
+                subType: event.data.subType,
                 split: "chunk",
                 chunk: i,
                 data: data.slice(i * MAX_DATA_SIZE, (i + 1) * MAX_DATA_SIZE),
@@ -208,7 +219,7 @@ window.addEventListener(
 
             chrome.runtime.sendMessage({
               type: DATA_EVENT,
-              subType: APP_DATA_EVENT,
+              subType: event.data.subType,
               split: "end",
             });
           } else {
