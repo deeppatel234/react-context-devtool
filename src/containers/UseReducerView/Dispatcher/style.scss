@@ -1,0 +1,43 @@
+.dispatcher-view {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 0;
+  border-top: 1px solid var(--border-color);
+  transition: height 0.3s ease;
+
+  &.show {
+    height: 200px;
+
+    .actions {
+      display: flex;
+    }
+  }
+
+  .dispatcher-button {
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 100%;
+    right: 20px;
+    background: var(--primary-color);
+    padding: 0.4rem 1rem;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    cursor: pointer;
+  }
+
+  .actions {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .beautify {
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--primary-color);
+  }
+}

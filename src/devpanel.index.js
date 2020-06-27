@@ -56,11 +56,15 @@ const DevPanel = () => {
     setAppData(data);
   };
 
+  const onDispatchAction = action => {
+    console.log(action);
+  };
+
   if (!appData || !appData.tab) {
     return "...loading...";
   }
 
-  return <App appData={appData} />;
+  return <App appData={appData} onDispatchAction={onDispatchAction} />;
 };
 
 ReactDOM.render(<DevPanel />, document.getElementById("devPanelRoot"));
