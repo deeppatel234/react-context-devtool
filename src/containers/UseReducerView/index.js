@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import classnames from "classnames";
+
+import AppContext from "Containers/AppContext";
 
 import JsonTree from "Components/JsonTree";
 import JsonEditor from "Components/JsonEditor";
@@ -7,6 +9,7 @@ import DiffView from "Components/DiffView";
 
 import ButtonGroup from "Components/ButtonGroup";
 import Tabs from "Components/Tabs";
+import Dispatcher from "Containers/UseReducerView/Dispatcher";
 
 import "./index.scss";
 
@@ -69,6 +72,7 @@ const DataViews = {
 };
 
 const UseReducerView = ({ id, debugData }) => {
+  const { onDispatchAction } = useContext(AppContext);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedView, setView] = useState("state");
   const [selectedSubview, setSubView] = useState("tree");
@@ -90,55 +94,66 @@ const UseReducerView = ({ id, debugData }) => {
     setView(view);
   };
 
-  console.log("debugData", debugData);
+  const onDispatch = (action) => {
+    onDispatchAction({
+      type: "useReducer",
+      debugId: id,
+      data: action
+    });
+  };
 
   const View = DataViews[selectedView][selectedSubview];
 
   return (
-    <div className="use-reducer-view">
-      <div className="action-view">
-        <p className="title">Actions</p>
-        <ul>
-          {debugData.actions.map((action, index) => {
-            return (
-              <li
-                key={index}
-                className={classnames({
-                  selected: selectedIndex === index,
-                })}
-                onClick={() => setSelectedIndex(index)}
-              >
-                {action.initialState ? "Initial State" : JSON.stringify(action)}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-      <div className="state-view">
-        <div className="view-header">
-          <Tabs
-            selected={selectedSubview}
-            onChange={setSubView}
-            items={SubViews[selectedView]}
-          />
-          <ButtonGroup
-            className="view-selector"
-            selected={selectedView}
-            onChange={onChangeView}
-            buttons={Views}
-          />
+    <div className="use-reducer-view-wrapper">
+      <div className="use-reducer-view">
+        <div className="action-view">
+          <p className="title">Actions</p>
+          <ul>
+            {debugData.actions.map((action, index) => {
+              return (
+                <li
+                  key={index}
+                  className={classnames({
+                    selected: selectedIndex === index,
+                  })}
+                  onClick={() => setSelectedIndex(index)}
+                >
+                  {action.initialState
+                    ? "Initial State"
+                    : JSON.stringify(action)}
+                </li>
+              );
+            })}
+          </ul>
         </div>
-        <div className="data-view">
-          {selectedView === "action" ? (
-            <View data={debugData.actions[selectedIndex] || {}} />
-          ) : (
-            <View
-              data={debugData.state[selectedIndex] || {}}
-              oldData={debugData.state[selectedIndex - 1] || {}}
+        <div className="state-view">
+          <div className="view-header">
+            <Tabs
+              selected={selectedSubview}
+              onChange={setSubView}
+              items={SubViews[selectedView]}
             />
-          )}
+            <ButtonGroup
+              className="view-selector"
+              selected={selectedView}
+              onChange={onChangeView}
+              buttons={Views}
+            />
+          </div>
+          <div className="data-view">
+            {selectedView === "action" ? (
+              <View data={debugData.actions[selectedIndex] || {}} />
+            ) : (
+              <View
+                data={debugData.state[selectedIndex] || {}}
+                oldData={debugData.state[selectedIndex - 1] || {}}
+              />
+            )}
+          </div>
         </div>
       </div>
+      <Dispatcher onDispatch={onDispatch} />
     </div>
   );
 };

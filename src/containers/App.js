@@ -6,7 +6,7 @@ import Content from "Containers/Content";
 
 import "./app.scss";
 
-const App = ({ appData }) => {
+const App = ({ appData, onDispatchAction }) => {
   const [selectedDebug, setDebug] = useState({});
 
   return (
@@ -15,6 +15,7 @@ const App = ({ appData }) => {
         appData,
         selectedDebug,
         setDebug,
+        onDispatchAction
       }}
     >
       <div id="main-app">
