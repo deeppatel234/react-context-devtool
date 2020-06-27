@@ -24,7 +24,7 @@ const Sidebar = () => {
   const useReducerList = Object.keys(appData.useReducer).map((key) => {
     return {
       value: key,
-      text: key,
+      text: appData.useReducer[key].displayName || key,
       type: "useReducer",
     };
   });

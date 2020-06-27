@@ -1,11 +1,11 @@
 import React, { useEffect, useReducer, useState, useContext } from "react";
-// import ContextDevTool from "react-context-devtool";
+import ContextDevTool from "react-context-devtool";
 
 const MyContext1 = React.createContext({});
 const MyContext2 = React.createContext({});
 
-// MyContext1.displayName = "MyContext1";
-// MyContext2.displayName = "MyContext2";
+MyContext1.displayName = "MyContext1";
+MyContext2.displayName = "MyContext2";
 
 const demo = {
     id: "0001",
@@ -52,9 +52,11 @@ class Test2 extends React.Component {
         // const { id } = this.context;
 
         return (
+          <MyContext2.Provider value={{ id: counter5, b: "world" }}>
             <button onClick={() => this.setState({ counter5: counter5 + 1 })}>
                 Click 5 Me {counter5} {id}
             </button>
+          </MyContext2.Provider>
         );
     }
 }
@@ -112,7 +114,7 @@ const initialState = {count: 0};
 
 // let counter = 0;
 
-function reducer(state, action) {
+function myReducer(state, action) {
   // counter++;
   // console.log(counter);
   switch (action.type) {
@@ -126,7 +128,7 @@ function reducer(state, action) {
 }
 
 function Counter() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(myReducer, initialState);
   // const dd = useContext(MyContext1);
   // const [state2, dispatch3] = useReducer(reducer, initialState);
   // const [abcd, setabcd] = useState(2);
@@ -160,26 +162,26 @@ class App extends React.Component {
             {/* {
               new Array(6000).fill().map((d, ind) => <div>{ind}</div>)
             } */}
-            <MyContext1.Provider value={{ d: 123 , id: counter1 }} sdisplayName="test">
+            {/* <MyContext1.Provider value={{ d: 123 , id: counter1 }} sdisplayName="test"> */}
             {/* <> */}
-                <button onClick={() => this.setState({ counter1: counter1 + 1 })}>Click Me {counter1}</button>
-                <button onClick={() => changeValue({type: 'increment'})}>ddddddddddddddddddddd</button>
+                {/* <button onClick={() => this.setState({ counter1: counter1 + 1 })}>Click Me {counter1}</button> */}
+                {/* <button onClick={() => changeValue({type: 'increment'})}>ddddddddddddddddddddd</button> */}
                 <Counter />
-                <div id="root1">ssss</div>
+                {/* <div id="root1">ssss</div> */}
                 {
                   counter1 < 4 && <Counter />
                 }
-                {
+                {/* {
                   counter1 < 5 && <Test />
-                }
-                {/* <Test2 id={counter1} /> */}
+                } */}
+                <Test2 id={counter1} />
                 {/* <ContextDevTool
                   context={MyContext1}
                   id="cont2"
                   displayName="Demo Context"
                 /> */}
               {/* </> */}
-             </MyContext1.Provider>
+             {/* </MyContext1.Provider> */}
           </>
         );
     }

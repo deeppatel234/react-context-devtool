@@ -49,6 +49,7 @@ export function installHook(target) {
           actions: fiberNodeToDebug.useReducer[key].actions,
           state: fiberNodeToDebug.useReducer[key].state,
           valueChanged: fiberNodeToDebug.useReducer[key].valueChanged,
+          displayName: fiberNodeToDebug.useReducer[key].displayName,
         };
       } else {
         memo[key] = {
@@ -79,6 +80,7 @@ export function installHook(target) {
       let debugId = hook.queue.__reactContextDevtoolDebugId;
 
       if (!debugId) {
+        const displayName = hook.queue.lastRenderedReducer.name;
         const currentReducer = hook.queue.lastRenderedReducer.bind(hook.queue);
         hook.queue.lastRenderedReducer = (state, action, ...rest) => {
           const debugObj = fiberNodeToDebug.useReducer[hook.queue.__reactContextDevtoolDebugId];
@@ -105,6 +107,7 @@ export function installHook(target) {
           actions: [{ initialState: true }],
           hook,
           state: [],
+          displayName,
           valueChanged: true,
         };
       }
