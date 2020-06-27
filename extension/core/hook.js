@@ -1,8 +1,23 @@
 export function installHook(target) {
+  const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
+  const DISPATCH_EVENT = "DISPATCH_EVENT";
+
   const fiberNodeToDebug = {
     useReducer: {},
     context: {},
   };
+
+  const dispatchAction = (event) => {
+    if(event.type === "useReducer" && fiberNodeToDebug.useReducer[event.debugId]) {
+      fiberNodeToDebug.useReducer[event.debugId].hook.queue.dispatch(event.data);
+    }
+  };
+
+  window.addEventListener('message', event => {
+    if (event.data.type === DATA_EVENT && event.data.subType === DISPATCH_EVENT) {
+      dispatchAction(event.data.data);
+    }
+  });
 
   // copy object is used to detect compoment is removed
   const fiberNodeToDebugCopy = {

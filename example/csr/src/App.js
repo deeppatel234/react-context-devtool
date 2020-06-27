@@ -123,8 +123,10 @@ function myReducer(state, action) {
     case 'decrement':
       return {count: state.count - 1};
     default:
-      throw new Error();
+      // throw new Error();
   }
+
+  return state;
 }
 
 function Counter() {

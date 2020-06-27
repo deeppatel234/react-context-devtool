@@ -15,7 +15,6 @@ const Dispatcher = ({ onDispatch }) => {
     try {
       const actionTodistpatch = JSON.parse(action);
       onDispatch(actionTodistpatch);
-      setShow(false);
       editor.current.setValue("");
       setAction("");
     } catch (err) {}
