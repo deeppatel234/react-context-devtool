@@ -3,6 +3,7 @@
 const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
 const ACTIVATE_EXTENSTION = "ACTIVATE_EXTENSTION";
 const APP_DATA_EVENT = "APP_DATA";
+const ADD_APP_DATA_EVENT = "ADD_APP_DATA";
 const INIT_DEVPANEL_EVENT = "INIT_DEVPANEL";
 const DEVPANEL_DATA_EVENT = "DEVPANEL_DATA";
 const INIT_POPUP_EVENT = "INIT_POPUP";
@@ -51,8 +52,11 @@ chrome.runtime.onMessage.addListener((request, sender) => {
   if (request.type === DATA_EVENT && request.subType) {
     if (request.subType === ACTIVATE_EXTENSTION) {
       setAppPopup(true, sender.tab.id);
-    } else if (request.subType === APP_DATA_EVENT) {
-      saveCatchData(request, sender.tab);
+    } else if (
+      request.subType === APP_DATA_EVENT ||
+      request.subType === ADD_APP_DATA_EVENT
+    ) {
+      saveCatchData(request, sender.tab, request.subType);
       sendData("DEVTOOL", sender.tab.id);
       sendData("POPUP", sender.tab.id);
     } else if (request.subType === INIT_POPUP_EVENT) {
@@ -116,7 +120,7 @@ const sendData = (to, tabId) => {
   }
 }
 
-const saveCatchData = (request, { id: tabId, title }) => {
+const saveCatchData = (request, { id: tabId, title }, subType) => {
 
   let {
     data,
@@ -163,11 +167,13 @@ const saveCatchData = (request, { id: tabId, title }) => {
       }
     });
 
-    Object.keys(cacheContext).forEach(key => {
-      if (!parsedData.context[key]) {
-        delete cacheContext[key];
-      }
-    });
+    if (subType !== ADD_APP_DATA_EVENT) {
+      Object.keys(cacheContext).forEach(key => {
+        if (!parsedData.context[key] && cacheContext[key].newValue.remove) {
+          delete cacheContext[key];
+        }
+      });
+    }
   }
 
   if (parsedData.useReducer) {

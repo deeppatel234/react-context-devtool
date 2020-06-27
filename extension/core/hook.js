@@ -32,10 +32,12 @@ export function installHook(target) {
           value: fiberNodeToDebug.context[key].value,
           displayName: fiberNodeToDebug.context[key].displayName,
           valueChanged: fiberNodeToDebug.context[key].valueChanged,
+          remove: true,
         };
       } else {
         memo[key] = {
           valueChanged: fiberNodeToDebug.context[key].valueChanged,
+          remove: true,
         };
       }
       return memo;
