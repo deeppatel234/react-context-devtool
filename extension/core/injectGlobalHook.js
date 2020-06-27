@@ -12,7 +12,6 @@ const LOAD_HOOK_HELPER_EVENT = "LOAD_HOOK_HELPER";
 
 let isExtensionActive = false;
 
-
 /**
  * This script runs before the <head> element is created,
  * so we add the script to <html> instead.
@@ -31,8 +30,8 @@ const loadHelpers = () => {
   const helperUrl = chrome.runtime.getURL("react-context-devtool-helper.js");
 
   return fetch(helperUrl)
-    .then(res => res.text())
-    .then(text => {
+    .then((res) => res.text())
+    .then((text) => {
       injectCode(text);
     });
 };
@@ -56,9 +55,9 @@ function lagecyScriptToInject() {
               value: data.values,
               valueChanged: true,
               remove: false,
-            }
-          }
-        })
+            },
+          },
+        }),
       },
       "*"
     );
@@ -91,10 +90,13 @@ function injectHelpers(target) {
   };
 
   const loadHookHelper = () => {
-    target.postMessage({
-      type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT",
-      subType: "LOAD_HOOK_HELPER",
-    }, "*");
+    target.postMessage(
+      {
+        type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT",
+        subType: "LOAD_HOOK_HELPER",
+      },
+      "*"
+    );
 
     return new Promise((resolve, reject) => {
       target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.onHookHelperLoad = () => {
@@ -132,7 +134,7 @@ function injectHelpers(target) {
  * ;(${injectReactDevtoolHook.toString()}(window))
  *
  */
- function injectReactDevtoolHook(target) {
+function injectReactDevtoolHook(target) {
   if (target.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
     return;
   }
@@ -231,3 +233,9 @@ window.addEventListener(
   },
   false
 );
+
+chrome.runtime.onMessage.addListener(function (
+  request
+) {
+  window.postMessage(request);
+});

@@ -8,6 +8,7 @@ const INIT_DEVPANEL_EVENT = "INIT_DEVPANEL";
 const DEVPANEL_DATA_EVENT = "DEVPANEL_DATA";
 const INIT_POPUP_EVENT = "INIT_POPUP";
 const POPUP_DATA_EVENT = "POPUP_DATA";
+const DISPATCH_EVENT = "DISPATCH_EVENT";
 
 const MAX_DATA_SIZE = 5 * 1024 * 1024; // 50MB
 
@@ -23,6 +24,13 @@ chrome.runtime.onConnect.addListener((port) => {
     ) {
       connections[event.tabId] = port;
       sendData("DEVTOOL", event.tabId);
+    }
+
+    if (
+      event.type === DATA_EVENT &&
+      event.subType === DISPATCH_EVENT
+    ) {
+      sendDataToContent(event);
     }
   };
 
@@ -61,9 +69,15 @@ chrome.runtime.onMessage.addListener((request, sender) => {
       sendData("POPUP", sender.tab.id);
     } else if (request.subType === INIT_POPUP_EVENT) {
       sendData("POPUP", request.tabId);
+    } else if (request.subType === DISPATCH_EVENT) {
+      sendDataToContent(request);
     }
   }
 });
+
+const sendDataToContent = (event) => {
+  chrome.tabs.sendMessage(event.tabId, event);
+};
 
 const transferTo = (to, tabId, params) => {
   if (to === "DEVTOOL") {

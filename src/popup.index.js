@@ -1,14 +1,15 @@
 /* global chrome */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import App from "Containers/App";
 
 const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
 const INIT_POPUP_EVENT = "INIT_POPUP";
 const POPUP_DATA_EVENT = "POPUP_DATA";
+const DISPATCH_EVENT = "DISPATCH_EVENT";
 
-const registerTab = onMessage => {
+const registerTab = (onMessage, eventRef) => {
   let tabId = null;
 
   chrome.runtime.onMessage.addListener(event => {
@@ -42,13 +43,27 @@ const registerTab = onMessage => {
       tabId
     });
   });
+
+  eventRef.current.postMessage = (action) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, tab => {
+      tabId = tab[0].id;
+      chrome.runtime.sendMessage({
+        tabId,
+        type: DATA_EVENT,
+        subType: DISPATCH_EVENT,
+        data: action
+      });
+    });
+  };
 };
 
 const DevPanel = () => {
   const [appData, setAppData] = useState(null);
+  const eventRef = useRef();
 
   useEffect(() => {
-    registerTab(onMessage);
+    eventRef.current = {};
+    registerTab(onMessage, eventRef);
   }, []);
 
   const onMessage = data => {
@@ -57,7 +72,7 @@ const DevPanel = () => {
   };
 
   const onDispatchAction = action => {
-    console.log(action);
+    eventRef.current.postMessage(action);
   };
 
   if (!appData || !appData.tab) {
