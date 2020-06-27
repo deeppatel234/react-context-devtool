@@ -77,6 +77,10 @@ const UseReducerView = ({ id, debugData }) => {
     setSelectedIndex(0);
   }, [id]);
 
+  useEffect(() => {
+    setSelectedIndex(debugData.actions.length - 1);
+  }, [debugData?.actions?.length]);
+
   const onChangeView = (view) => {
     if (view === "diff") {
       setSubView("raw");
