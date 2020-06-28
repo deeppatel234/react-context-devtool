@@ -75,10 +75,6 @@ const DevPanel = () => {
     eventRef.current.postMessage(action);
   };
 
-  if (!appData || !appData.tab) {
-    return "...loading...";
-  }
-
   return <App appData={appData} onDispatchAction={onDispatchAction} />;
 };
 
