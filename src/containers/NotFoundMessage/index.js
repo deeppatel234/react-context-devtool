@@ -15,7 +15,6 @@ const NotFoundMessage = () => {
         is not configured for this site
       </p>
       <p className="setup-text">
-        please{" "}
         <a
           target="_blank"
           href="https://github.com/deeppatel234/react-context-devtool/blob/master/README.md"
