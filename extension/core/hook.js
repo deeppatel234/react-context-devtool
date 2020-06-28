@@ -137,6 +137,14 @@ export function installHook(target) {
         const valueChanged = debugObj.state[debugObj.state.length - 1] !== hook.queue.lastRenderedState;
         debugObj.valueChanged = valueChanged;
         if (!valueChanged) {
+          // action dispatched but return same state or wrong state handling
+          const diff = debugObj.actions.length - debugObj.state.length;
+          if (diff > 0) {
+            for (let i = 0; i < diff; i++) {
+              debugObj.state.push(debugObj.state[debugObj.state.length - 1]);
+            }
+            debugObj.valueChanged = true;
+          }
           return;
         }
       }
