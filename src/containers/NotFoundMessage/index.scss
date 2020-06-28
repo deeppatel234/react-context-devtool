@@ -1,0 +1,19 @@
+.not-found-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--main-bg-color);
+  color: var(--font-color);
+  height: 100%;
+  font-size: 1rem;
+
+  p {
+    margin: 0;
+    padding: 1rem;
+  }
+
+  a, a:visited {
+    color: var(--primary-color);
+  }
+}
