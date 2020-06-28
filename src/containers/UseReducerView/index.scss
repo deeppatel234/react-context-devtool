@@ -46,12 +46,23 @@
       font-size: 0.9rem;
 
       li {
-        padding: 1rem;
+        position: relative;
+        padding: 1rem 1rem 2rem 1rem;
         border-bottom: 1px solid var(--border-color);
         cursor: pointer;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+
+        .dispatch {
+          position: absolute;
+          right: 6px;
+          bottom: 5px;
+          border: 1px solid var(--border-color);
+          padding: 0.1rem 0.5rem;
+          font-size: 0.7rem;
+          border-radius: 3px;
+        }
 
         &:hover,
         &.selected {

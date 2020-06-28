@@ -20,3 +20,13 @@
     margin-right: 0.3rem;
   }
 }
+
+.button-group {
+  .button {
+    border-right: none;
+
+    &:last-child {
+      border-right: 1px solid var(--primary-color);
+    }
+  }
+}
