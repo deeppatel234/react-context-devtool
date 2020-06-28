@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, memo } from "react";
 import CodeMirror from "codemirror";
-import jsonlint from "jsonlint";
+import jsonlint from "jsonlint-mod";
 
 window.jsonlint = jsonlint;
 

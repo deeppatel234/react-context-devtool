@@ -7,7 +7,7 @@ import "./index.scss";
 const Header = () => {
   const { appData: { tab } } = useContext(AppContext);
 
-  return <header>{tab.title}</header>;
+  return <header>{tab.title || "React Context Devtool"}</header>;
 };
 
 export default Header;
