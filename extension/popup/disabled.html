@@ -5,51 +5,56 @@
     <style>
       html {
         font-size: 12px;
+        width: 400px;
+        height: 100px;
       }
 
       body {
-        background-color: #292d3e;
-        color: #ffffff;
+        margin: 0;
+      }
+
+      .not-found-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #222831;
+        color: #fff;
+        height: 100%;
+        font-size: 1rem;
       }
 
       p {
-        white-space: nowrap;
-        font-size: 1.3rem;
+        margin: 0;
+        padding: 1rem;
       }
 
-      .setup-text {
-        font-size: 1.1rem;
-      }
-
-      a {
-        color: #ffffff;
+      a, a:visited {
+        color: #00adb5;
       }
     </style>
   </head>
 
   <body>
-    <p>
-      <a
-        target="_blank"
-        href="https://github.com/deeppatel234/react-context-devtool"
-        >react-context-devtool</a
-      >
-      is not configured for this site
-    </p>
-    <p class="setup-text">
-      please
-      <a
-        target="_blank"
-        href="https://github.com/deeppatel234/react-context-devtool/blob/master/README.md"
-        >click here</a
-      >
-      for configure devtool in your site
-    </p>
-
-    <hr />
-
-    <p>
-      <b>If you already configured then provide data in context for debug</b>
-    </p>
+    <div class="not-found-message">
+      <p>
+        <a
+          target="_blank"
+          href="https://github.com/deeppatel234/react-context-devtool"
+        >
+          react-context-devtool
+        </a>
+        is not configured for this site
+      </p>
+      <p>
+        <a
+          target="_blank"
+          href="https://github.com/deeppatel234/react-context-devtool/blob/master/README.md"
+        >
+          click here
+        </a>
+        for configure
+      </p>
+    </div>
   </body>
 </html>
