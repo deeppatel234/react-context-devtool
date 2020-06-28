@@ -102,6 +102,11 @@ const UseReducerView = ({ id, debugData }) => {
     });
   };
 
+  const onClickDispatchButton = (event, action) => {
+    event.stopPropagation();
+    onDispatch(action);
+  };
+
   const View = DataViews[selectedView][selectedSubview];
 
   return (
@@ -121,7 +126,13 @@ const UseReducerView = ({ id, debugData }) => {
                 >
                   {action.initialState
                     ? "Initial State"
-                    : JSON.stringify(action)}
+                    : (
+                      <>
+                        {JSON.stringify(action)}
+                        <div onClick={(e) => onClickDispatchButton(e, action)} className="dispatch">dispatch</div>
+                      </>
+                    )
+                  }
                 </li>
               );
             })}
