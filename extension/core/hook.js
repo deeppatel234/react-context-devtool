@@ -7,6 +7,13 @@ export function installHook(target) {
     context: {},
   };
 
+  let debugOptions = {
+    debugReducer: true,
+    debugContext: true,
+    disable: false,
+    disableAutoMode: false,
+  };
+
   const dispatchAction = (event) => {
     if(event.type === "useReducer" && fiberNodeToDebug.useReducer[event.debugId]) {
       fiberNodeToDebug.useReducer[event.debugId].hook.queue.dispatch(event.data);
@@ -193,6 +200,7 @@ export function installHook(target) {
     const { memoizedState, tag } = fiberNode;
 
     if (
+      debugOptions.debugReducer &&
       renderer &&
       window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded &&
       memoizedState &&
@@ -214,7 +222,7 @@ export function installHook(target) {
      * https://github.com/facebook/react/tree/master/packages/react-reconciler/src/ReactWorkTags.js
      *
      */
-    if (tag === 10) {
+    if (debugOptions.debugContext && tag === 10) {
       doWorkWithContextProvider(fiberNode);
     }
   };
@@ -281,7 +289,18 @@ export function installHook(target) {
     }
   };
 
-  const debugFiber = (container) => {
+  const debugFiber = (container, options) => {
+    debugOptions = { ...debugOptions, ...options };
+
+    if (
+      debugOptions.disable ||
+      debugOptions.disableAutoMode ||
+      typeof window === 'undefined' ||
+      (!debugOptions.debugReducer && !debugOptions.debugContext)
+    ) {
+      return false;
+    }
+
     /**
      * Find fiber tree from dom element
      *
@@ -313,7 +332,7 @@ export function installHook(target) {
       return;
     }
 
-    if (!window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
+    if (debugOptions.debugReducer && !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
       console.log(
         "useReducer hook is not working due to some internal issue. please report bug or create issue."
       );
@@ -334,7 +353,7 @@ export function installHook(target) {
       renderer = reactDebtoolGlobalhook.renderers.get(firstRendererKey).currentDispatcherRef;
     }
 
-    if (!renderer) {
+    if (debugOptions.debugReducer && !renderer) {
       console.error(
         "useReducer hook debugger is not working due to some internal issue. please report an issue"
       );
