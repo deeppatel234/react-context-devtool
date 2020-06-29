@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/cover.png" width="80%"/>
+  <img src="https://github.com/deeppatel234/react-context-devtool/blob/master/store-assets/cover.png?raw=true" width="80%"/>
 </p>
 
 <h2 align="center">Devtool for React Context</h2>
@@ -52,6 +52,3 @@ import ContextDevTool from 'react-context-devtool';
 ## License
 
 MIT
-
-## Documentation managed by
-<a href="https://www.editmymd.me/"><img src="images/editmymd.png" width="20%"/></a>
