@@ -85,6 +85,17 @@ import { ContextDevTool } from 'react-context-devtool';
 
 ```
 
+## Disable in production mode
+
+```js
+
+debugContextDevtool(container, {
+  disable: process.env.NODE_ENV === "production"
+});
+
+```
+
+
 
 ## License
 
