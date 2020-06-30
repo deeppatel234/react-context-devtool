@@ -7,7 +7,7 @@ let debugOptions = {
   disableAutoMode: false,
 };
 
-function ContextDevTool({ id, context: Context, displayName }) {
+export const ContextDevTool = ({ id, context: Context, displayName }) => {
   if (debugOptions.disable) {
     return null;
   }
@@ -46,5 +46,3 @@ export const debugContextDevtool = (container, options) => {
     hook.debugFiber(container, options);
   }
 };
-
-export default ContextDevTool;
