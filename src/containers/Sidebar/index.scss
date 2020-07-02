@@ -1,4 +1,6 @@
 aside {
+  display: flex;
+  flex-direction: column;
   background-color: var(--sidebar-bg-color);
   border-right: 1px solid var(--border-color);
   width: 250px;
@@ -18,6 +20,8 @@ aside {
   }
 
   ul.debuglist {
+    overflow: auto;
+    flex: 1;
     list-style: none;
     margin: 0;
     padding: 0;
