@@ -81,8 +81,6 @@ export function installHook(target) {
       return memo;
     }, {});
 
-    console.log(dataToSend);
-
     window.postMessage({
       type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT",
       subType: "APP_DATA",

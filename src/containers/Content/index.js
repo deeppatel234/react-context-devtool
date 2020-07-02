@@ -11,8 +11,6 @@ const Content = () => {
 
   const debugData = appData[selectedDebug.type]?.[selectedDebug.id];
 
-  console.log(debugData);
-
   return (
     <div id="content">
       <Sidebar />

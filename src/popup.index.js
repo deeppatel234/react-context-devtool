@@ -67,7 +67,6 @@ const DevPanel = () => {
   }, []);
 
   const onMessage = data => {
-    console.log(data);
     setAppData(data);
   };
 
