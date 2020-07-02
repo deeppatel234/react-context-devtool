@@ -85,6 +85,31 @@ import { ContextDevTool } from 'react-context-devtool';
 
 ```
 
+## Set Display name in Auto Mode
+
+### Set Display name for Context API
+
+- set `dispayName` props in `Provider`
+
+```js
+<MyContext.Provider value={{ a: 'hello', b: 'world' }} displayName="Context Display Name">
+  <YourComponent />
+</MyContext.Provider>
+```
+
+or
+
+- assign display name in Context
+
+```js
+  MyContext.displayName = "Context Display Name";
+```
+
+### Set Display name for useReducer
+
+- reducer function name is use as displayName in debug
+
+
 ## Disable in production mode
 
 ```js
