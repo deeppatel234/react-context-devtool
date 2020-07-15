@@ -17,7 +17,10 @@
 
 ## Installation
 
-- Download extension from [Chrome Web Store](https://chrome.google.com/webstore/detail/oddhnidmicpefilikhgeagedibnefkcf) or [Firefox addons store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool/).
+- Download extension from
+	- [Chrome Web Store](https://chrome.google.com/webstore/detail/oddhnidmicpefilikhgeagedibnefkcf)
+    - [Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool/)
+    - [Microsoft Edge Addons Store](https://microsoftedge.microsoft.com/addons/detail/react-context-devtool/bnclaomncapgohhafjepfklgbjdjlfcd)
 
 ### Auto Mode
 - Download and install npm package
