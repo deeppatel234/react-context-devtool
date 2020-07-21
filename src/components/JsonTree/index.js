@@ -1,11 +1,17 @@
 import React from "react";
 import ReactJson from "react-json-view";
 
-import { isObject } from "Utils";
+import { isObject, isSet } from "Utils";
 
 import "./index.scss";
 
 const TreeView = ({ data }) => {
+  let srcData = { root: data };
+  if (isSet(data)) { 
+    srcData = { root: [...data]};
+  } else if(isObject(data)) {
+    srcData = data;
+  }
   return (
     <div className="tree-view">
       <ReactJson
@@ -13,7 +19,7 @@ const TreeView = ({ data }) => {
         theme={"railscasts"}
         indentWidth={2}
         collapsed={1}
-        src={isObject(data) ? data : { root: data }}
+        src={srcData}
         enableClipboard
       />
     </div>
