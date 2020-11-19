@@ -1,0 +1,74 @@
+{
+  "name": "react-context-devtool",
+  "version": "2.0.0",
+  "description": "Devtool for React Context and useReducer hook",
+  "main": "dist/module/cjs/index.js",
+  "module": "dist/module/esm/index.js",
+  "files": [
+    "dist/module"
+  ],
+  "scripts": {
+    "compile:module": "babel module/index.js --config-file ./babel.config.js --extensions '.js'",
+    "clean:module": "rimraf dist/module",
+    "build:module:esm": "BABEL_ENV=esm npm run compile:module -- --out-dir dist/module/esm",
+    "build:module:cjs": "BABEL_ENV=cjs npm run compile:module -- --out-dir dist/module/cjs",
+    "build:module": "npm run clean:module && npm run build:module:esm && npm run build:module:cjs",
+    "prepublishOnly": "npm run build:module",
+    "build:chrome": "cross-env NODE_ENV=production node ./browser/chrome/build",
+    "build:chrome:dev": "cross-env NODE_ENV=development node ./browser/chrome/build",
+    "build:firefox": "cross-env NODE_ENV=production node ./browser/firefox/build",
+    "build:firefox:dev": "cross-env NODE_ENV=development node ./browser/firefox/build",
+    "build:extension": "npm run build:chrome && npm run build:firefox",
+    "build:extension:dev": "npm run build:chrome:dev && npm run build:firefox:dev",
+    "start:dev": "cross-env NODE_ENV=development webpack --config build/webpack.config.js --mode development --watch",
+    "start:dev:chrome": "npm run build:chrome:dev && cross-env DEV_FOR=chrome npm run start:dev",
+    "start:dev:firefox": "npm run build:firefox:dev && cross-env DEV_FOR=firefox npm run start:dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deeppatel234/react-context-devtool.git"
+  },
+  "author": "Deep Patel <deeppatel234@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deeppatel234/react-context-devtool/issues"
+  },
+  "homepage": "https://github.com/deeppatel234/react-context-devtool#readme",
+  "dependencies": {
+    "classnames": "2.2.6",
+    "codemirror": "5.55.0",
+    "error-stack-parser": "2.0.6",
+    "jsondiffpatch": "0.4.1",
+    "jsonlint-mod": "1.7.5",
+    "object-assign": "4.1.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-json-view": "1.19.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.10.3",
+    "@babel/core": "7.10.3",
+    "@babel/plugin-syntax-dynamic-import": "7.8.3",
+    "@babel/plugin-transform-runtime": "7.10.3",
+    "@babel/preset-env": "7.10.3",
+    "@babel/preset-react": "7.10.1",
+    "archiver": "4.0.1",
+    "babel-loader": "8.1.0",
+    "chalk": "4.1.0",
+    "cross-env": "7.0.2",
+    "css-loader": "3.6.0",
+    "fs-extra": "9.0.1",
+    "mini-css-extract-plugin": "0.9.0",
+    "postcss-flexbugs-fixes": "4.2.1",
+    "postcss-loader": "3.0.0",
+    "postcss-normalize": "9.0.0",
+    "postcss-preset-env": "6.7.0",
+    "replace-in-file": "6.1.0",
+    "rimraf": "3.0.2",
+    "sass": "1.26.9",
+    "sass-loader": "8.0.2",
+    "style-loader": "1.2.1",
+    "webpack": "4.43.0",
+    "webpack-cli": "3.3.12"
+  }
+}

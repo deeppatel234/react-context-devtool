@@ -1,0 +1,1 @@
+doc on how to setup extension in browser

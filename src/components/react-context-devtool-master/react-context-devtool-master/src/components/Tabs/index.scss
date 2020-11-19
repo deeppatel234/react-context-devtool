@@ -1,0 +1,21 @@
+.tabs {
+  .tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    border-bottom: none;
+
+    &.selected {
+      background: var(--header-bg-color);
+      border: 1px solid var(--primary-color);
+      border-bottom: none;
+    }
+  }
+}

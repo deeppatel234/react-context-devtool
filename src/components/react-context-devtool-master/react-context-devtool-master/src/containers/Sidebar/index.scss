@@ -1,0 +1,51 @@
+aside {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--sidebar-bg-color);
+  border-right: 1px solid var(--border-color);
+  width: 250px;
+
+  .filters {
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    padding: 1.5rem 0.7rem;
+
+    .funnel {
+      color: var(--disabled-font-color);
+      display: flex;
+      font-size: 1.2rem;
+      margin-right: 0.6rem;
+    }
+  }
+
+  ul.debuglist {
+    overflow: auto;
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 1rem 1rem 1.5rem;
+      position: relative;
+      word-break: break-all;
+
+      &:hover,
+      &.selected {
+        background-color: var(--hover-color);
+      }
+
+      span {
+        bottom: 0;
+        color: var(--primary-color);
+        padding: 0.2rem 0.5rem;
+        position: absolute;
+        right: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  margin: 0 0.2rem;
+  border: 2px solid;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  transition: background-color 0.3s ease;
+
+  &.outline {
+    background-color: transparent;
+  }
+
+  &.pointer {
+    cursor: pointer;
+  }
+}
