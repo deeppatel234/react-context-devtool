@@ -41,8 +41,8 @@
     "jsondiffpatch": "0.4.1",
     "jsonlint-mod": "1.7.5",
     "object-assign": "4.1.1",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "react": "16.14.0",
+    "react-dom": "16.14.0",
     "react-json-view": "1.19.1"
   },
   "devDependencies": {
