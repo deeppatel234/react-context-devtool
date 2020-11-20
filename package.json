@@ -39,7 +39,7 @@
     "codemirror": "5.55.0",
     "error-stack-parser": "2.0.6",
     "jsondiffpatch": "0.4.1",
-    "jsonlint-mod": "1.7.5",
+    "jsonlint-mod": "1.7.6",
     "object-assign": "4.1.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
