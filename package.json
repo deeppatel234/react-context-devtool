@@ -36,7 +36,7 @@
   "homepage": "https://github.com/deeppatel234/react-context-devtool#readme",
   "dependencies": {
     "classnames": "2.2.6",
-    "codemirror": "5.55.0",
+    "codemirror": "5.58.2",
     "error-stack-parser": "2.0.6",
     "jsondiffpatch": "0.4.1",
     "jsonlint-mod": "1.7.5",
