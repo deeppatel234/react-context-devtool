@@ -36,7 +36,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
   port.onMessage.addListener(panelListener);
 
-  port.onDisconnect.addListener(function() {
+  port.onDisconnect.addListener(function () {
     port.onMessage.removeListener(panelListener);
 
     // remove connection object
@@ -134,10 +134,7 @@ const sendData = (to, tabId) => {
   }
 }
 
-const saveCatchData = (request, {
-  id: tabId,
-  title
-}, subType) => {
+const saveCatchData = (request, { id: tabId, title }, subType) => {
 
   let {
     data,

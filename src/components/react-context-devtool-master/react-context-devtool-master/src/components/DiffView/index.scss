@@ -1,0 +1,27 @@
+.diff-view {
+  height: 100%;
+  background-color: var(--view-bg-color) !important;
+  padding: 1rem 0.3rem;
+
+  .jsondiffpatch-delta {
+    font-size: 1rem;
+
+    pre {
+      font-size: 1rem;
+    }
+  }
+
+  .jsondiffpatch-deleted .jsondiffpatch-property-name,
+  .jsondiffpatch-deleted pre,
+  .jsondiffpatch-modified .jsondiffpatch-left-value pre,
+  .jsondiffpatch-textdiff-deleted {
+    background: #dc3545;
+  }
+
+  .jsondiffpatch-added .jsondiffpatch-property-name,
+  .jsondiffpatch-added .jsondiffpatch-value pre,
+  .jsondiffpatch-modified .jsondiffpatch-right-value pre,
+  .jsondiffpatch-textdiff-added {
+    background: #28a745;
+  }
+}

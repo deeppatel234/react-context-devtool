@@ -1,0 +1,101 @@
+#popupRoot {
+  .use-reducer-view {
+    .action-view {
+      min-width: 180px;
+      max-width: 180px;
+    }
+
+    .state-view {
+      min-width: 310px;
+    }
+  }
+}
+
+.use-reducer-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.use-reducer-view {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  flex: 1;
+
+  .action-view {
+    display: flex;
+    flex-direction: column;
+    min-width: 225px;
+    max-width: 225px;
+    border-right: 1px solid var(--border-color);
+
+    .title {
+      font-size: 1.45rem;
+      border-bottom: 1px solid var(--border-color);
+      margin: 0;
+      padding: 1.2rem 1rem;
+    }
+
+    ul {
+      flex: 1;
+      overflow: auto;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.9rem;
+
+      li {
+        position: relative;
+        padding: 1rem 1rem 2rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .dispatch {
+          position: absolute;
+          right: 6px;
+          bottom: 5px;
+          border: 1px solid var(--border-color);
+          padding: 0.1rem 0.5rem;
+          font-size: 0.7rem;
+          border-radius: 3px;
+        }
+
+        &:hover,
+        &.selected {
+          background-color: var(--hover-color);
+        }
+      }
+    }
+  }
+
+  .state-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 400px;
+
+    .view-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 2rem 1rem 0 1rem;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+
+      .view-selector {
+        position: absolute;
+        right: 1rem;
+        bottom: 0.8rem;
+      }
+    }
+
+    .data-view {
+      flex: 1;
+    }
+  }
+}

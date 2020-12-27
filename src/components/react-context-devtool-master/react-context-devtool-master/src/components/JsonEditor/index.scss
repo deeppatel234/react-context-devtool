@@ -1,0 +1,21 @@
+.json-editor {
+  flex: 1;
+  overflow: auto;
+  font-size: 1rem;
+  height: 100%;
+
+  .CodeMirror {
+    background: var(--view-bg-color) !important;
+    height: 100%;
+    line-height: 1.5;
+  }
+
+  .CodeMirror-gutters {
+    background: var(--view-sub-bg-color) !important;
+    border-right: var(--border-color) !important;
+  }
+
+  .CodeMirror-linenumber {
+    color: var(--light-color) !important;
+  }
+}
