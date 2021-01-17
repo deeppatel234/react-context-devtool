@@ -1,0 +1,26 @@
+{
+  "name": "react-context-devtool",
+  "version": "2.0.0",
+  "description": "Devtool for React Context and useReducer hook",
+  "main": "dist/module/cjs/index.js",
+  "module": "dist/module/esm/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "compile": "babel src/index.js --config-file ../../babel.config.js --extensions '.js'",
+    "clean": "rimraf dist/module",
+    "build:esm": "BABEL_ENV=esm npm run compile -- --out-dir dist/module/esm",
+    "build:cjs": "BABEL_ENV=cjs npm run compile -- --out-dir dist/module/cjs",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deeppatel234/react-context-devtool.git"
+  },
+  "author": "Deep Patel <deeppatel234@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deeppatel234/react-context-devtool/issues"
+  },
+  "homepage": "https://github.com/deeppatel234/react-context-devtool#readme"
+}
