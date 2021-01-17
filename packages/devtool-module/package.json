@@ -1,10 +1,12 @@
 {
   "name": "react-context-devtool",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Devtool for React Context and useReducer hook",
   "main": "dist/module/cjs/index.js",
   "module": "dist/module/esm/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "compile": "babel src/index.js --config-file ../../babel.config.js --extensions '.js'",
     "clean": "rimraf dist/module",
