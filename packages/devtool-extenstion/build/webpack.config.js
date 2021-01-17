@@ -34,6 +34,15 @@ module.exports = ({ mode, distPath } = {}) => {
           include: PATHS.SRC_DIR,
           exclude: /node_modules/,
           loader: "babel-loader",
+          options: {
+            configFile: path.resolve(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'babel.config.js',
+            ),
+          },
         },
         {
           test: /\.svg$/,
@@ -52,19 +61,6 @@ module.exports = ({ mode, distPath } = {}) => {
               loader: 'css-loader',
               options: { url: false }
             },
-            // {
-            //   loader: "postcss-loader",
-            //   options: {
-            //     ident: "postcss",
-            //     plugins: () => [
-            //       require("postcss-flexbugs-fixes"),
-            //       require("postcss-preset-env")({
-            //         stage: 3,
-            //       }),
-            //       require("postcss-normalize"),
-            //     ],
-            //   },
-            // },
             "sass-loader",
           ],
         },
