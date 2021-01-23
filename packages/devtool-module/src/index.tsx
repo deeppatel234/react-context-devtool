@@ -1,20 +1,44 @@
 import React from "react";
 
-let debugOptions = {
+declare global {
+  interface Window {
+    __REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK: any;
+    _REACT_CONTEXT_DEVTOOL: any;
+  }
+}
+
+interface DebugOptions {
+  debugReducer?: boolean;
+  debugContext?: boolean;
+  disable?: boolean;
+  disableAutoMode?: boolean;
+}
+
+interface ContextDevToolProps {
+  id: string | number;
+  context: any;
+  displayName: string;
+}
+
+let debugOptions: DebugOptions = {
   debugReducer: true,
   debugContext: true,
   disable: false,
   disableAutoMode: false,
 };
 
-export const ContextDevTool = ({ id, context: Context, displayName }) => {
+export const ContextDevTool = ({
+  id,
+  context: Context,
+  displayName,
+}: ContextDevToolProps) => {
   if (debugOptions.disable) {
     return null;
   }
 
   return (
     <Context.Consumer>
-      {(values) => {
+      {(values: any): null => {
         if (typeof window !== "undefined" && window._REACT_CONTEXT_DEVTOOL) {
           window._REACT_CONTEXT_DEVTOOL({ id, displayName, values });
         }
@@ -24,7 +48,10 @@ export const ContextDevTool = ({ id, context: Context, displayName }) => {
   );
 };
 
-export const debugContextDevtool = (container, options) => {
+export const debugContextDevtool = (
+  container: HTMLElement | null,
+  options?: DebugOptions
+) => {
   debugOptions = { ...debugOptions, ...options };
 
   if (

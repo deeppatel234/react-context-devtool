@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "outDir": "./packages/devtool-module/dist/types/",
+    "declaration": true,
+    "target": "es5"
+  },
+  "include": ["packages/devtool-module/src"]
+}
