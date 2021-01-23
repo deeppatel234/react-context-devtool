@@ -4,16 +4,19 @@
   "description": "Devtool for React Context and useReducer hook",
   "main": "dist/module/cjs/index.js",
   "module": "dist/module/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "compile": "babel src/index.js --config-file ../../babel.config.js --extensions '.js'",
+    "compile": "babel src/index.tsx --config-file ../../babel.config.js --extensions '.tsx'",
+    "postcompile": "npm run tsc",
     "clean": "rimraf dist/module",
     "build:esm": "BABEL_ENV=esm npm run compile -- --out-dir dist/module/esm",
     "build:cjs": "BABEL_ENV=cjs npm run compile -- --out-dir dist/module/cjs",
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
