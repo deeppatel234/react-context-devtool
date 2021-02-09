@@ -3,7 +3,7 @@ aside {
   flex-direction: column;
   background-color: var(--sidebar-bg-color);
   border-right: 1px solid var(--border-color);
-  width: 250px;
+  width: 275px;
 
   .filters {
     align-items: center;
@@ -32,7 +32,7 @@ aside {
       font-size: 0.9rem;
       padding: 1rem 1rem 1.5rem;
       position: relative;
-      word-break: break-all;
+      overflow-wrap: break-word;
 
       &:hover,
       &.selected {

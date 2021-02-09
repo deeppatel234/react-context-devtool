@@ -174,14 +174,15 @@ export function installHook(target) {
       fiberNodeToDebug.context[debugId] &&
       node.pendingProps.value === fiberNodeToDebug.context[debugId].value
     );
-
+  
+    const displayName =  node.pendingProps.displayName || node.type._context.displayName;
+    const value = node.pendingProps.value;
+    const debugName = value && (Object.keys(value).slice(0, 3).join(", ") + (value.length > 3 ? " ..." : ""));
+    
     fiberNodeToDebugCopy.context[debugId] = {
       valueChanged,
-      value: node.pendingProps.value,
-      displayName:
-        node.pendingProps.displayName ||
-        node.type._context.displayName ||
-        debugId,
+      value,
+      displayName: displayName || debugName || debugId,
     };
   };
 
