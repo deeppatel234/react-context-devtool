@@ -176,8 +176,10 @@ export function installHook(target) {
     );
   
     const displayName =  node.pendingProps.displayName || node.type._context.displayName;
+
     const value = node.pendingProps.value;
-    const debugName = value && (Object.keys(value).slice(0, 3).join(", ") + (value.length > 3 ? " ..." : ""));
+    const valueIsObject = value && !Array.isArray(value) && typeof value === 'object';
+    const debugName = valueIsObject && (Object.keys(value).slice(0, 3).join(", ") + (value.length > 3 ? " ..." : ""));
     
     fiberNodeToDebugCopy.context[debugId] = {
       valueChanged,
