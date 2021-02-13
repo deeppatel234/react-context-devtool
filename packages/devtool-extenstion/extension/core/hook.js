@@ -96,7 +96,10 @@ export function installHook(target) {
    * @param {object} hook
    */
   const doWorkWithHooks = (hook) => {
-    if (hook.__reactContextDevtoolHookType == "useReducer") {
+    if (
+      hook.__reactContextDevtoolHookType == "useReducer" &&
+      hook.queue.lastRenderedReducer
+    ) {
       let debugId = hook.queue.__reactContextDevtoolDebugId;
 
       if (!debugId) {
