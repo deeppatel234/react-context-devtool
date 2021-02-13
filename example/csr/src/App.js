@@ -13,6 +13,21 @@ const demo = {
     name: "Context Demo",
 };
 
+const ws = new WeakSet();
+const foo = {};
+
+ws.add(foo);
+
+let myMap = new Map()
+myMap.set("s", 'not a number')
+
+const valuesToTest = {
+  f: new Set([1,2, 3,3]),
+  g: ws,
+  h: myMap,
+  i: ws,
+}
+
 const Test = () => {
     const [counter3, setCounter3] = React.useState(0);
     const [counter4, setCounter4] = React.useState(0);
@@ -52,7 +67,7 @@ class Test2 extends React.Component {
         // const { id } = this.context;
 
         return (
-          <MyContext2.Provider value={{ id: counter5, b: "world" }}>
+          <MyContext2.Provider value={{ id: counter5, b: "world", ...valuesToTest }}>
             <button onClick={() => this.setState({ counter5: counter5 + 1 })}>
                 Click 5 Me {counter5} {id}
             </button>

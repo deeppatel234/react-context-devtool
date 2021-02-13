@@ -85,6 +85,18 @@ function injectHelpers(target) {
       if (isHTMLElement(v)) {
         return `<${v.tagName}> HTMLElemet`;
       }
+      if (v instanceof Set) {
+        return `Set [${Array.from(v).toString()}]`;
+      }
+      if (v instanceof Map) {
+        return `Map [${Array.from(v).toString()}]`;
+      }
+      if (v instanceof WeakSet) {
+        return `WeekSet []`;
+      }
+      if (v instanceof WeakMap) {
+        return `WeakMap {}`;
+      }
       return v;
     });
   };
