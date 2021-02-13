@@ -1,3 +1,9 @@
+#firefox.popupHtml, #firefox.devpanelHtml {
+  aside {
+    width: 190px;
+  }
+}
+
 aside {
   display: flex;
   flex-direction: column;
@@ -9,7 +15,7 @@ aside {
     align-items: center;
     border-bottom: 1px solid var(--border-color);
     display: flex;
-    padding: 1.5rem 0.7rem;
+    padding: 1rem 0.7rem;
 
     .funnel {
       color: var(--disabled-font-color);
@@ -29,7 +35,7 @@ aside {
     li {
       border-bottom: 1px solid var(--border-color);
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       padding: 1rem 1rem 1.5rem;
       position: relative;
       word-break: break-all;

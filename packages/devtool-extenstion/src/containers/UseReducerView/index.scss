@@ -1,12 +1,21 @@
 #popupRoot {
   .use-reducer-view {
     .action-view {
-      min-width: 180px;
-      max-width: 180px;
+      min-width: 170px;
+      max-width: 170px;
     }
 
     .state-view {
       min-width: 310px;
+    }
+  }
+}
+
+#firefox.popupHtml, #firefox.devpanelHtml {
+  .use-reducer-view {
+    .action-view {
+      min-width: 170px;
+      max-width: 170px;
     }
   }
 }
@@ -31,10 +40,10 @@
     border-right: 1px solid var(--border-color);
 
     .title {
-      font-size: 1.45rem;
+      font-size: 1.3rem;
       border-bottom: 1px solid var(--border-color);
       margin: 0;
-      padding: 1.2rem 1rem;
+      padding: 1.1rem;
     }
 
     ul {
@@ -83,14 +92,14 @@
       position: relative;
       display: flex;
       align-items: center;
-      padding: 2rem 1rem 0 1rem;
+      padding: 1.6rem 1rem 0 1rem;
       justify-content: space-between;
       border-bottom: 1px solid var(--border-color);
 
       .view-selector {
         position: absolute;
         right: 1rem;
-        bottom: 0.8rem;
+        bottom: 0.7rem;
       }
     }
 
