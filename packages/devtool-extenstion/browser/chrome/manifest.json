@@ -1,7 +1,7 @@
 {
   "name": "React Context DevTool",
-  "version": "2.1",
-  "description": "Devtool for React Context",
+  "version": "2.2",
+  "description": "Devtool for React Context and useReducer",
   "manifest_version": 2,
   "icons": {
     "16": "assets/icons/icon16.png",
