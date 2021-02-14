@@ -101,7 +101,7 @@
         Dispatcher.useImperativeHandle(undefined, function () {
           return null;
         });
-        Dispatcher.useDebugValue(null);
+        // Dispatcher.useDebugValue(null);
         Dispatcher.useCallback(function () {});
         Dispatcher.useMemo(function () {
           return null;
@@ -156,11 +156,11 @@
   }
 
   function useContext(context, observedBits) {
-    hookLog.push({
-      primitive: "Context",
-      stackError: new Error(),
-      value: context._currentValue,
-    });
+    // hookLog.push({
+    //   primitive: "Context",
+    //   stackError: new Error(),
+    //   value: context._currentValue,
+    // });
     return context._currentValue;
   }
 
@@ -195,11 +195,11 @@
       hook.__reactContextDevtoolHookType = "useReducer";
     }
 
-    hookLog.push({
-      primitive: "Reducer",
-      stackError: new Error(),
-      value: state,
-    });
+    // hookLog.push({
+    //   primitive: "Reducer",
+    //   stackError: new Error(),
+    //   value: state,
+    // });
     return [state, function (action) {}];
   }
 
@@ -211,30 +211,30 @@
         : {
             current: initialValue,
           };
-    hookLog.push({
-      primitive: "Ref",
-      stackError: new Error(),
-      value: ref.current,
-    });
+    // hookLog.push({
+    //   primitive: "Ref",
+    //   stackError: new Error(),
+    //   value: ref.current,
+    // });
     return ref;
   }
 
   function useLayoutEffect(create, inputs) {
     nextHook();
-    hookLog.push({
-      primitive: "LayoutEffect",
-      stackError: new Error(),
-      value: create,
-    });
+    // hookLog.push({
+    //   primitive: "LayoutEffect",
+    //   stackError: new Error(),
+    //   value: create,
+    // });
   }
 
   function useEffect(create, inputs) {
     nextHook();
-    hookLog.push({
-      primitive: "Effect",
-      stackError: new Error(),
-      value: create,
-    });
+    // hookLog.push({
+    //   primitive: "Effect",
+    //   stackError: new Error(),
+    //   value: create,
+    // });
   }
 
   function useImperativeHandle(ref, create, inputs) {
@@ -243,45 +243,45 @@
     // have no way of knowing where. So let's only enable introspection of the
     // ref itself if it is using the object form.
 
-    var instance = undefined;
+    // var instance = undefined;
 
-    if (ref !== null && typeof ref === "object") {
-      instance = ref.current;
-    }
+    // if (ref !== null && typeof ref === "object") {
+    //   instance = ref.current;
+    // }
 
-    hookLog.push({
-      primitive: "ImperativeHandle",
-      stackError: new Error(),
-      value: instance,
-    });
+    // hookLog.push({
+    //   primitive: "ImperativeHandle",
+    //   stackError: new Error(),
+    //   value: instance,
+    // });
   }
 
-  function useDebugValue(value, formatterFn) {
-    hookLog.push({
-      primitive: "DebugValue",
-      stackError: new Error(),
-      value: typeof formatterFn === "function" ? formatterFn(value) : value,
-    });
-  }
+  // function useDebugValue(value, formatterFn) {
+  //   hookLog.push({
+  //     primitive: "DebugValue",
+  //     stackError: new Error(),
+  //     value: typeof formatterFn === "function" ? formatterFn(value) : value,
+  //   });
+  // }
 
   function useCallback(callback, inputs) {
     var hook = nextHook();
-    hookLog.push({
-      primitive: "Callback",
-      stackError: new Error(),
-      value: hook !== null ? hook.memoizedState[0] : callback,
-    });
+    // hookLog.push({
+    //   primitive: "Callback",
+    //   stackError: new Error(),
+    //   value: hook !== null ? hook.memoizedState[0] : callback,
+    // });
     return callback;
   }
 
   function useMemo(nextCreate, inputs) {
     var hook = nextHook();
     var value = hook !== null ? hook.memoizedState[0] : nextCreate();
-    hookLog.push({
-      primitive: "Memo",
-      stackError: new Error(),
-      value: value,
-    });
+    // hookLog.push({
+    //   primitive: "Memo",
+    //   stackError: new Error(),
+    //   value: value,
+    // });
     return value;
   }
 
@@ -298,25 +298,25 @@
     nextHook(); // Effect
 
     var value = getSnapshot(source._source);
-    hookLog.push({
-      primitive: "MutableSource",
-      stackError: new Error(),
-      value: value,
-    });
+    // hookLog.push({
+    //   primitive: "MutableSource",
+    //   stackError: new Error(),
+    //   value: value,
+    // });
     return value;
   }
 
   function useResponder(responder, listenerProps) {
     // Don't put the actual event responder object in, just its displayName
-    var value = {
-      responder: responder.displayName || "EventResponder",
-      props: listenerProps,
-    };
-    hookLog.push({
-      primitive: "Responder",
-      stackError: new Error(),
-      value: value,
-    });
+    // var value = {
+    //   responder: responder.displayName || "EventResponder",
+    //   props: listenerProps,
+    // };
+    // hookLog.push({
+    //   primitive: "Responder",
+    //   stackError: new Error(),
+    //   value: value,
+    // });
     return {
       responder: responder,
       props: listenerProps,
@@ -331,11 +331,11 @@
 
     nextHook(); // Callback
 
-    hookLog.push({
-      primitive: "Transition",
-      stackError: new Error(),
-      value: config,
-    });
+    // hookLog.push({
+    //   primitive: "Transition",
+    //   stackError: new Error(),
+    //   value: config,
+    // });
     return [function (callback) {}, false];
   }
 
@@ -347,11 +347,12 @@
 
     nextHook(); // Effect
 
-    hookLog.push({
-      primitive: "DeferredValue",
-      stackError: new Error(),
-      value: value,
-    });
+    // hookLog.push({
+    //   primitive: "DeferredValue",
+    //   stackError: new Error(),
+    //   value: value,
+    // });
+
     return value;
   }
 
@@ -368,11 +369,12 @@
       value = undefined;
     }
 
-    hookLog.push({
-      primitive: "OpaqueIdentifier",
-      stackError: new Error(),
-      value: value,
-    });
+    // hookLog.push({
+    //   primitive: "OpaqueIdentifier",
+    //   stackError: new Error(),
+    //   value: value,
+    // });
+
     return value;
   }
 
@@ -382,7 +384,7 @@
     useContext: useContext,
     useEffect: useEffect,
     useImperativeHandle: useImperativeHandle,
-    useDebugValue: useDebugValue,
+    // useDebugValue: useDebugValue,
     useLayoutEffect: useLayoutEffect,
     useMemo: useMemo,
     useReducer: useReducer,

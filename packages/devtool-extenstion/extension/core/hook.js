@@ -49,16 +49,17 @@ export function installHook(target) {
     const dataToSend = {};
 
     dataToSend.context = Object.keys(fiberNodeToDebug.context).reduce((memo, key) => {
-      if (fiberNodeToDebug.context[key].valueChanged) {
+      const debugObj = fiberNodeToDebug.context[key];
+      if (debugObj.valueChanged) {
         memo[key] = {
-          value: fiberNodeToDebug.context[key].value,
-          displayName: fiberNodeToDebug.context[key].displayName,
-          valueChanged: fiberNodeToDebug.context[key].valueChanged,
+          value: debugObj.value,
+          displayName: debugObj.displayName,
+          valueChanged: debugObj.valueChanged,
           remove: true,
         };
       } else {
         memo[key] = {
-          valueChanged: fiberNodeToDebug.context[key].valueChanged,
+          valueChanged: debugObj.valueChanged,
           remove: true,
         };
       }
@@ -66,16 +67,17 @@ export function installHook(target) {
     }, {});
 
     dataToSend.useReducer = Object.keys(fiberNodeToDebug.useReducer).reduce((memo, key) => {
-      if (fiberNodeToDebug.useReducer[key].valueChanged) {
+      const debugObj = fiberNodeToDebug.useReducer[key];
+      if (debugObj.valueChanged) {
         memo[key] = {
-          actions: fiberNodeToDebug.useReducer[key].actions,
-          state: fiberNodeToDebug.useReducer[key].state,
-          valueChanged: fiberNodeToDebug.useReducer[key].valueChanged,
-          displayName: fiberNodeToDebug.useReducer[key].displayName,
+          actions: debugObj.actions,
+          state: debugObj.state,
+          valueChanged: debugObj.valueChanged,
+          displayName: debugObj.displayName,
         };
       } else {
         memo[key] = {
-          valueChanged: fiberNodeToDebug.useReducer[key].valueChanged,
+          valueChanged: debugObj.valueChanged,
         };
       }
       return memo;
@@ -95,10 +97,12 @@ export function installHook(target) {
    *
    * @param {object} hook
    */
-  const doWorkWithHooks = (hook) => {
+  const doWorkWithHooks = (hook, hookType) => {
     if (
-      hook.__reactContextDevtoolHookType == "useReducer" &&
-      hook.queue.lastRenderedReducer
+      (
+        hookType === "useReducer" ||
+        hook.__reactContextDevtoolHookType == "useReducer"
+      ) && hook.queue.lastRenderedReducer
     ) {
       let debugId = hook.queue.__reactContextDevtoolDebugId;
 
@@ -198,7 +202,7 @@ export function installHook(target) {
       return;
     }
 
-    const { memoizedState, tag } = fiberNode;
+    const { memoizedState, tag, _debugHookTypes } = fiberNode;
 
     if (
       debugOptions.debugReducer &&
@@ -207,15 +211,22 @@ export function installHook(target) {
       memoizedState &&
       Object.hasOwnProperty.call(memoizedState, "baseState")
     ) {
-      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber(
-        fiberNode,
-        renderer
-      );
+      if (!_debugHookTypes || !_debugHookTypes.length) {
+        try {
+          window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber(
+            fiberNode,
+            renderer
+          );
+        } catch(err) {}
+      }
 
       let temp = memoizedState;
+      const hookTypes = _debugHookTypes || [];
+      let counter = 0;
       while (temp && temp.queue) {
-        doWorkWithHooks(temp);
+        doWorkWithHooks(temp, hookTypes[counter]);
         temp = temp.next;
+        counter += 1;
       }
     }
 
