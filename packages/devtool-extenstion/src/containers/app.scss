@@ -182,6 +182,10 @@ body,
   overflow: hidden;
 }
 
+#optionsRoot {
+  min-width: 550px;
+}
+
 .popupHtml, .popupHtml body {
   width: 750px;
   height: 400px;
