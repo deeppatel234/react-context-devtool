@@ -1,17 +1,10 @@
-export function installHook(target) {
+export function installHook(target, settings) {
   const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
   const DISPATCH_EVENT = "DISPATCH_EVENT";
 
   const fiberNodeToDebug = {
     useReducer: {},
     context: {},
-  };
-
-  let debugOptions = {
-    debugReducer: true,
-    debugContext: true,
-    disable: false,
-    disableAutoMode: false,
   };
 
   const dispatchAction = (event) => {
@@ -171,6 +164,10 @@ export function installHook(target) {
    * @param {object} node
    */
   const doWorkWithContextProvider = (node) => {
+    if (!node.type) {
+      return;
+    }
+
     if (!node.type._context.__reactContextDevtoolDebugId) {
       node.type._context.__reactContextDevtoolDebugId = getUniqId();
     }
@@ -205,7 +202,7 @@ export function installHook(target) {
     const { memoizedState, tag, _debugHookTypes } = fiberNode;
 
     if (
-      debugOptions.debugReducer &&
+      settings.debugUseReducer &&
       renderer &&
       window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded &&
       memoizedState &&
@@ -234,7 +231,7 @@ export function installHook(target) {
      * https://github.com/facebook/react/tree/master/packages/react-reconciler/src/ReactWorkTags.js
      *
      */
-    if (debugOptions.debugContext && tag === 10) {
+    if (settings.debugContext && tag === 10) {
       doWorkWithContextProvider(fiberNode);
     }
   };
@@ -301,53 +298,12 @@ export function installHook(target) {
     }
   };
 
-  const debugFiber = (container, options) => {
-    debugOptions = { ...debugOptions, ...options };
-
+  const debugFiber = () => {
     if (
-      debugOptions.disable ||
-      debugOptions.disableAutoMode ||
       typeof window === 'undefined' ||
-      (!debugOptions.debugReducer && !debugOptions.debugContext)
+      (!settings.debugUseReducer && !settings.debugContext)
     ) {
       return false;
-    }
-
-    /**
-     * Find fiber tree from dom element
-     *
-     */
-    let fiberRoot = null;
-    if (container._internalRoot) {
-      fiberRoot = container._internalRoot;
-    } else if (container._reactRootContainer) {
-      const {
-        _reactRootContainer: { _internalRoot },
-      } = container;
-      fiberRoot = _internalRoot;
-    }
-
-    if (!fiberRoot) {
-      const rootKey = Object.keys(container).find((k) =>
-        k.startsWith("__reactContainer")
-      );
-      if (rootKey) {
-        fiberRoot = container[rootKey];
-        fiberRoot = fiberRoot.stateNode;
-      }
-    }
-
-    if (!fiberRoot) {
-      console.error(
-        "Fiber tree is not found in dom element. please use valid dom element that used in ReactDom.render method"
-      );
-      return;
-    }
-
-    if (debugOptions.debugReducer && !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
-      console.log(
-        "useReducer hook is not working due to some internal issue. please report bug or create issue."
-      );
     }
 
     const reactDebtoolGlobalhook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
@@ -356,22 +312,6 @@ export function installHook(target) {
       console.log("Please install React Developer Tools extenstion.");
       return;
     }
-
-    /**
-     * set react renderer
-     */
-    if (reactDebtoolGlobalhook.renderers) {
-      const firstRendererKey = reactDebtoolGlobalhook.renderers.keys().next().value;
-      renderer = reactDebtoolGlobalhook.renderers.get(firstRendererKey).currentDispatcherRef;
-    }
-
-    if (debugOptions.debugReducer && !renderer) {
-      console.error(
-        "useReducer hook debugger is not working due to some internal issue. please report an issue"
-      );
-    }
-
-    onCommitFiberRoot(fiberRoot);
 
     /**
      * Register react dom commit fiber callback
@@ -386,6 +326,10 @@ export function installHook(target) {
         root,
         ...args
       ) => {
+        if (!renderer) {
+          const firstRendererKey = reactDebtoolGlobalhook.renderers.keys().next().value;
+          renderer = reactDebtoolGlobalhook.renderers.get(firstRendererKey).currentDispatcherRef;
+        }
         onCommitFiberRoot(root);
         return debugFunction(rendererID, root, ...args);
       })(reactDebtoolGlobalhook.onCommitFiberRoot);
@@ -395,4 +339,12 @@ export function installHook(target) {
   };
 
   target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debugFiber = debugFiber;
+
+  if (settings && settings.debugUseReducer) {
+    target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.loadHookHelper().then(() => {
+      debugFiber();
+    });
+  } else if (settings.debugContext) {
+    debugFiber();
+  }
 }
