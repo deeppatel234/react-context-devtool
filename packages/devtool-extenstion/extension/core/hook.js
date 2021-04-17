@@ -365,11 +365,15 @@ export function installHook(target, settings) {
     }
   };
 
-  startDebug();
+  if (settings.startDebugWhen === "extensionLoad") {
+    startDebug();
+  }
 
   window.addEventListener('message', event => {
     if (event.data.source === "react-devtools-detector") {
-      startDebug();
+      if (settings.startDebugWhen === "pageLoad") {
+        startDebug();
+      }
     }
 
     if (event.data.type === DATA_EVENT) {
