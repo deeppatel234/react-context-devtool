@@ -49,8 +49,13 @@ function injectHelpers(target) {
     }
   };
 
+  // Find some better way to detect react fiber node object
+  const isReactNode = (k, v) => {
+    return k.startsWith("__reactFiber") && v.stateNode;
+  };
+
   const parseData = (data) => {
-    return JSON.stringify(data, function (k, v) {
+    const stringifyResolver = function (k, v) {
       if (typeof v === "function") {
         return "function () {}";
       }
@@ -61,7 +66,7 @@ function injectHelpers(target) {
         return `Set [${Array.from(v).toString()}]`;
       }
       if (v instanceof Map) {
-        return `Map [${Array.from(v).toString()}]`;
+        return `Map ${JSON.stringify(Object.fromEntries(v), stringifyResolver)}`;
       }
       if (v instanceof WeakSet) {
         return `WeekSet []`;
@@ -69,8 +74,13 @@ function injectHelpers(target) {
       if (v instanceof WeakMap) {
         return `WeakMap {}`;
       }
+      if (isReactNode(k, v)) {
+        return "<REACT NODE>";
+      }
       return v;
-    });
+    };
+
+    return JSON.stringify(data, stringifyResolver);
   };
 
   const loadHookHelper = () => {
