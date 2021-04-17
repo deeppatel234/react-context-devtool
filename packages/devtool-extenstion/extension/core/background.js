@@ -152,6 +152,7 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
       },
       useReducer: {},
       context: {},
+      reactInfo: {},
     };
     chunkData[tabId] = [];
   }
@@ -207,6 +208,10 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
         delete cacheUseReducer[key];
       }
     });
+  }
+
+  if (parsedData.reactInfo) {
+    catchData[tabId].reactInfo = parsedData.reactInfo;
   }
 };
 

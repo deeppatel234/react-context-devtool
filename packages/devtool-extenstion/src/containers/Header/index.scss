@@ -1,8 +1,17 @@
 header {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: var(--header-bg-color);
   border-bottom: 1px solid var(--border-color);
-  display: flex;
   font-size: 0.9rem;
   padding: 0.7rem 1rem;
+
+  .pill {
+    background-color: var(--primary-color);
+    padding: 2px 5px;
+    margin-left: 10px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+  }
 }

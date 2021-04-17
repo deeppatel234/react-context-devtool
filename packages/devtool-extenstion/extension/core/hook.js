@@ -7,6 +7,11 @@ export function installHook(target, settings) {
     context: {},
   };
 
+  let renderer = null;
+  let isDebuggingStarted = false;
+
+  const reactInfo = {};
+
   const dispatchAction = (event) => {
     if(event.type === "useReducer" && fiberNodeToDebug.useReducer[event.debugId]) {
       fiberNodeToDebug.useReducer[event.debugId].hook.queue.dispatch(event.data);
@@ -33,7 +38,9 @@ export function installHook(target, settings) {
   const sendDataToDevtool = () => {
     const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
 
-    const dataToSend = {};
+    const dataToSend = {
+      reactInfo,
+    };
 
     dataToSend.context = Object.keys(fiberNodeToDebug.context).reduce((memo, key) => {
       const debugObj = fiberNodeToDebug.context[key];
@@ -76,9 +83,6 @@ export function installHook(target, settings) {
       data: helpers.parseData(dataToSend),
     }, "*");
   };
-
-  let renderer = null;
-  let isDebuggingStarted = false;
 
   /**
    * Debug for React useReducer API
@@ -298,6 +302,9 @@ export function installHook(target, settings) {
 
     renderer = params.renderer;
 
+    reactInfo.version = renderer ? renderer.version : "";
+    reactInfo.rendererPackageName = renderer ? renderer.rendererPackageName : "";
+
     const fiberRoot = reactDebtoolGlobalhook.getFiberRoots(params.id).keys().next().value;
 
     if (fiberRoot) {
@@ -372,6 +379,7 @@ export function installHook(target, settings) {
   window.addEventListener('message', event => {
     if (event.data.source === "react-devtools-detector") {
       if (settings.startDebugWhen === "pageLoad") {
+        reactInfo.mode = event.data.reactBuildType;
         startDebug();
       }
     }
