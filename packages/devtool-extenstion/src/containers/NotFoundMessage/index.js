@@ -5,23 +5,9 @@ import "./index.scss";
 const NotFoundMessage = () => {
   return (
     <div className="not-found-message">
+      <p>React is not found in this page.</p>
       <p>
-        <a
-          target="_blank"
-          href="https://github.com/deeppatel234/react-context-devtool"
-        >
-          react-context-devtool
-        </a>{" "}
-        is not configured for this site
-      </p>
-      <p className="setup-text">
-        <a
-          target="_blank"
-          href="https://github.com/deeppatel234/react-context-devtool/blob/master/README.md"
-        >
-          click here
-        </a>{" "}
-        for configure
+        if this seems wrong please <a target="_blank" href="https://github.com/deeppatel234/react-context-devtool/issues">create issue</a>.
       </p>
     </div>
   );

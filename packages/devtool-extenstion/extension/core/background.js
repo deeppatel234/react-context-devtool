@@ -225,8 +225,22 @@ const setAppPopup = (isActive, tabId) => {
       128: `assets/icons/icon128${isActive ? "" : "-disabled"}.png`,
     },
   });
-  chrome.browserAction.setPopup({
-    tabId,
-    popup: "popup/popup.html",
-  });
+  if (isActive) {
+    chrome.storage.local.get(
+      ["startDebugWhen"],
+      (settings) => {
+        if (settings.startDebugWhen === "pageLoad") {
+          chrome.browserAction.setPopup({
+            tabId,
+            popup: "popup/popup.html",
+          });
+        } else {
+          chrome.browserAction.setPopup({
+            tabId,
+            popup: "popup/extenstionLoad.html",
+          });
+        }
+      }
+    );
+  }
 };
