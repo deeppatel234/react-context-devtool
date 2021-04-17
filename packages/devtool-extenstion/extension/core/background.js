@@ -18,7 +18,7 @@ const catchData = {};
 const chunkData = {};
 
 const defaultSettings = {
-  // startDebugWhen: "extensionLoad",
+  startDebugWhen: "extensionLoad",
   debugUseReducer: true,
   debugContext: true,
 };
@@ -74,8 +74,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendDataToContent(request);
     } else if (request.subType === LOCAL_STORAGE_DATA) {
       chrome.storage.local.get(
-        // "startDebugWhen",
-        ["debugUseReducer", "debugContext"],
+        ["startDebugWhen", "debugUseReducer", "debugContext"],
         (settings) => {
           sendResponse({
             ...defaultSettings,

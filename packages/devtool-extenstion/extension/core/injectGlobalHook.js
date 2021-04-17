@@ -169,15 +169,18 @@ window.addEventListener(
   function (event) {
     if (event.source != window) return;
 
-    if (event.data.type === HOOK_EVENT) {
+    if (event.data.source === "react-devtools-detector") {
       if (!isExtensionActive) {
         chrome.runtime.sendMessage({
           type: DATA_EVENT,
           subType: "ACTIVATE_EXTENSTION",
+          data: event.data,
         });
         isExtensionActive = true;
       }
+    }
 
+    if (event.data.type === HOOK_EVENT) {
       if (event.data.subType === LOAD_HOOK_HELPER_EVENT) {
         loadHelpers();
         return;

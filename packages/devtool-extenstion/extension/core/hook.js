@@ -13,12 +13,6 @@ export function installHook(target, settings) {
     }
   };
 
-  window.addEventListener('message', event => {
-    if (event.data.type === DATA_EVENT && event.data.subType === DISPATCH_EVENT) {
-      dispatchAction(event.data.data);
-    }
-  });
-
   // copy object is used to detect compoment is removed
   const fiberNodeToDebugCopy = {
     useReducer: {},
@@ -84,6 +78,7 @@ export function installHook(target, settings) {
   };
 
   let renderer = null;
+  let isDebuggingStarted = false;
 
   /**
    * Debug for React useReducer API
@@ -298,19 +293,15 @@ export function installHook(target, settings) {
     }
   };
 
-  const debugFiber = () => {
-    if (
-      typeof window === 'undefined' ||
-      (!settings.debugUseReducer && !settings.debugContext)
-    ) {
-      return false;
-    }
-
+  const debugFiber = (params) => {
     const reactDebtoolGlobalhook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 
-    if (!reactDebtoolGlobalhook) {
-      console.log("Please install React Developer Tools extenstion.");
-      return;
+    renderer = params.renderer;
+
+    const fiberRoot = reactDebtoolGlobalhook.getFiberRoots(params.id).keys().next().value;
+
+    if (fiberRoot) {
+      onCommitFiberRoot(fiberRoot);
     }
 
     /**
@@ -326,25 +317,65 @@ export function installHook(target, settings) {
         root,
         ...args
       ) => {
-        if (!renderer) {
-          const firstRendererKey = reactDebtoolGlobalhook.renderers.keys().next().value;
-          renderer = reactDebtoolGlobalhook.renderers.get(firstRendererKey).currentDispatcherRef;
-        }
         onCommitFiberRoot(root);
         return debugFunction(rendererID, root, ...args);
       })(reactDebtoolGlobalhook.onCommitFiberRoot);
-    } else {
-      console.error("onCommitFiberRoot is not available in ReactDOM library");
     }
   };
 
-  target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debugFiber = debugFiber;
+  const loadHelperAndDebugFiber = (params) => {
+    isDebuggingStarted = true;
 
-  if (settings && settings.debugUseReducer) {
-    target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.loadHookHelper().then(() => {
-      debugFiber();
-    });
-  } else if (settings.debugContext) {
-    debugFiber();
-  }
+    if (settings.debugUseReducer && !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
+      target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.loadHookHelper().then(() => {
+        debugFiber(params);
+      });
+    } else {
+      debugFiber(params);
+    }
+  };
+
+  const startDebug = () => {
+    if (
+      typeof window === 'undefined' ||
+      !window.__REACT_DEVTOOLS_GLOBAL_HOOK__ ||
+      (!settings.debugUseReducer && !settings.debugContext)
+    ) {
+      return false;
+    }
+
+    const reactDebtoolGlobalhook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+
+    if (settings.startDebugWhen === "extensionLoad") {
+      reactDebtoolGlobalhook.on("renderer-attached", (params) => {
+        if (!isDebuggingStarted) {
+          loadHelperAndDebugFiber(params);
+        }
+      });
+    } else if (
+      settings.startDebugWhen === "pageLoad" &&
+      reactDebtoolGlobalhook.renderers &&
+      !isDebuggingStarted
+    ) {
+      const firstRendererKey = reactDebtoolGlobalhook.renderers.keys().next().value;
+      loadHelperAndDebugFiber({
+        id: firstRendererKey,
+        renderer: reactDebtoolGlobalhook.renderers.get(firstRendererKey),
+      });
+    }
+  };
+
+  startDebug();
+
+  window.addEventListener('message', event => {
+    if (event.data.source === "react-devtools-detector") {
+      startDebug();
+    }
+
+    if (event.data.type === DATA_EVENT) {
+      if (event.data.subType === DISPATCH_EVENT) {
+        dispatchAction(event.data.data);
+      }
+    }
+  });
 }

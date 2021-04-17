@@ -5,13 +5,13 @@ import Button from "Components/Button";
 import "./index.scss";
 
 const Settings = () => {
-  // const [startDebugWhen, setStartDebugWhen] = useState("extensionLoad");
+  const [startDebugWhen, setStartDebugWhen] = useState("extensionLoad");
   const [debugUseReducer, setDebugUseReducer] = useState(true);
   const [debugContext, setDebugContext] = useState(true);
 
-  // const onChangeStartDebugWhen = (event) => {
-  //   setStartDebugWhen(event.target.value);
-  // };
+  const onChangeStartDebugWhen = (event) => {
+    setStartDebugWhen(event.target.value);
+  };
 
   const onChangeDebugUseReducer = (event) => {
     setDebugUseReducer(event.target.checked);
@@ -23,8 +23,7 @@ const Settings = () => {
 
   useEffect(() => {
     chrome.storage.local.get(
-      // "startDebugWhen",
-      ["debugUseReducer", "debugContext"],
+      ["startDebugWhen", "debugUseReducer", "debugContext"],
       function (result) {
         if (result.startDebugWhen) {
           setStartDebugWhen(result.startDebugWhen);
@@ -41,7 +40,7 @@ const Settings = () => {
 
   const onClickSave = () => {
     const settingstoSave = {
-      // startDebugWhen,
+      startDebugWhen,
       debugUseReducer,
       debugContext,
     };
@@ -51,7 +50,7 @@ const Settings = () => {
 
   return (
     <div className="settings-wrapper">
-      {/* <div className="setting-section">
+      <div className="setting-section">
         <div className="setting-section-label">Start Debugging</div>
         <div className="setting-section-value">
           <div className="setting-radio-wrapper">
@@ -89,7 +88,7 @@ const Settings = () => {
             </label>
           </div>
         </div>
-      </div> */}
+      </div>
       <div className="setting-section">
         <div className="setting-section-label">Enable Debug</div>
         <div className="setting-section-value">
