@@ -22,6 +22,10 @@
     "scripts": ["background.js"]
   },
   "devtools_page": "devtool/devtool.html",
+  "options_ui": {
+    "page": "options/options.html",
+    "browser_style": true
+  },
   "permissions": ["storage", "file:///*", "http://*/*", "https://*/*"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;",
   "content_scripts": [
