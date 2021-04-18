@@ -7,19 +7,23 @@ import NotFoundMessage from "Containers/NotFoundMessage";
 
 import "./app.scss";
 
+const defaultSettings = {
+  startDebugWhen: "extensionLoad",
+  debugUseReducer: true,
+  debugContext: true,
+};
+
 const App = ({ appData, onDispatchAction }) => {
   const [selectedDebug, setDebug] = useState({});
   const [settings, setSettings] = useState({
-    startDebugWhen: "extensionLoad",
-    debugUseReducer: true,
-    debugContext: true,
+    ...defaultSettings,
   });
 
   useEffect(() => {
     chrome.storage.local.get(
       ["startDebugWhen", "debugUseReducer", "debugContext"],
       function (result) {
-        setSettings(result);
+        setSettings({ ...defaultSettings, ...result });
       }
     );
   }, []);
