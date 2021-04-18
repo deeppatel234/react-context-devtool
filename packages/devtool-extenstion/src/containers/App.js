@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import AppContext from "Containers/AppContext";
 import Header from "Containers/Header";
@@ -9,18 +9,33 @@ import "./app.scss";
 
 const App = ({ appData, onDispatchAction }) => {
   const [selectedDebug, setDebug] = useState({});
+  const [settings, setSettings] = useState({
+    startDebugWhen: "extensionLoad",
+    debugUseReducer: true,
+    debugContext: true,
+  });
+
+  useEffect(() => {
+    chrome.storage.local.get(
+      ["startDebugWhen", "debugUseReducer", "debugContext"],
+      function (result) {
+        setSettings(result);
+      }
+    );
+  }, []);
 
   if (!appData || !appData.tab) {
-    return <NotFoundMessage />
+    return <NotFoundMessage />;
   }
 
   return (
     <AppContext.Provider
       value={{
         appData,
+        settings,
         selectedDebug,
         setDebug,
-        onDispatchAction
+        onDispatchAction,
       }}
     >
       <div id="main-app">

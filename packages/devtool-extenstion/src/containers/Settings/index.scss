@@ -1,0 +1,51 @@
+.settings-wrapper {
+  padding: 20px 10px 10px 10px;
+
+  .setting-section {
+    display: flex;
+    padding: 10px;
+
+    .setting-section-label {
+      font-size: 13px;
+      font-weight: bold;
+      padding-top: 1px;
+      padding-right: 10px;
+      white-space: nowrap;
+      width: 130px;
+    }
+
+    .setting-section-value {
+      padding-top: 3px;
+      padding-left: 10px;
+
+      .setting-radio-wrapper {
+        display: flex;
+        align-items: flex-start;
+        padding-bottom: 15px;
+
+        .setting-radio {
+          margin: 0;
+          margin-top: 2px;
+        }
+        .setting-radio-label {
+          margin-left: 8px;
+          .light-text {
+            margin-top: 2px;
+            color: #a2a2a2;
+            font-style: italic;
+          }
+        }
+      }
+    }
+  }
+  .setting-footer {
+    padding: 5px 0 10px 0;
+    text-align: center;
+
+    .success-msg {
+      color: var(--primary-color);
+      padding-bottom: 10px;
+      height: 20px;
+    }
+  }
+}

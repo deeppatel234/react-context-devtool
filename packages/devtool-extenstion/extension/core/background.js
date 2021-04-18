@@ -9,6 +9,7 @@ const DEVPANEL_DATA_EVENT = "DEVPANEL_DATA";
 const INIT_POPUP_EVENT = "INIT_POPUP";
 const POPUP_DATA_EVENT = "POPUP_DATA";
 const DISPATCH_EVENT = "DISPATCH_EVENT";
+const LOCAL_STORAGE_DATA = "LOCAL_STORAGE_DATA";
 
 const MAX_DATA_SIZE = 5 * 1024 * 1024; // 50MB
 
@@ -16,20 +17,20 @@ const connections = {};
 const catchData = {};
 const chunkData = {};
 
+const defaultSettings = {
+  startDebugWhen: "extensionLoad",
+  debugUseReducer: true,
+  debugContext: true,
+};
+
 chrome.runtime.onConnect.addListener((port) => {
-  const panelListener = event => {
-    if (
-      event.type === DATA_EVENT &&
-      event.subType === INIT_DEVPANEL_EVENT
-    ) {
+  const panelListener = (event) => {
+    if (event.type === DATA_EVENT && event.subType === INIT_DEVPANEL_EVENT) {
       connections[event.tabId] = port;
       sendData("DEVTOOL", event.tabId);
     }
 
-    if (
-      event.type === DATA_EVENT &&
-      event.subType === DISPATCH_EVENT
-    ) {
+    if (event.type === DATA_EVENT && event.subType === DISPATCH_EVENT) {
       sendDataToContent(event);
     }
   };
@@ -56,7 +57,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((request, sender) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === DATA_EVENT && request.subType) {
     if (request.subType === ACTIVATE_EXTENSTION) {
       setAppPopup(true, sender.tab.id);
@@ -71,6 +72,17 @@ chrome.runtime.onMessage.addListener((request, sender) => {
       sendData("POPUP", request.tabId);
     } else if (request.subType === DISPATCH_EVENT) {
       sendDataToContent(request);
+    } else if (request.subType === LOCAL_STORAGE_DATA) {
+      chrome.storage.local.get(
+        ["startDebugWhen", "debugUseReducer", "debugContext"],
+        (settings) => {
+          sendResponse({
+            ...defaultSettings,
+            ...settings,
+          });
+        }
+      );
+      return true;
     }
   }
 });
@@ -85,7 +97,7 @@ const transferTo = (to, tabId, params) => {
       connections[tabId].postMessage({
         type: DATA_EVENT,
         subType: DEVPANEL_DATA_EVENT,
-        ...params
+        ...params,
       });
     }
   } else if (to === "POPUP") {
@@ -93,10 +105,10 @@ const transferTo = (to, tabId, params) => {
       type: DATA_EVENT,
       subType: POPUP_DATA_EVENT,
       tabId,
-      ...params
+      ...params,
     });
   }
-}
+};
 
 const sendData = (to, tabId) => {
   const dataToSend = JSON.stringify(catchData[tabId] || {});
@@ -108,11 +120,8 @@ const sendData = (to, tabId) => {
     transferTo(to, tabId, params);
   } catch (err) {
     if (
-      err.message.includes(
-        "Message length exceeded maximum allowed length"
-      )
+      err.message.includes("Message length exceeded maximum allowed length")
     ) {
-
       const chunkCount = Math.ceil(dataToSend.length / MAX_DATA_SIZE);
 
       for (let i = 0; i < chunkCount; i++) {
@@ -127,19 +136,14 @@ const sendData = (to, tabId) => {
       transferTo(to, tabId, {
         split: "end",
       });
-
     } else {
       console.error(err);
     }
   }
-}
+};
 
 const saveCatchData = (request, { id: tabId, title }, subType) => {
-
-  let {
-    data,
-    split,
-  } = request;
+  let { data, split } = request;
 
   if (!catchData[tabId]) {
     catchData[tabId] = {
@@ -148,6 +152,7 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
       },
       useReducer: {},
       context: {},
+      reactInfo: {},
     };
     chunkData[tabId] = [];
   }
@@ -158,7 +163,7 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
   }
 
   if (split === "end") {
-    data = chunkData[tabId].join('') || "{}";
+    data = chunkData[tabId].join("") || "{}";
     chunkData[tabId] = [];
   }
 
@@ -167,13 +172,13 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
 
   if (parsedData.context) {
     const cacheContext = catchData[tabId].context;
-    Object.keys(parsedData.context).forEach(key => {
+    Object.keys(parsedData.context).forEach((key) => {
       if (parsedData.context[key].valueChanged) {
         if (!cacheContext[key]) {
           cacheContext[key] = {
             oldValue: {},
             newValue: {},
-          }
+          };
         }
 
         cacheContext[key].oldValue = cacheContext[key].newValue;
@@ -182,7 +187,7 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
     });
 
     if (subType !== ADD_APP_DATA_EVENT) {
-      Object.keys(cacheContext).forEach(key => {
+      Object.keys(cacheContext).forEach((key) => {
         if (!parsedData.context[key] && cacheContext[key].newValue.remove) {
           delete cacheContext[key];
         }
@@ -192,17 +197,21 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
 
   if (parsedData.useReducer) {
     const cacheUseReducer = catchData[tabId].useReducer;
-    Object.keys(parsedData.useReducer).forEach(key => {
+    Object.keys(parsedData.useReducer).forEach((key) => {
       if (parsedData.useReducer[key].valueChanged) {
         cacheUseReducer[key] = parsedData.useReducer[key];
       }
     });
 
-    Object.keys(cacheUseReducer).forEach(key => {
+    Object.keys(cacheUseReducer).forEach((key) => {
       if (!parsedData.useReducer[key]) {
         delete cacheUseReducer[key];
       }
     });
+  }
+
+  if (parsedData.reactInfo) {
+    catchData[tabId].reactInfo = parsedData.reactInfo;
   }
 };
 
@@ -210,14 +219,28 @@ const setAppPopup = (isActive, tabId) => {
   chrome.browserAction.setIcon({
     tabId,
     path: {
-      "16": `assets/icons/icon16${isActive ? "" : "-disabled"}.png`,
-      "32": `assets/icons/icon32${isActive ? "" : "-disabled"}.png`,
-      "48": `assets/icons/icon48${isActive ? "" : "-disabled"}.png`,
-      "128": `assets/icons/icon128${isActive ? "" : "-disabled"}.png`,
+      16: `assets/icons/icon16${isActive ? "" : "-disabled"}.png`,
+      32: `assets/icons/icon32${isActive ? "" : "-disabled"}.png`,
+      48: `assets/icons/icon48${isActive ? "" : "-disabled"}.png`,
+      128: `assets/icons/icon128${isActive ? "" : "-disabled"}.png`,
     },
   });
-  chrome.browserAction.setPopup({
-    tabId,
-    popup: "popup/popup.html",
-  });
+  if (isActive) {
+    chrome.storage.local.get(
+      ["startDebugWhen"],
+      (settings) => {
+        if (settings.startDebugWhen === "pageLoad") {
+          chrome.browserAction.setPopup({
+            tabId,
+            popup: "popup/popup.html",
+          });
+        } else {
+          chrome.browserAction.setPopup({
+            tabId,
+            popup: "popup/extenstionLoad.html",
+          });
+        }
+      }
+    );
+  }
 };

@@ -8,19 +8,15 @@
       }
 
       html, body {
-        width: 300px;
-        height: 70px;
+        width: 400px;
+        height: 110px;
       }
 
       body {
         margin: 0;
       }
 
-      .not-found-message {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+      .message {
         background: #222831;
         color: #fff;
         height: 100%;
@@ -29,7 +25,12 @@
 
       p {
         margin: 0;
-        padding: 0.3rem;
+        padding: 1rem;
+      }
+
+      hr {
+        width: 95%;
+        border-color: rgba(255,255,255,0.6);
       }
 
       a, a:visited {
@@ -39,11 +40,10 @@
   </head>
 
   <body>
-    <div class="not-found-message">
-      <p>React is not found in this page.</p>
-      <p>
-        if this seems wrong please <a target="_blank" href="https://github.com/deeppatel234/react-context-devtool/issues">create issue</a>.
-      </p>
+    <div class="message">
+      <p>Please open the developer tools and open "React Context" tab.</p>
+      <hr />
+      <p>if you want to load this extension on page load then you can change the settings in the "Extension options".</p>
     </div>
   </body>
 </html>

@@ -21,6 +21,7 @@ module.exports = ({ mode, distPath } = {}) => {
       "react-context-devtool-helper": `${PATHS.EXTENSION_DIR}/core/helper.js`,
       "devtool/devpanel": `${PATHS.SRC_DIR}/devpanel.index.js`,
       "popup/popup": `${PATHS.SRC_DIR}/popup.index.js`,
+      "options/options": `${PATHS.SRC_DIR}/options.index.js`,
     },
     output: {
       path: distPath,

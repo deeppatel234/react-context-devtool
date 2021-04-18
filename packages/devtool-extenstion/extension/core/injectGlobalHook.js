@@ -36,34 +36,6 @@ const loadHelpers = () => {
     });
 };
 
-/**
- * Depricated event REACT_CONTEXT_DEVTOOL_EXTENSION.
- *
- * removed in future release
- */
-function lagecyScriptToInject() {
-  window._REACT_CONTEXT_DEVTOOL = (data) => {
-    const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
-    window.postMessage(
-      {
-        type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT",
-        subType: "ADD_APP_DATA",
-        data: helpers.parseData({
-          context: {
-            [data.id]: {
-              displayName: data.displayName,
-              value: data.values,
-              valueChanged: true,
-              remove: false,
-            },
-          },
-        }),
-      },
-      "*"
-    );
-  };
-}
-
 function injectHelpers(target) {
   const isHTMLElement = function (el) {
     if ("HTMLElement" in window) {
@@ -77,8 +49,13 @@ function injectHelpers(target) {
     }
   };
 
+  // Find some better way to detect react fiber node object
+  const isReactNode = (k, v) => {
+    return k.startsWith("__reactFiber") && v.stateNode;
+  };
+
   const parseData = (data) => {
-    return JSON.stringify(data, function (k, v) {
+    const stringifyResolver = function (k, v) {
       if (typeof v === "function") {
         return "function () {}";
       }
@@ -89,7 +66,7 @@ function injectHelpers(target) {
         return `Set [${Array.from(v).toString()}]`;
       }
       if (v instanceof Map) {
-        return `Map [${Array.from(v).toString()}]`;
+        return `Map ${JSON.stringify(Object.fromEntries(v), stringifyResolver)}`;
       }
       if (v instanceof WeakSet) {
         return `WeekSet []`;
@@ -97,8 +74,13 @@ function injectHelpers(target) {
       if (v instanceof WeakMap) {
         return `WeakMap {}`;
       }
+      if (isReactNode(k, v)) {
+        return "<REACT NODE>";
+      }
       return v;
-    });
+    };
+
+    return JSON.stringify(data, stringifyResolver);
   };
 
   const loadHookHelper = () => {
@@ -146,28 +128,28 @@ function injectHelpers(target) {
  * ;(${injectReactDevtoolHook.toString()}(window))
  *
  */
-function injectReactDevtoolHook(target) {
-  if (target.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
-    return;
-  }
+// function injectReactDevtoolHook(target) {
+//   if (target.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+//     return;
+//   }
 
-  const renderers = new Map();
-  let uidCounter = 0;
+//   const renderers = new Map();
+//   let uidCounter = 0;
 
-  const inject = (renderer) => {
-    const id = ++uidCounter;
-    renderers.set(id, renderer);
-  };
+//   const inject = (renderer) => {
+//     const id = ++uidCounter;
+//     renderers.set(id, renderer);
+//   };
 
-  target.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
-    isDisabled: false,
-    supportsFiber: true,
-    renderers,
-    inject,
-    onCommitFiberRoot: function () {},
-    onCommitFiberUnmount: function () {},
-  };
-}
+//   target.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+//     isDisabled: false,
+//     supportsFiber: true,
+//     renderers,
+//     inject,
+//     onCommitFiberRoot: function () {},
+//     onCommitFiberUnmount: function () {},
+//   };
+// }
 
 const initHook = `
   window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK = {
@@ -176,27 +158,39 @@ const initHook = `
   };
 `;
 
-injectCode(`
-  ${initHook}
-  ;(${injectHelpers.toString()}(window))
-  ;(${lagecyScriptToInject.toString()}(window))
-  ;(${installHook.toString()}(window))
-`);
+chrome.runtime.sendMessage(
+  {
+    type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT",
+    subType: "LOCAL_STORAGE_DATA",
+  },
+  function (response) {
+    const settings = JSON.stringify(response);
+
+    injectCode(`
+      ${initHook}
+      ;(${injectHelpers.toString()}(window))
+      ;(${installHook.toString()}(window, ${settings}))
+    `);
+  }
+);
 
 window.addEventListener(
   "message",
   function (event) {
     if (event.source != window) return;
 
-    if (event.data.type === HOOK_EVENT) {
+    if (event.data.source === "react-devtools-detector") {
       if (!isExtensionActive) {
         chrome.runtime.sendMessage({
           type: DATA_EVENT,
           subType: "ACTIVATE_EXTENSTION",
+          data: event.data,
         });
         isExtensionActive = true;
       }
+    }
 
+    if (event.data.type === HOOK_EVENT) {
       if (event.data.subType === LOAD_HOOK_HELPER_EVENT) {
         loadHelpers();
         return;
@@ -246,8 +240,6 @@ window.addEventListener(
   false
 );
 
-chrome.runtime.onMessage.addListener(function (
-  request
-) {
+chrome.runtime.onMessage.addListener(function (request) {
   window.postMessage(request);
 });

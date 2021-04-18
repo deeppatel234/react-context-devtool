@@ -1,4 +1,4 @@
-export function installHook(target) {
+export function installHook(target, settings) {
   const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
   const DISPATCH_EVENT = "DISPATCH_EVENT";
 
@@ -7,24 +7,16 @@ export function installHook(target) {
     context: {},
   };
 
-  let debugOptions = {
-    debugReducer: true,
-    debugContext: true,
-    disable: false,
-    disableAutoMode: false,
-  };
+  let renderer = null;
+  let isDebuggingStarted = false;
+
+  const reactInfo = {};
 
   const dispatchAction = (event) => {
     if(event.type === "useReducer" && fiberNodeToDebug.useReducer[event.debugId]) {
       fiberNodeToDebug.useReducer[event.debugId].hook.queue.dispatch(event.data);
     }
   };
-
-  window.addEventListener('message', event => {
-    if (event.data.type === DATA_EVENT && event.data.subType === DISPATCH_EVENT) {
-      dispatchAction(event.data.data);
-    }
-  });
 
   // copy object is used to detect compoment is removed
   const fiberNodeToDebugCopy = {
@@ -46,7 +38,9 @@ export function installHook(target) {
   const sendDataToDevtool = () => {
     const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
 
-    const dataToSend = {};
+    const dataToSend = {
+      reactInfo,
+    };
 
     dataToSend.context = Object.keys(fiberNodeToDebug.context).reduce((memo, key) => {
       const debugObj = fiberNodeToDebug.context[key];
@@ -89,8 +83,6 @@ export function installHook(target) {
       data: helpers.parseData(dataToSend),
     }, "*");
   };
-
-  let renderer = null;
 
   /**
    * Debug for React useReducer API
@@ -171,6 +163,10 @@ export function installHook(target) {
    * @param {object} node
    */
   const doWorkWithContextProvider = (node) => {
+    if (!node.type) {
+      return;
+    }
+
     if (!node.type._context.__reactContextDevtoolDebugId) {
       node.type._context.__reactContextDevtoolDebugId = getUniqId();
     }
@@ -205,7 +201,7 @@ export function installHook(target) {
     const { memoizedState, tag, _debugHookTypes } = fiberNode;
 
     if (
-      debugOptions.debugReducer &&
+      settings.debugUseReducer &&
       renderer &&
       window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded &&
       memoizedState &&
@@ -234,7 +230,7 @@ export function installHook(target) {
      * https://github.com/facebook/react/tree/master/packages/react-reconciler/src/ReactWorkTags.js
      *
      */
-    if (debugOptions.debugContext && tag === 10) {
+    if (settings.debugContext && tag === 10) {
       doWorkWithContextProvider(fiberNode);
     }
   };
@@ -301,77 +297,19 @@ export function installHook(target) {
     }
   };
 
-  const debugFiber = (container, options) => {
-    debugOptions = { ...debugOptions, ...options };
-
-    if (
-      debugOptions.disable ||
-      debugOptions.disableAutoMode ||
-      typeof window === 'undefined' ||
-      (!debugOptions.debugReducer && !debugOptions.debugContext)
-    ) {
-      return false;
-    }
-
-    /**
-     * Find fiber tree from dom element
-     *
-     */
-    let fiberRoot = null;
-    if (container._internalRoot) {
-      fiberRoot = container._internalRoot;
-    } else if (container._reactRootContainer) {
-      const {
-        _reactRootContainer: { _internalRoot },
-      } = container;
-      fiberRoot = _internalRoot;
-    }
-
-    if (!fiberRoot) {
-      const rootKey = Object.keys(container).find((k) =>
-        k.startsWith("__reactContainer")
-      );
-      if (rootKey) {
-        fiberRoot = container[rootKey];
-        fiberRoot = fiberRoot.stateNode;
-      }
-    }
-
-    if (!fiberRoot) {
-      console.error(
-        "Fiber tree is not found in dom element. please use valid dom element that used in ReactDom.render method"
-      );
-      return;
-    }
-
-    if (debugOptions.debugReducer && !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
-      console.log(
-        "useReducer hook is not working due to some internal issue. please report bug or create issue."
-      );
-    }
-
+  const debugFiber = (params) => {
     const reactDebtoolGlobalhook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 
-    if (!reactDebtoolGlobalhook) {
-      console.log("Please install React Developer Tools extenstion.");
-      return;
-    }
+    renderer = params.renderer;
 
-    /**
-     * set react renderer
-     */
-    if (reactDebtoolGlobalhook.renderers) {
-      const firstRendererKey = reactDebtoolGlobalhook.renderers.keys().next().value;
-      renderer = reactDebtoolGlobalhook.renderers.get(firstRendererKey).currentDispatcherRef;
-    }
+    reactInfo.version = renderer ? renderer.version : "";
+    reactInfo.rendererPackageName = renderer ? renderer.rendererPackageName : "";
 
-    if (debugOptions.debugReducer && !renderer) {
-      console.error(
-        "useReducer hook debugger is not working due to some internal issue. please report an issue"
-      );
-    }
+    const fiberRoot = reactDebtoolGlobalhook.getFiberRoots(params.id).keys().next().value;
 
-    onCommitFiberRoot(fiberRoot);
+    if (fiberRoot) {
+      onCommitFiberRoot(fiberRoot);
+    }
 
     /**
      * Register react dom commit fiber callback
@@ -389,10 +327,67 @@ export function installHook(target) {
         onCommitFiberRoot(root);
         return debugFunction(rendererID, root, ...args);
       })(reactDebtoolGlobalhook.onCommitFiberRoot);
-    } else {
-      console.error("onCommitFiberRoot is not available in ReactDOM library");
     }
   };
 
-  target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debugFiber = debugFiber;
+  const loadHelperAndDebugFiber = (params) => {
+    isDebuggingStarted = true;
+
+    if (settings.debugUseReducer && !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
+      target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.loadHookHelper().then(() => {
+        debugFiber(params);
+      });
+    } else {
+      debugFiber(params);
+    }
+  };
+
+  const startDebug = () => {
+    if (
+      typeof window === 'undefined' ||
+      !window.__REACT_DEVTOOLS_GLOBAL_HOOK__ ||
+      (!settings.debugUseReducer && !settings.debugContext)
+    ) {
+      return false;
+    }
+
+    const reactDebtoolGlobalhook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+
+    if (settings.startDebugWhen === "extensionLoad") {
+      reactDebtoolGlobalhook.on("renderer-attached", (params) => {
+        if (!isDebuggingStarted) {
+          loadHelperAndDebugFiber(params);
+        }
+      });
+    } else if (
+      settings.startDebugWhen === "pageLoad" &&
+      reactDebtoolGlobalhook.renderers &&
+      !isDebuggingStarted
+    ) {
+      const firstRendererKey = reactDebtoolGlobalhook.renderers.keys().next().value;
+      loadHelperAndDebugFiber({
+        id: firstRendererKey,
+        renderer: reactDebtoolGlobalhook.renderers.get(firstRendererKey),
+      });
+    }
+  };
+
+  if (settings.startDebugWhen === "extensionLoad") {
+    startDebug();
+  }
+
+  window.addEventListener('message', event => {
+    if (event.data.source === "react-devtools-detector") {
+      if (settings.startDebugWhen === "pageLoad") {
+        reactInfo.mode = event.data.reactBuildType;
+        startDebug();
+      }
+    }
+
+    if (event.data.type === DATA_EVENT) {
+      if (event.data.subType === DISPATCH_EVENT) {
+        dispatchAction(event.data.data);
+      }
+    }
+  });
 }

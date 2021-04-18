@@ -1,5 +1,6 @@
 {
   "name": "devtool-extension",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "build:chrome": "cross-env NODE_ENV=production node ./browser/chrome/build",

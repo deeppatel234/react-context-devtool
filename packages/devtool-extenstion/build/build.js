@@ -15,9 +15,9 @@ const {
 
 const webpackConfig = require('./webpack.config');
 
-const EXTENSTION_FILES = ["assets", "devtool", "popup"];
+const EXTENSTION_FILES = ["assets", "devtool", "popup", "options"];
 const EXTENSION_CORE_FILES = ["background.js"];
-const BUILD_ID_REPLACE = ["popup/popup.html", "devtool/devpanel.html"];
+const BUILD_ID_REPLACE = ["popup/popup.html", "devtool/devpanel.html", "options/options.html"];
 
 const env = process.env.NODE_ENV || 'development';
 
