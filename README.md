@@ -24,7 +24,7 @@
 
 ## Set Display names
 
-### Set Display name for Context API
+### Display name for Context API
 
 - set `dispayName` props in `Provider`
 
@@ -42,7 +42,7 @@ or
   MyContext.displayName = "Context Display Name";
 ```
 
-### Set Display name for useReducer
+### Display name for useReducer
 
 - reducer function name is use as displayName in debug
 
