@@ -58,6 +58,9 @@ or
 | Enable Debug | useReducer  | `true`  |  enable/disable useReducer debug. Available only in development mode  |
 | | Context  | `true`  | enable/disable context debug  |
 
+<p align="center">
+  <img src="https://github.com/deeppatel234/react-context-devtool/blob/master/store-assets/screenshots/settings.jpeg?raw=true" width="50%"/>
+</p>
 
 ## License
 
