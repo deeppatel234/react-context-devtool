@@ -24,7 +24,7 @@
 
 ## Set Display names
 
-### Display name for Context API
+#### Display name for Context API
 
 - set `dispayName` props in `Provider`
 
@@ -42,9 +42,21 @@ or
   MyContext.displayName = "Context Display Name";
 ```
 
-### Display name for useReducer
+#### Display name for useReducer
 
 - reducer function name is use as displayName in debug
+
+## Settings
+
+- <b>Chrome</b> : right click on react-context-devtool icon and click on "Options"
+- <b>Firefox</b> : right click on react-context-devtool icon and click on "Manage Extenstion" and select "Preferences" tab
+
+| Name  | Type  | Default | Description  |
+| ------ | ------ | ------ | ------ |
+| Start Debugging  | On Extensions Load  | `true`  | Start data capturing after extenstion is opened in dev panel (recommended) |
+|   | On Page Load  | `false`  | Start data capturing after page load  |
+| Enable Debug | useReducer  | `true`  |  enable/disable useReducer debug. Available only in development mode  |
+| | Context  | `true`  | enable/disable context debug  |
 
 
 ## License
