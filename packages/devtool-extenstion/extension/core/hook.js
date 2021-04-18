@@ -381,8 +381,8 @@ export function installHook(target, settings) {
 
   window.addEventListener('message', event => {
     if (event.data.source === "react-devtools-detector") {
+      reactInfo.mode = event.data.reactBuildType;
       if (settings.startDebugWhen === "pageLoad") {
-        reactInfo.mode = event.data.reactBuildType;
         startDebug();
       }
     }
