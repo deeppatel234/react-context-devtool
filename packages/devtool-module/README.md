@@ -1,3 +1,7 @@
+
+## Package no longer supported. Please download directly from the [Chrome Web Store](https://chrome.google.com/webstore/detail/oddhnidmicpefilikhgeagedibnefkcf)
+
+
 <p align="center">
   <img src="https://github.com/deeppatel234/react-context-devtool/blob/master/store-assets/cover.png?raw=true" width="80%"/>
 </p>
