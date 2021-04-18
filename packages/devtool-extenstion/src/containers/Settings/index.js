@@ -8,6 +8,7 @@ const Settings = () => {
   const [startDebugWhen, setStartDebugWhen] = useState("extensionLoad");
   const [debugUseReducer, setDebugUseReducer] = useState(true);
   const [debugContext, setDebugContext] = useState(true);
+  const [showSuccessMsg, setShowSuccessMsg] = useState(false);
 
   const onChangeStartDebugWhen = (event) => {
     setStartDebugWhen(event.target.value);
@@ -45,7 +46,18 @@ const Settings = () => {
       debugContext,
     };
 
-    chrome.storage.local.set(settingstoSave);
+    let timer = null;
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    chrome.storage.local.set(settingstoSave, () => {
+      setShowSuccessMsg(true);
+      timer = setTimeout(() => {
+        setShowSuccessMsg(false);
+      }, 3000);
+    });
   };
 
   return (
@@ -119,6 +131,9 @@ const Settings = () => {
         </div>
       </div>
       <div className="setting-footer">
+        <div className="success-msg">
+          {showSuccessMsg ? "Settings save successfully" : null}
+        </div>
         <Button onClick={onClickSave}>Save</Button>
       </div>
     </div>
