@@ -78,7 +78,7 @@ const Settings = () => {
             <label htmlFor="extensionLoad" className="setting-radio-label">
               On Extensions Load
               <div className="light-text">
-                Start data capturing after extenstion is opened in dev panel
+                Start data capturing after extenstion is opened in dev panel (recommended)
               </div>
             </label>
           </div>
@@ -114,6 +114,9 @@ const Settings = () => {
             />
             <label htmlFor="useReducer" className="setting-radio-label">
               useReducer
+              <div className="light-text">
+                Available only in development mode
+              </div>
             </label>
           </div>
           <div className="setting-radio-wrapper">

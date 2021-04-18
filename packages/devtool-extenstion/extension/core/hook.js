@@ -202,19 +202,21 @@ export function installHook(target, settings) {
 
     if (
       settings.debugUseReducer &&
-      renderer &&
-      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded &&
+      _debugHookTypes &&
+      _debugHookTypes.length &&
+      // renderer &&
+      // window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded &&
       memoizedState &&
       Object.hasOwnProperty.call(memoizedState, "baseState")
     ) {
-      if (!_debugHookTypes || !_debugHookTypes.length) {
-        try {
-          window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber(
-            fiberNode,
-            renderer
-          );
-        } catch(err) {}
-      }
+      // if (!_debugHookTypes || !_debugHookTypes.length) {
+      //   try {
+      //     window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.inspectHooksOfFiber(
+      //       fiberNode,
+      //       renderer
+      //     );
+      //   } catch(err) {}
+      // }
 
       let temp = memoizedState;
       const hookTypes = _debugHookTypes || [];
@@ -333,13 +335,14 @@ export function installHook(target, settings) {
   const loadHelperAndDebugFiber = (params) => {
     isDebuggingStarted = true;
 
-    if (settings.debugUseReducer && !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
-      target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.loadHookHelper().then(() => {
-        debugFiber(params);
-      });
-    } else {
-      debugFiber(params);
-    }
+    debugFiber(params);
+    // if (settings.debugUseReducer && !window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.hookHelperLoaded) {
+    //   target.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers.loadHookHelper().then(() => {
+    //     debugFiber(params);
+    //   });
+    // } else {
+    //   debugFiber(params);
+    // }
   };
 
   const startDebug = () => {
