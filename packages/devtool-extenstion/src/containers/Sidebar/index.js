@@ -82,6 +82,9 @@ const Sidebar = () => {
         <div className="filters">
           {settings.debugUseReducer ? <Badge>useReducers List</Badge> : null}
           {settings.debugContext ? <Badge>Context List</Badge> : null}
+          {!settings.debugContext && !settings.debugUseReducer ? (
+            <Badge>Context List</Badge>
+          ) : null}
         </div>
       )}
       <ul className="debuglist">

@@ -109,6 +109,29 @@ function injectHelpers(target) {
   };
 }
 
+function manualScriptToInject() {
+  window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debug = (data) => {
+    const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
+    window.postMessage(
+      {
+        type: "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_EVENT",
+        subType: "ADD_APP_DATA",
+        data: helpers.parseData({
+          context: {
+            [data.id]: {
+              displayName: data.displayName,
+              value: data.values,
+              valueChanged: true,
+              remove: false,
+            },
+          },
+        }),
+      },
+      "*"
+    );
+  };
+}
+
 /**
  * use react devtool internals for debug
  *
@@ -169,6 +192,7 @@ chrome.runtime.sendMessage(
     injectCode(`
       ${initHook}
       ;(${injectHelpers.toString()}(window))
+      ;(${manualScriptToInject.toString()}(window))
       ;(${installHook.toString()}(window, ${settings}))
     `);
   }

@@ -1,5 +1,24 @@
 import React, { useEffect, useReducer, useState, useContext } from "react";
-import ContextDevTool from "react-context-devtool";
+// import ContextDevTool from "react-context-devtool";
+
+
+export const ContextDevTool = ({
+  id,
+  context: Context,
+  displayName,
+}) => {
+  return (
+    <Context.Consumer>
+      {(values) => {
+        if (typeof window !== "undefined" && window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK) {
+          window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debug({ id, displayName, values });
+        }
+        return null;
+      }}
+    </Context.Consumer>
+  );
+};
+
 
 const MyContext1 = React.createContext({});
 const MyContext2 = React.createContext({});
@@ -179,9 +198,9 @@ class App extends React.Component {
             {/* {
               new Array(6000).fill().map((d, ind) => <div>{ind}</div>)
             } */}
-            {/* <MyContext1.Provider value={{ d: 123 , id: counter1 }} sdisplayName="test"> */}
+            <MyContext1.Provider value={{ d: 123 , id: counter1 }} sdisplayName="test">
             {/* <> */}
-                {/* <button onClick={() => this.setState({ counter1: counter1 + 1 })}>Click Me {counter1}</button> */}
+                <button onClick={() => this.setState({ counter1: counter1 + 1 })}>Click Me {counter1}</button>
                 {/* <button onClick={() => changeValue({type: 'increment'})}>ddddddddddddddddddddd</button> */}
                 <Counter />
                 {/* <div id="root1">ssss</div> */}
@@ -192,13 +211,13 @@ class App extends React.Component {
                   counter1 < 5 && <Test />
                 } */}
                 <Test2 id={counter1} />
-                {/* <ContextDevTool
+                <ContextDevTool
                   context={MyContext1}
                   id="cont2"
                   displayName="Demo Context"
-                /> */}
+                />
               {/* </> */}
-             {/* </MyContext1.Provider> */}
+             </MyContext1.Provider>
           </>
         );
     }
