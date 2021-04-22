@@ -14,4 +14,11 @@ header {
     border-radius: 3px;
     font-size: 0.8rem;
   }
+
+  .title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

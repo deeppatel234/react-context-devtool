@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <header>
-      <div>{tab.title || "React Context Devtool"}</div>
+      <div className="title">{tab.title || "React Context Devtool"}</div>
       <div>
         {reactInfo.version ? (
           <span className="pill">
