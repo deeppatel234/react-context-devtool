@@ -55,6 +55,8 @@ function injectHelpers(target) {
   };
 
   const parseData = (data) => {
+    //For Detecting Circular Structures
+    const seen = new WeakSet();
     const stringifyResolver = function (k, v) {
       if (typeof v === "function") {
         return "function () {}";
@@ -76,6 +78,13 @@ function injectHelpers(target) {
       }
       if (isReactNode(k, v)) {
         return "<REACT NODE>";
+      }
+      //Detect Circular Structure
+      if (typeof v === "object" && v !== null) {
+        if (seen.has(v)) {
+          return "Circular Structure";
+        }
+        seen.add(v);
       }
       return v;
     };
