@@ -46,7 +46,7 @@ export function installHook(target, settings) {
       const debugObj = fiberNodeToDebug.context[key];
       if (debugObj.valueChanged) {
         memo[key] = {
-          value: debugObj.value,
+          value: helpers.parseData(debugObj.value),
           displayName: debugObj.displayName,
           valueChanged: debugObj.valueChanged,
           remove: true,

@@ -55,8 +55,9 @@ function injectHelpers(target) {
   };
 
   const parseData = (data) => {
-    //For Detecting Circular Structures
-    const seen = new WeakSet();
+    // For Detecting Circular Structures
+    const seen = new WeakMap();
+
     const stringifyResolver = function (k, v) {
       if (typeof v === "function") {
         return "function () {}";
@@ -65,10 +66,10 @@ function injectHelpers(target) {
         return `<${v.tagName}> HTMLElemet`;
       }
       if (v instanceof Set) {
-        return `Set [${Array.from(v).toString()}]`;
+        return `Set [${parseData(Array.from(v))}]`;
       }
       if (v instanceof Map) {
-        return `Map ${JSON.stringify(Object.fromEntries(v), stringifyResolver)}`;
+        return `Map ${parseData(Object.fromEntries(v))}`;
       }
       if (v instanceof WeakSet) {
         return `WeekSet []`;
@@ -79,12 +80,12 @@ function injectHelpers(target) {
       if (isReactNode(k, v)) {
         return "<REACT NODE>";
       }
-      //Detect Circular Structure
+      // Detect Circular Structure
       if (typeof v === "object" && v !== null) {
         if (seen.has(v)) {
-          return "Circular Structure";
+          return `<CIRCULER OBJECT> ${seen.get(v)}`;
         }
-        seen.add(v);
+        seen.set(v, k);
       }
       return v;
     };

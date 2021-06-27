@@ -183,6 +183,7 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
 
         cacheContext[key].oldValue = cacheContext[key].newValue;
         cacheContext[key].newValue = parsedData.context[key];
+        cacheContext[key].newValue.value = JSON.parse(cacheContext[key].newValue.value || null);
       }
     });
 
