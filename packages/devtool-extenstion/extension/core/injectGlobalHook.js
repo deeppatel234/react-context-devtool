@@ -66,10 +66,10 @@ function injectHelpers(target) {
         return `<${v.tagName}> HTMLElemet`;
       }
       if (v instanceof Set) {
-        return `Set [${parseData(Array.from(v))}]`;
+        return Array.from(v);
       }
       if (v instanceof Map) {
-        return `Map ${parseData(Object.fromEntries(v))}`;
+        return Object.fromEntries(v);
       }
       if (v instanceof WeakSet) {
         return `WeekSet []`;
