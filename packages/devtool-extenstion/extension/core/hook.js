@@ -65,7 +65,7 @@ export function installHook(target, settings) {
       if (debugObj.valueChanged) {
         memo[key] = {
           actions: debugObj.actions,
-          state: debugObj.state,
+          state: helpers.parseData(debugObj.state),
           valueChanged: debugObj.valueChanged,
           displayName: debugObj.displayName,
         };
