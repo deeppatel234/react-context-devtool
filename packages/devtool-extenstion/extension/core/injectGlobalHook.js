@@ -83,7 +83,7 @@ function injectHelpers(target) {
       // Detect Circular Structure
       if (typeof v === "object" && v !== null) {
         if (seen.has(v)) {
-          return `<CIRCULER OBJECT> ${seen.get(v)}`;
+          return `<CIRCULAR OBJECT> ${seen.get(v)}`;
         }
         seen.set(v, k);
       }
