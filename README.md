@@ -19,7 +19,7 @@
 
 - Download extension from
 	- [Chrome Web Store](https://chrome.google.com/webstore/detail/oddhnidmicpefilikhgeagedibnefkcf)
-    - [Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool/)
+    - [Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool1)
     - [Microsoft Edge Addons Store](https://microsoftedge.microsoft.com/addons/detail/react-context-devtool/bnclaomncapgohhafjepfklgbjdjlfcd)
 
 ## Set Display names
