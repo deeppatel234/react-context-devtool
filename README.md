@@ -65,3 +65,7 @@ or
 ## License
 
 MIT
+
+---
+
+Cross-browser testing provided by <a href="http://browserstack.com">Browserstack</a>.
