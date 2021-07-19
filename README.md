@@ -18,9 +18,11 @@
 ## Installation
 
 - Download extension from
-	- [Chrome Web Store](https://chrome.google.com/webstore/detail/oddhnidmicpefilikhgeagedibnefkcf)
-    - [Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool1)
+    - [Chrome Web Store](https://chrome.google.com/webstore/detail/oddhnidmicpefilikhgeagedibnefkcf)
     - [Microsoft Edge Addons Store](https://microsoftedge.microsoft.com/addons/detail/react-context-devtool/bnclaomncapgohhafjepfklgbjdjlfcd)
+    - [Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool1) (latest)
+    - [Firefox Addons Store](https://addons.mozilla.org/en-US/firefox/addon/react-context-devtool) (upto V3.3)
+
 
 ## Set Display names
 
