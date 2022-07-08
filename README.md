@@ -64,6 +64,11 @@ or
   <img src="https://github.com/deeppatel234/react-context-devtool/blob/master/store-assets/screenshots/settings.jpeg?raw=true" width="50%"/>
 </p>
 
+## Troubleshooting
+
+### "React is not found in this page" when using NextJS
+This extension requires [React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en) installed on your browser to work. Try to install the extension and restart the browser to fix it.
+
 ## License
 
 MIT
