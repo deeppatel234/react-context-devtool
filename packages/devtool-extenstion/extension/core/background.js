@@ -201,7 +201,8 @@ const saveCatchData = (request, { id: tabId, title }, subType) => {
     Object.keys(parsedData.useReducer).forEach((key) => {
       if (parsedData.useReducer[key].valueChanged) {
         cacheUseReducer[key] = parsedData.useReducer[key];
-        cacheUseReducer[key].state = JSON.parse(cacheUseReducer[key].state || null);
+        cacheUseReducer[key].state = cacheUseReducer[key].state.map(JSON.parse);
+        cacheUseReducer[key].actions = cacheUseReducer[key].actions.map(JSON.parse);
       }
     });
 

@@ -64,8 +64,8 @@ export function installHook(target, settings) {
       const debugObj = fiberNodeToDebug.useReducer[key];
       if (debugObj.valueChanged) {
         memo[key] = {
-          actions: debugObj.actions,
-          state: helpers.parseData(debugObj.state),
+          actions: debugObj.actions.map(helpers.parseData),
+          state: debugObj.state.map(helpers.parseData),
           valueChanged: debugObj.valueChanged,
           displayName: debugObj.displayName,
         };
