@@ -1,6 +1,6 @@
 {
   "name": "React Context DevTool",
-  "version": "3.4",
+  "version": "3.5",
   "description": "Devtool for React Context and useReducer",
   "manifest_version": 2,
   "icons": {
