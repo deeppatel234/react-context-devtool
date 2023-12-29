@@ -213,7 +213,7 @@ window.addEventListener(
   function (event) {
     if (event.source != window) return;
 
-    if (event.data.source === "react-devtools-detector") {
+    if (event.data.source === "react-devtools-detector"  || event.data.source === "react-devtools-hook") {
       if (!isExtensionActive) {
         chrome.runtime.sendMessage({
           type: DATA_EVENT,
