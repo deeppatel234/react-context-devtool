@@ -9,6 +9,8 @@ const INIT_POPUP_EVENT = "INIT_POPUP";
 const POPUP_DATA_EVENT = "POPUP_DATA";
 const DISPATCH_EVENT = "DISPATCH_EVENT";
 
+let chunks = [];
+
 const registerTab = (onMessage, eventRef) => {
   let tabId = null;
 
