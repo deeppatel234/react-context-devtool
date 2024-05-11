@@ -20,6 +20,5 @@ module.exports = {
       },
     ],
     '@babel/preset-react',
-    '@babel/preset-typescript',
   ],
 };
