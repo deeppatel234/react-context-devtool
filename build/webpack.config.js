@@ -17,8 +17,8 @@ module.exports = ({ mode, distPath } = {}) => {
     mode,
     devtool: isDevelopment ? "cheap-module-source-map" : false,
     entry: {
-      injectGlobalHook: `${PATHS.EXTENSION_DIR}/core/content/injectGlobalHook.js`,
-      mainContent: `${PATHS.EXTENSION_DIR}/core/content/mainContent.js`,
+      injectGlobalHook: `${PATHS.EXTENSION_DIR}/core/content/index.js`,
+      mainContent: `${PATHS.EXTENSION_DIR}/core/mainContent/index.js`,
       background: `${PATHS.EXTENSION_DIR}/core/background/index.js`,
       "devtool/devpanel": `${PATHS.SRC_DIR}/devpanel.index.js`,
       "popup/popup": `${PATHS.SRC_DIR}/popup.index.js`,
