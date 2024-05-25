@@ -1,12 +1,9 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import OptionsApp from "./containers/OptionsApp";
 
-const Options = () => {
-  return (
-    <OptionsApp />
-  );
-};
+const domNode = document.getElementById("optionsRoot");
+const root = createRoot(domNode);
 
-ReactDOM.render(<Options />, document.getElementById("optionsRoot"));
+root.render(<OptionsApp />);

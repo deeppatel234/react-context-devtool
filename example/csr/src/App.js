@@ -1,35 +1,35 @@
-import React, { useEffect, useReducer, useState, useContext } from "react";
+import React, {
+  useEffect,
+  useReducer,
+  useState,
+  useContext,
+  useMemo,
+} from "react";
 // import ContextDevTool from "react-context-devtool";
 
-
-export const ContextDevTool = ({
-  id,
-  context: Context,
-  displayName,
-}) => {
+export const ContextDevTool = ({ id, context: Context, displayName }) => {
   return (
     <Context.Consumer>
       {(values) => {
-        if (typeof window !== "undefined" && window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK) {
-          window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debug({ id, displayName, values });
-        }
+        // if (typeof window !== "undefined" && window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK) {
+        //   window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.debug({ id, displayName, values });
+        // }
         return null;
       }}
     </Context.Consumer>
   );
 };
 
-
 const MyContext1 = React.createContext({});
 const MyContext2 = React.createContext({});
 
 MyContext1.displayName = "MyContext1";
-MyContext2.displayName = "MyContext2";
+// MyContext2.displayName = "MyContext2";
 
 const demo = {
-    id: "0001",
-    type: "demo",
-    name: "Context Demo",
+  id: "0001",
+  type: "demo",
+  name: "Context Demo",
 };
 
 const ws = new WeakSet();
@@ -37,65 +37,69 @@ const foo = {};
 
 ws.add(foo);
 
-let myMap = new Map()
-myMap.set("s", 'not a number')
+let myMap = new Map();
+myMap.set("s", "not a number");
 
 const valuesToTest = {
-  f: new Set([1,2, 3,3]),
+  f: new Set([1, 2, 3, 3]),
   g: ws,
   h: myMap,
   i: ws,
-}
+};
 
 const Test = () => {
-    const [counter3, setCounter3] = React.useState(0);
-    const [counter4, setCounter4] = React.useState(0);
+  // const [counter3, setCounter3] = React.useState(0);
+  const [counter4, setCounter4] = React.useState(0);
 
-    return (
-        <div>
-            {/* <button onClick={() => setCounter3(counter3 + 1)}>
+  const pVal = useMemo(() => {
+    return { id: counter4, b: "world" };
+  }, [counter4]);
+
+  return (
+    <div>
+      {/* <button onClick={() => setCounter3(counter3 + 1)}>
                 Click 3 Me {counter3}
             </button> */}
-            {/* <button onClick={() => setCounter4(counter4 + 1)}>Click 4 Me {counter4}</button> */}
-            <MyContext2.Provider value={{ id: counter4, b: "world" }}>
-                {/* <ContextDevTool
+      {/* <button onClick={() => setCounter4(counter4 + 1)}>Click 4 Me {counter4}</button> */}
+      <MyContext2.Provider value={pVal}>
+        {/* <ContextDevTool
           context={MyContext2}
           id="cont2"
           displayName="Demo Context"
         /> */}
-                <button onClick={() => setCounter4(counter4 + 1)}>
-                    Click 4 Me {counter4}
-                </button>
-            </MyContext2.Provider>
-        </div>
-    );
+        <button onClick={() => setCounter4(counter4 + 1)}>
+          Click 4 Me {counter4}
+        </button>
+      </MyContext2.Provider>
+    </div>
+  );
 };
 
-class Test2 extends React.Component {
-    constructor(props) {
-        super(props);
+// class Test2 extends React.Component {
+//     constructor(props) {
+//         super(props);
 
-        this.state = {
-            counter5: 0,
-        };
-    }
+//         this.state = {
+//             counter5: 0,
+//         };
+//     }
 
-    render() {
-        const { counter5 } = this.state;
-        const { id } = this.props;
-        // const { id } = this.context;
+//     render() {
+//         const { counter5 } = this.state;
+//         const { id } = this.props;
+//         // const { id } = this.context;
 
-        return (
-          <MyContext2.Provider value={{ id: counter5, b: "world", ...valuesToTest }}>
-            <button onClick={() => this.setState({ counter5: counter5 + 1 })}>
-                Click 5 Me {counter5} {id}
-            </button>
-          </MyContext2.Provider>
-        );
-    }
-}
+//         return (
+//           <MyContext2.Provider value={{ id: counter5, b: "world", ...valuesToTest }}>
+//             <button onClick={() => this.setState({ counter5: counter5 + 1 })}>
+//                 Click 5 Me {counter5} {id}
+//             </button>
+//           </MyContext2.Provider>
+//         );
+//     }
+// }
 
-Test2.contextType = MyContext1;
+// Test2.contextType = MyContext1;
 
 // function App() {
 //   const [counter1, setCounter1] = React.useState(0);
@@ -144,20 +148,20 @@ Test2.contextType = MyContext1;
 //   );
 // }
 
-const initialState = {count: 0};
+const initialState = { count: 0 };
 
-// let counter = 0;
+// // let counter = 0;
 
 function myReducer(state, action) {
   // counter++;
   // console.log(counter);
   switch (action.type) {
-    case 'increment':
-      return {count: state.count + 1};
-    case 'decrement':
-      return {count: state.count - 1};
+    case "increment":
+      return { count: state.count + 1 };
+    case "decrement":
+      return { count: state.count - 1 };
     default:
-      // throw new Error();
+    // throw new Error();
   }
 
   return state;
@@ -169,58 +173,67 @@ function Counter() {
   // const [state2, dispatch3] = useReducer(reducer, initialState);
   // const [abcd, setabcd] = useState(2);
 
-
   return (
     <>
       {/* Count: {dd.id} */}
       Count: {state.count}
-      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
-      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+      <button onClick={() => dispatch({ type: "increment" })}>+</button>
     </>
   );
 }
 
-const d = "a".repeat(1 * 1024 * 1024);
+// const d = "a".repeat(1 * 1024 * 1024);
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            counter1: 1,
-        };
-    }
+    this.state = {
+      counter1: 1,
+    };
+  }
 
-    render() {
-      const { counter1 } = this.state;
-        return (
-          <>
-            {/* {
+  render() {
+    const { counter1 } = this.state;
+    return (
+      <>
+        {/* {
               new Array(6000).fill().map((d, ind) => <div>{ind}</div>)
             } */}
-            <MyContext1.Provider value={{ d: 123 , id: counter1 }} sdisplayName="test">
-            {/* <> */}
-                <button onClick={() => this.setState({ counter1: counter1 + 1 })}>Click Me {counter1}</button>
-                {/* <button onClick={() => changeValue({type: 'increment'})}>ddddddddddddddddddddd</button> */}
-                <Counter />
-                {/* <div id="root1">ssss</div> */}
-                {
+        <MyContext1.Provider
+          value={{ d: 123, id: counter1 }}
+          sdisplayName="test"
+        >
+          {/* <> */}
+          <button onClick={() => this.setState({ counter1: counter1 + 1 })}>
+            Click Me {counter1}
+          </button>
+          {/* <button onClick={() => changeValue({type: 'increment'})}>ddddddddddddddddddddd</button> */}
+
+          {/* <div id="root1">ssss</div> */}
+          {/* {
                   counter1 < 4 && <Counter />
-                }
-                {/* {
+                } */}
+          {/* {
                   counter1 < 5 && <Test />
                 } */}
-                <Test2 id={counter1} />
+          {/* <Test /> */}
+          {counter1 < 5 && <Test />}
+          {/* <Test2 id={counter1} />
                 <ContextDevTool
                   context={MyContext1}
                   id="cont2"
                   displayName="Demo Context"
-                />
-              {/* </> */}
-             </MyContext1.Provider>
-          </>
-        );
-    }
+                /> */}
+          {/* </> */}
+          <div style={{ padding: 40 }}>
+            <Counter />
+          </div>
+        </MyContext1.Provider>
+      </>
+    );
+  }
 }
 
 export default App;

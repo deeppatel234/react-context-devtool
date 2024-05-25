@@ -1,15 +1,16 @@
 {
   "name": "React Context DevTool",
-  "version": "3.6",
+  "version": "4.0",
   "description": "Devtool for React Context and useReducer",
-  "manifest_version": 2,
+  "manifest_version": 3,
+  "minimum_chrome_version": "102",
   "icons": {
     "16": "assets/icons/icon16.png",
     "32": "assets/icons/icon32.png",
     "48": "assets/icons/icon48.png",
     "128": "assets/icons/icon128.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "assets/icons/icon16-disabled.png",
       "32": "assets/icons/icon32-disabled.png",
@@ -19,16 +20,34 @@
     "default_popup": "popup/disabled.html"
   },
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
   "devtools_page": "devtool/devtool.html",
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": false
   },
-  "permissions": ["storage", "file:///*", "http://*/*", "https://*/*"],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;",
+  "permissions": [
+    "storage",
+    "scripting"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "mainContent.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "extension_ids": []
+    }
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -36,8 +55,5 @@
       "run_at": "document_start",
       "all_frames": true
     }
-  ],
-  "web_accessible_resources": [
-    "react-context-devtool-helper.js"
   ]
 }

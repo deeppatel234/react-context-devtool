@@ -4,9 +4,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-const PUBLIC_DIR = path.resolve(__dirname, './public');
-const DIST_DIR = path.resolve(__dirname, './dist');
-const CLIENT_DIR = path.resolve(__dirname, './src');
+const PUBLIC_DIR = path.resolve(__dirname, 'public');
+const DIST_DIR = path.resolve(__dirname, 'dist');
+const CLIENT_DIR = path.resolve(__dirname, 'src');
 
 const PORT = 8091;
 

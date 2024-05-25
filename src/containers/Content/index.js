@@ -15,10 +15,10 @@ const Content = () => {
     <div id="content">
       <Sidebar />
       <section>
-        {selectedDebug.type === "context" && (
+        {debugData && selectedDebug.type === "context" && (
           <ContextView id={selectedDebug.id} debugData={debugData} />
         )}
-        {selectedDebug.type === "useReducer" && (
+        {debugData && selectedDebug.type === "useReducer" && (
           <UseReducerView id={selectedDebug.id} debugData={debugData} />
         )}
       </section>

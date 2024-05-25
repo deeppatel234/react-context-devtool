@@ -17,8 +17,9 @@ module.exports = ({ mode, distPath } = {}) => {
     mode,
     devtool: isDevelopment ? "cheap-module-source-map" : false,
     entry: {
-      injectGlobalHook: `${PATHS.EXTENSION_DIR}/core/injectGlobalHook.js`,
-      "react-context-devtool-helper": `${PATHS.EXTENSION_DIR}/core/helper.js`,
+      injectGlobalHook: `${PATHS.EXTENSION_DIR}/core/content/injectGlobalHook.js`,
+      mainContent: `${PATHS.EXTENSION_DIR}/core/content/mainContent.js`,
+      background: `${PATHS.EXTENSION_DIR}/core/background/index.js`,
       "devtool/devpanel": `${PATHS.SRC_DIR}/devpanel.index.js`,
       "popup/popup": `${PATHS.SRC_DIR}/popup.index.js`,
       "options/options": `${PATHS.SRC_DIR}/options.index.js`,
@@ -39,8 +40,6 @@ module.exports = ({ mode, distPath } = {}) => {
             configFile: path.resolve(
               __dirname,
               '..',
-              '..',
-              '..',
               'babel.config.js',
             ),
           },
@@ -54,9 +53,6 @@ module.exports = ({ mode, distPath } = {}) => {
           use: [
             {
               loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: isDevelopment,
-              },
             },
             {
               loader: 'css-loader',

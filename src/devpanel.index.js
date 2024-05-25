@@ -1,77 +1,62 @@
 /* global chrome */
 
-import React, { useState, useEffect, useRef } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useEffect } from "react";
+import { createRoot } from "react-dom/client";
+
+import { onMessage, sendMessage } from "@ext-browser/messaging/devtools";
+
+const domNode = document.getElementById("devPanelRoot");
+const root = createRoot(domNode);
+
 import App from "Containers/App";
 
-const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
-const INIT_DEVPANEL_EVENT = "INIT_DEVPANEL";
-const DEVPANEL_DATA_EVENT = "DEVPANEL_DATA";
-const DISPATCH_EVENT = "DISPATCH_EVENT";
-
-let chunks = [];
-
-const registerTab = (onMessage, eventRef) => {
-  const tabId = chrome.devtools.inspectedWindow.tabId;
-  const backgroundPageConnection = chrome.runtime.connect({
-    name: tabId ? tabId.toString() : undefined
-  });
-
-  backgroundPageConnection.onMessage.addListener(event => {
-    if (
-      event.type === DATA_EVENT &&
-      event.subType === DEVPANEL_DATA_EVENT
-    ) {
-      let { data, split } = event;
-
-      if (split === "chunk") {
-        chunks.push(data);
-        return;
-      }
-
-      if (split === "end") {
-        data = chunks.join('') || "{}";
-        chunks = [];
-      }
-
-      onMessage(JSON.parse(data));
+const convertStringToObj = (data) => {
+  Object.values(data.context).forEach((item) => {
+    if (typeof item.newValue.value === "string") {
+      item.newValue.value = JSON.parse(item.newValue.value);
     }
   });
 
-  backgroundPageConnection.postMessage({
-    tabId,
-    type: DATA_EVENT,
-    subType: INIT_DEVPANEL_EVENT,
-  });
-
-  eventRef.current.postMessage = (action) => {
-    backgroundPageConnection.postMessage({
-      tabId,
-      type: DATA_EVENT,
-      subType: DISPATCH_EVENT,
-      data: action
+  Object.values(data.useReducer).forEach((item) => {
+    item.actions = item.actions.map((action) => {
+      if (typeof action === "string") {
+        return JSON.parse(action);
+      }
+      return action;
     });
-  };
+    item.state = item.state.map((state) => {
+      if (typeof state === "string") {
+        return JSON.parse(state);
+      }
+      return state;
+    });
+  });
 };
 
 const DevPanel = () => {
   const [appData, setAppData] = useState(null);
-  const eventRef = useRef();
 
   useEffect(() => {
-    eventRef.current = {};
-    registerTab(onMessage, eventRef);
+    onMessage("context-data", (data) => {
+      convertStringToObj(data);
+      setAppData(data);
+    });
   }, []);
 
-  const onMessage = data => {
-    setAppData(data);
+  const onDispatchAction = (action) => {
+    // eventRef.current.postMessage = (action) => {
+    //   backgroundPageConnection.postMessage({
+    //     tabId,
+    //     type: DATA_EVENT,
+    //     subType: DISPATCH_EVENT,
+    //     data: action
+    //   });
+    // };
   };
 
-  const onDispatchAction = action => {
-    eventRef.current.postMessage(action);
-  };
+  console.log("appData", appData);
 
   return <App appData={appData} onDispatchAction={onDispatchAction} />;
 };
 
-ReactDOM.render(<DevPanel />, document.getElementById("devPanelRoot"));
+root.render(<DevPanel />);
