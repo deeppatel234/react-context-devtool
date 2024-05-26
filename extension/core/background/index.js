@@ -6,19 +6,17 @@ import { saveCatchData } from "./contextData";
 
 initMessaging();
 
-onMessage("ACTIVATE_EXTENSTION", (event, { senderTab }) => {
-  console.log("event", event, senderTab);
-
-  activateExtension(event.reactBuildType, senderTab.id);
+onMessage("ACTIVATE_EXTENSTION", (event, { sender }) => {
+  activateExtension(event.reactBuildType, sender.tab.id);
 
   executeScriptInMainWorld({
-    target: { tabId: senderTab.id },
+    target: { tabId: sender.tab.id },
     files: ["mainContent.js"],
   });
 });
 
-onMessage("CONTEXT_DATA_UPDATED", (data, { senderTab }) => {
-  saveCatchData(senderTab, data);
+onMessage("CONTEXT_DATA_UPDATED", (data, { sender }) => {
+  saveCatchData(sender.tab, data);
 });
 
 
