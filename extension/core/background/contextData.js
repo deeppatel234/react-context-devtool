@@ -2,25 +2,27 @@ import { sendMessage } from "@ext-browser/messaging/background";
 
 const catchData = {};
 
-export const saveCatchData = ({ id: tabId, title }, data) => {
-  const parsedData = JSON.parse(data);
-  console.log(parsedData);
+export const saveCatchData = async ({ id: tabId, title }, data = {}) => {
+  console.log("data", data);
 
   if (!catchData[tabId]) {
     catchData[tabId] = {
+      tabId,
       tab: {},
       context: {},
       useReducer: {},
       reactInfo: {},
+      reactDevtoolPayload: {},
+      isReactDetected: false,
     };
   }
 
   catchData[tabId].tab.title = title;
 
-  if (parsedData.context) {
+  if (data.context) {
     const cacheContext = catchData[tabId].context;
 
-    Object.keys(parsedData.context).forEach((key) => {
+    Object.keys(data.context).forEach((key) => {
       if (!cacheContext[key]) {
         cacheContext[key] = {
           oldValue: {},
@@ -29,34 +31,48 @@ export const saveCatchData = ({ id: tabId, title }, data) => {
       }
 
       cacheContext[key].oldValue = cacheContext[key].newValue;
-      cacheContext[key].newValue = parsedData.context[key];
+      cacheContext[key].newValue = data.context[key];
     });
 
     Object.keys(cacheContext).forEach((key) => {
-      if (!parsedData.contextKeys.includes(key)) {
+      if (!data.contextKeys.includes(key)) {
         delete cacheContext[key];
       }
     });
   }
 
-  if (parsedData.useReducer) {
+  if (data.useReducer) {
     const cacheUseReducer = catchData[tabId].useReducer;
 
-    Object.keys(parsedData.useReducer).forEach((key) => {
-      cacheUseReducer[key] = parsedData.useReducer[key];
+    Object.keys(data.useReducer).forEach((key) => {
+      cacheUseReducer[key] = data.useReducer[key];
     });
 
     Object.keys(cacheUseReducer).forEach((key) => {
-      if (!parsedData.useReducerKeys.includes(key)) {
+      if (!data.useReducerKeys.includes(key)) {
         delete cacheUseReducer[key];
       }
     });
   }
 
-  if (parsedData.reactInfo) {
-    catchData[tabId].reactInfo = parsedData.reactInfo;
+  if (data.reactInfo) {
+    catchData[tabId].reactInfo = data.reactInfo;
   }
 
-  sendMessage("popup", "context-data", catchData[tabId]);
-  sendMessage(`devtool:${tabId}`, "context-data", catchData[tabId]);
+  if (data.isReactDetected) {
+    catchData[tabId].isReactDetected = data.isReactDetected;
+  }
+
+  if (data.reactDevtoolPayload) {
+    catchData[tabId].reactDevtoolPayload = data.reactDevtoolPayload;
+  }
+
+  try {
+    await sendMessage(`devtool:${tabId}`, "CONTEXT_DATA", catchData[tabId]);
+    await sendMessage("popup", "CONTEXT_DATA", catchData[tabId]);
+  } catch (err) {}
+};
+
+export const removeCatchData = (tabId) => {
+  delete catchData[tabId];
 };

@@ -1,4 +1,4 @@
-import { onMessage, sendMessage } from "@ext-browser/messaging/contentWindow";
+import { onMessage } from "@ext-browser/messaging/contentWindow";
 import { installHook } from "./dataProcess";
 
 window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK = {
@@ -59,7 +59,7 @@ const injectHelpers = () => {
       return v;
     };
 
-    return JSON.stringify(data, stringifyResolver);
+    return JSON.parse(JSON.stringify(data, stringifyResolver));
   };
 
   window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers = {
@@ -69,11 +69,17 @@ const injectHelpers = () => {
 
 injectHelpers();
 
-sendMessage("MAIN_CONTENT_LOADED");
+const start = () => {
+  try {
+    onMessage("ENABLE_DEBUGGING", ({ settings, reactDevtoolPayload }) => {
+      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.settings = settings;
+      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.reactDevtoolPayload = reactDevtoolPayload;
 
-onMessage("START_DEVTOOL", ({ settings, reactDevtoolPayload }) => {
-  window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.settings = settings;
-  window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.reactDevtoolPayload = reactDevtoolPayload;
+      installHook({ settings, reactDevtoolPayload });
+    });
+  } catch(err) {
+    console.log("REACT_CONTEXT_DEVTOOL ERROR", err);
+  }
+};
 
-  installHook({ settings, reactDevtoolPayload });
-});
+start();

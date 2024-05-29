@@ -3,9 +3,6 @@ import { onMessage, sendMessage } from "@ext-browser/messaging/contentWindow";
 export function installHook({ settings, reactDevtoolPayload }) {
   console.log("start debuging");
 
-  // const DATA_EVENT = "__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK_DATA_EVENT";
-  // const DISPATCH_EVENT = "DISPATCH_EVENT";
-
   let renderer = null;
   const reactInfo = {
     reactDevtoolPayload,
@@ -18,13 +15,16 @@ export function installHook({ settings, reactDevtoolPayload }) {
     useReducerKeys: [],
   };
 
-  // const dispatchAction = (event) => {
-  //   if(event.type === "useReducer" && fiberNodeToDebug.useReducer[event.debugId]) {
-  //     fiberNodeToDebug.useReducer[event.debugId].hook.queue.dispatch(event.data);
-  //   }
-  // };
-
-  // // copy object is used to detect compoment is removed
+  onMessage("DISPATCH_USE_REDUCER_ACTION", (data) => {
+    if (
+      data.type === "useReducer" &&
+      fiberNodeToDebug.useReducer[data.debugId]
+    ) {
+      fiberNodeToDebug.useReducer[data.debugId].hook.queue.dispatch(
+        data.data
+      );
+    }
+  });
 
   const uniqId = () => {
     let counter = 0;
@@ -38,43 +38,42 @@ export function installHook({ settings, reactDevtoolPayload }) {
   const getUniqId = uniqId();
 
   const sendDataToDevtool = () => {
+    const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
 
-      const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
+    const dataToSend = {
+      reactInfo,
+      contextKeys: fiberNodeToDebug.contextKeys,
+      useReducerKeys: fiberNodeToDebug.useReducerKeys,
+    };
 
-      const dataToSend = {
-        reactInfo,
-        contextKeys: fiberNodeToDebug.contextKeys,
-        useReducerKeys: fiberNodeToDebug.useReducerKeys,
-      };
+    dataToSend.context = dataToSend.contextKeys.reduce((memo, key) => {
+      const debugObj = fiberNodeToDebug.context[key];
 
-      dataToSend.context = dataToSend.contextKeys.reduce((memo, key) => {
-        const debugObj = fiberNodeToDebug.context[key];
+      if (debugObj.valueChanged) {
+        memo[key] = {
+          value: helpers.parseData(debugObj.value),
+          displayName: debugObj.displayName,
+        };
+      }
 
-        if (debugObj.valueChanged) {
-          memo[key] = {
-            value: helpers.parseData(debugObj.value),
-            displayName: debugObj.displayName,
-          };
-        }
+      return memo;
+    }, {});
 
-        return memo;
-      }, {});
+    dataToSend.useReducer = dataToSend.useReducerKeys.reduce((memo, key) => {
+      const debugObj = fiberNodeToDebug.useReducer[key];
 
-      dataToSend.useReducer = dataToSend.useReducerKeys.reduce((memo, key) => {
-        const debugObj = fiberNodeToDebug.useReducer[key];
+      if (debugObj.valueChanged) {
+        memo[key] = {
+          actions: debugObj.actions.map(helpers.parseData),
+          state: debugObj.state.map(helpers.parseData),
+          displayName: debugObj.displayName,
+        };
+      }
 
-        if (debugObj.valueChanged) {
-          memo[key] = {
-            actions: debugObj.actions.map(helpers.parseData),
-            state: debugObj.state.map(helpers.parseData),
-            displayName: debugObj.displayName,
-          };
-        }
+      return memo;
+    }, {});
 
-        return memo;
-      }, {});
-
-    sendMessage("CONTEXT_DATA_UPDATED", helpers.parseData(dataToSend));
+    sendMessage("CONTEXT_DATA_UPDATED", dataToSend);
   };
 
   // /**
