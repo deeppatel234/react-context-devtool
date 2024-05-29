@@ -1,4 +1,4 @@
-import { sendMessage } from "@ext-browser/messaging/background";
+import { sendMessage, onMessage } from "@ext-browser/messaging/background";
 
 const catchData = {};
 
@@ -69,9 +69,34 @@ export const saveCatchData = async ({ id: tabId, title }, data = {}) => {
 
   try {
     await sendMessage(`devtool:${tabId}`, "CONTEXT_DATA", catchData[tabId]);
+  } catch (err) {}
+
+  try {
     await sendMessage("popup", "CONTEXT_DATA", catchData[tabId]);
   } catch (err) {}
 };
+
+const getCurrentTab = async () => {
+  if (!chrome.tabs?.query) {
+    return null;
+  }
+
+  const queryOptions = { active: true };
+  const tabs = await chrome.tabs.query(queryOptions);
+
+  return tabs[0];
+};
+
+onMessage("GET_CONTEXT_DATA", async (data, { fromTabId }) => {
+  let tabId = fromTabId;
+
+  if (data?.currentTab) {
+    const tab = await getCurrentTab();
+    tabId = tab?.id;
+  }
+
+  return catchData[tabId] || null;
+});
 
 export const removeCatchData = (tabId) => {
   delete catchData[tabId];

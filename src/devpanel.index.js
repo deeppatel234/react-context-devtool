@@ -13,10 +13,20 @@ import App from "Containers/App";
 const DevPanel = () => {
   const [appData, setAppData] = useState(null);
 
-  useEffect(() => {
+  const loadData = async () => {
+    try {
+      const data = await sendMessage("background", "GET_CONTEXT_DATA");
+      setAppData(data);
+    } catch (err) {
+      console.log("Error", err);
+    }
     onMessage("CONTEXT_DATA", (data) => {
       setAppData(data);
     });
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
 
   const onDispatchAction = (action) => {
