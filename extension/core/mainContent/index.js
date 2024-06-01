@@ -75,6 +75,7 @@ const start = () => {
 
   try {
     onMessage("START_DEBUGGING", ({ settings }) => {
+      console.log("START_DEBUGGING", settings);
       window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.settings = settings;
 
       if (!isHookinstalled) {
@@ -87,6 +88,7 @@ const start = () => {
     });
 
     onMessage("STOP_DEBUGGING", () => {
+      console.log("STOP_DEBUGGING");
       hook.stopDebug();
     });
   } catch(err) {

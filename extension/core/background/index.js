@@ -1,15 +1,74 @@
-import { onMessage, initMessaging, sendMessage } from "@ext-browser/messaging/background";
+import {
+  onMessage,
+  initMessaging,
+  sendMessage,
+} from "@ext-browser/messaging/background";
 
-import { activateExtension, getSettings } from "./utils";
+import { activateExtension, getSettings, getCurrentTab } from "./utils";
 import { executeScriptInMainWorld } from "./executeScript";
-import { saveCatchData, removeCatchData } from "./contextData";
+import { saveCatchData } from "./contextData";
+
+const enableTabMap = {
+  popup: false,
+  devtool: {},
+};
 
 initMessaging({
-  onPortDisconnect: (props) => {
-    console.log("Port disconnected", props);
+  onPortDisconnect: async ({ portName, tabId }) => {
+    const settings = await getSettings();
+    let tabIdToUse = tabId;
+
+    if (!tabIdToUse) {
+      const tab = await getCurrentTab();
+      tabIdToUse = tab.id;
+    }
+
+    if (settings.startDebugWhen === "extensionLoad") {
+      if (portName.includes("popup")) {
+        enableTabMap.popup = false;
+      }
+
+      if (portName.includes("devtool")) {
+        delete enableTabMap.devtool[tabIdToUse];
+      }
+
+      if (!enableTabMap.popup && !enableTabMap.devtool[tabIdToUse]) {
+        try {
+          await sendMessage(`content:${tabIdToUse}`, "STOP_DEVTOOL", {
+            settings,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
   },
-  onPortConnect: (props) => {
-    console.log("Port connected", props);
+  onPortConnect: async ({ portName, tabId }) => {
+    const settings = await getSettings();
+
+    if (settings.startDebugWhen === "extensionLoad") {
+      if (portName.includes("popup")) {
+        enableTabMap.popup = true;
+      }
+
+      if (portName.includes("devtool")) {
+        enableTabMap.devtool[tabId] = true;
+      }
+
+      if (enableTabMap.popup || enableTabMap.devtool[tabId]) {
+        try {
+          await sendMessage(
+            `content:${enableTabMap.popup && !tabId ? "active" : tabId}`,
+            "START_DEVTOOL",
+            {
+              settings,
+            },
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
   },
 });
 
@@ -32,15 +91,25 @@ onMessage("REACT_JS_FOUND", async (data, { sender }) => {
     files: ["mainContent.js"],
   });
 
-  if (settings.startDebugWhen === "pageLoad" && isScriptLoaded) {
-    try {
-      await sendMessage(`content:${sender.tab.id}`, "START_DEVTOOL", {
-        settings,
-        reactDevtoolPayload: data,
-      })
-    } catch (error) {
-      console.error(error);
-      return false;
+  if (isScriptLoaded) {
+    let startDebug = settings.startDebugWhen === "pageLoad";
+
+    if (!startDebug) {
+      startDebug =
+        settings.startDebugWhen === "extensionLoad" &&
+        (enableTabMap.popup || enableTabMap.devtool[sender.tab.id]);
+    }
+
+    if (startDebug) {
+      try {
+        await sendMessage(`content:${sender.tab.id}`, "START_DEVTOOL", {
+          settings,
+          reactDevtoolPayload: data,
+        });
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
     }
   }
 
@@ -48,5 +117,6 @@ onMessage("REACT_JS_FOUND", async (data, { sender }) => {
 });
 
 onMessage("CONTEXT_DATA_UPDATED", (data, { sender }) => {
+  console.log("CONTEXT_DATA_UPDATED");
   saveCatchData(sender.tab, data);
 });
