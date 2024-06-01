@@ -1,4 +1,5 @@
 import { sendMessage, onMessage } from "@ext-browser/messaging/background";
+import { getCurrentTab } from "./utils";
 
 const catchData = {};
 
@@ -76,15 +77,8 @@ export const saveCatchData = async ({ id: tabId, title }, data = {}) => {
   } catch (err) {}
 };
 
-const getCurrentTab = async () => {
-  if (!chrome.tabs?.query) {
-    return null;
-  }
-
-  const queryOptions = { active: true };
-  const tabs = await chrome.tabs.query(queryOptions);
-
-  return tabs[0];
+export const removeCatchData = (tabId) => {
+  delete catchData[tabId];
 };
 
 onMessage("GET_CONTEXT_DATA", async (data, { fromTabId }) => {
@@ -98,6 +92,6 @@ onMessage("GET_CONTEXT_DATA", async (data, { fromTabId }) => {
   return catchData[tabId] || null;
 });
 
-export const removeCatchData = (tabId) => {
-  delete catchData[tabId];
-};
+chrome.tabs.onRemoved.addListener((tabId) => {
+  removeCatchData(tabId)
+});

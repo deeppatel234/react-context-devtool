@@ -1,37 +1,17 @@
 import { onMessage, initMessaging, sendMessage } from "@ext-browser/messaging/background";
 
-import { activateExtension } from "./actions";
+import { activateExtension, getSettings } from "./utils";
 import { executeScriptInMainWorld } from "./executeScript";
 import { saveCatchData, removeCatchData } from "./contextData";
 
-const defaultSettings = {
-  // startDebugWhen: "extensionLoad",
-  startDebugWhen: "pageLoad",
-  debugUseReducer: true,
-  debugContext: true,
-};
-
-initMessaging();
-
-chrome.tabs.onRemoved.addListener((tabId) => {
-  removeCatchData(tabId)
+initMessaging({
+  onPortDisconnect: (props) => {
+    console.log("Port disconnected", props);
+  },
+  onPortConnect: (props) => {
+    console.log("Port connected", props);
+  },
 });
-
-const getSettings = () => {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(
-      ["startDebugWhen", "debugUseReducer", "debugContext"],
-      (settings) => {
-        const settingsToUse = {
-          ...defaultSettings,
-          ...settings,
-        };
-
-        resolve(settingsToUse);
-      }
-    );
-  });
-};
 
 onMessage("GET_SETTINGS", () => {
   return getSettings();
