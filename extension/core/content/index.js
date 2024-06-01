@@ -18,7 +18,7 @@ window.addEventListener(
 );
 
 onMessage("START_DEVTOOL", (data) => {
-  sendToWindow("ENABLE_DEBUGGING", data);
+  sendToWindow("START_DEBUGGING", data);
 });
 
 onMessage("STOP_DEVTOOL", (data) => {

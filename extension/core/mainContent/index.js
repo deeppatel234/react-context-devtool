@@ -74,7 +74,7 @@ const start = () => {
   let hook = null;
 
   try {
-    onMessage("ENABLE_DEBUGGING", ({ settings }) => {
+    onMessage("START_DEBUGGING", ({ settings }) => {
       window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.settings = settings;
 
       if (!isHookinstalled) {
