@@ -70,12 +70,24 @@ const injectHelpers = () => {
 injectHelpers();
 
 const start = () => {
-  try {
-    onMessage("ENABLE_DEBUGGING", ({ settings, reactDevtoolPayload }) => {
-      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.settings = settings;
-      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.reactDevtoolPayload = reactDevtoolPayload;
+  let isHookinstalled = false;
+  let hook = null;
 
-      installHook({ settings, reactDevtoolPayload });
+  try {
+    onMessage("ENABLE_DEBUGGING", ({ settings }) => {
+      window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.settings = settings;
+
+      if (!isHookinstalled) {
+        hook = installHook({ settings });
+        hook.init();
+        isHookinstalled = true;
+      }
+
+      hook.startDebug();
+    });
+
+    onMessage("STOP_DEBUGGING", () => {
+      hook.stopDebug();
     });
   } catch(err) {
     console.log("REACT_CONTEXT_DEVTOOL ERROR", err);

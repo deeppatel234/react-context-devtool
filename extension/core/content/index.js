@@ -21,6 +21,10 @@ onMessage("START_DEVTOOL", (data) => {
   sendToWindow("ENABLE_DEBUGGING", data);
 });
 
+onMessage("STOP_DEVTOOL", (data) => {
+  sendToWindow("STOP_DEBUGGING", data);
+});
+
 onMessage("DISPATCH_ACTION", (data) => {
   sendToWindow("DISPATCH_USE_REDUCER_ACTION", data);
 });

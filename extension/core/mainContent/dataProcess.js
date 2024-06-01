@@ -1,28 +1,28 @@
 import { onMessage, sendMessage } from "@ext-browser/messaging/contentWindow";
 
-export function installHook({ settings, reactDevtoolPayload }) {
+export function installHook({ settings }) {
   console.log("start debuging");
 
   let renderer = null;
-  const reactInfo = {
-    reactDevtoolPayload,
-  };
+  const reactInfo = {};
+  let enabled = false;
+  let fiberRoot = null;
 
-  const fiberNodeToDebug = {
+  const initData = {
     useReducer: {},
     context: {},
     contextKeys: [],
     useReducerKeys: [],
   };
 
+  let fiberNodeToDebug = initData;
+
   onMessage("DISPATCH_USE_REDUCER_ACTION", (data) => {
     if (
       data.type === "useReducer" &&
       fiberNodeToDebug.useReducer[data.debugId]
     ) {
-      fiberNodeToDebug.useReducer[data.debugId].hook.queue.dispatch(
-        data.data
-      );
+      fiberNodeToDebug.useReducer[data.debugId].hook.queue.dispatch(data.data);
     }
   });
 
@@ -223,7 +223,11 @@ export function installHook({ settings, reactDevtoolPayload }) {
     }
   };
 
-  const onCommitFiberRoot = (fiberRoot) => {
+  const onCommitFiberRoot = (reactFiberRoot) => {
+    if (!enabled) {
+      return null;
+    }
+
     try {
       function traverseFiberTree(node) {
         if (!node) {
@@ -238,7 +242,7 @@ export function installHook({ settings, reactDevtoolPayload }) {
       fiberNodeToDebug.contextKeys = [];
       fiberNodeToDebug.useReducerKeys = [];
 
-      traverseFiberTree(fiberRoot.current);
+      traverseFiberTree(reactFiberRoot.current);
 
       sendDataToDevtool();
     } catch (err) {
@@ -258,7 +262,7 @@ export function installHook({ settings, reactDevtoolPayload }) {
       ? renderer.rendererPackageName
       : "";
 
-    const fiberRoot = reactDebtoolGlobalhook
+    fiberRoot = reactDebtoolGlobalhook
       .getFiberRoots(params.id)
       .keys()
       .next().value;
@@ -278,6 +282,7 @@ export function installHook({ settings, reactDevtoolPayload }) {
       reactDebtoolGlobalhook.onCommitFiberRoot = (
         (debugFunction) =>
         (rendererID, root, ...args) => {
+          fiberRoot = root;
           onCommitFiberRoot(root);
           return debugFunction(rendererID, root, ...args);
         }
@@ -285,7 +290,7 @@ export function installHook({ settings, reactDevtoolPayload }) {
     }
   };
 
-  const startDebug = () => {
+  const init = () => {
     if (
       typeof window === "undefined" ||
       !window.__REACT_DEVTOOLS_GLOBAL_HOOK__ ||
@@ -306,5 +311,22 @@ export function installHook({ settings, reactDevtoolPayload }) {
     });
   };
 
-  startDebug();
+  const startDebug = () => {
+    enabled = true;
+
+    if (fiberRoot) {
+      onCommitFiberRoot(fiberRoot);
+    }
+  };
+
+  const stopDebug = () => {
+    enabled = false;
+    fiberNodeToDebug = initData;
+  };
+
+  return {
+    init,
+    startDebug,
+    stopDebug,
+  };
 }
