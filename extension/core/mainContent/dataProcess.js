@@ -119,6 +119,7 @@ export function installHook({ settings }) {
         };
       }
 
+      fiberNodeToDebug.useReducerKeys.push(debugId);
       const debugObj = fiberNodeToDebug.useReducer[debugId];
 
       debugObj.hook = hook;
@@ -142,8 +143,6 @@ export function installHook({ settings }) {
       }
 
       debugObj.state.push(hook.queue.lastRenderedState);
-
-      fiberNodeToDebug.useReducerKeys.push(debugId);
     }
   };
 
@@ -164,6 +163,7 @@ export function installHook({ settings }) {
     }
 
     const debugId = node.type._context.__reactContextDevtoolDebugId;
+    fiberNodeToDebug.contextKeys.push(debugId);
 
     const valueChanged = !(
       fiberNodeToDebug.context[debugId] &&
@@ -181,8 +181,6 @@ export function installHook({ settings }) {
           : null) ||
         debugId,
     };
-
-    fiberNodeToDebug.contextKeys.push(debugId);
   };
 
   // /**
