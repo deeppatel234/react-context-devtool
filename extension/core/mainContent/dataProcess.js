@@ -27,9 +27,9 @@ export function installHook({ settings }) {
   const uniqId = () => {
     let counter = 0;
 
-    return () => {
+    return (prefix) => {
       counter += 1;
-      return `${counter}`;
+      return `${prefix} - ${counter}`;
     };
   };
 
@@ -87,7 +87,7 @@ export function installHook({ settings }) {
         const displayName = hook.queue.lastRenderedReducer.name;
         const currentReducer = hook.queue.lastRenderedReducer.bind(hook.queue);
 
-        debugId = getUniqId();
+        debugId = getUniqId("useReducer");
         hook.queue.__reactContextDevtoolDebugId = debugId;
 
         hook.queue.lastRenderedReducer = (state, action, ...rest) => {
@@ -155,7 +155,7 @@ export function installHook({ settings }) {
     }
 
     if (!node.type._context.__reactContextDevtoolDebugId) {
-      node.type._context.__reactContextDevtoolDebugId = getUniqId();
+      node.type._context.__reactContextDevtoolDebugId = getUniqId("context");
     }
 
     const debugId = node.type._context.__reactContextDevtoolDebugId;

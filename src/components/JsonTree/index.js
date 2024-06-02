@@ -10,6 +10,10 @@ const TreeView = ({ data }) => {
       <JsonView
         value={data}
         style={vscodeTheme}
+        collapsed={1}
+        displayObjectSize
+        displayDataTypes
+        enableClipboard
       />
     </div>
   );
