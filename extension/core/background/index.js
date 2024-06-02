@@ -6,7 +6,7 @@ import {
 
 import { activateExtension, getSettings, getCurrentTab } from "./utils";
 import { executeScriptInMainWorld } from "./executeScript";
-import { saveCatchData } from "./contextData";
+import { saveCatchData, removeCatchData } from "./contextData";
 
 const enableTabMap = {
   popup: false,
@@ -78,6 +78,8 @@ onMessage("GET_SETTINGS", () => {
 
 onMessage("REACT_JS_FOUND", async (data, { sender }) => {
   activateExtension(data.reactBuildType, sender.tab.id);
+
+  removeCatchData(sender.tab.id);
 
   saveCatchData(sender.tab, {
     isReactDetected: true,

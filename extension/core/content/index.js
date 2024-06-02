@@ -1,20 +1,25 @@
-import { sendMessage, onWindowMessage, sendToWindow, onMessage } from "@ext-browser/messaging/content";
-
-let isExtensionActive = false;
+import {
+  sendMessage,
+  onWindowMessage,
+  sendToWindow,
+  onMessage,
+} from "@ext-browser/messaging/content";
 
 window.addEventListener(
   "message",
-  function (event) {
+  async (event) => {
     if (event.source != window) return;
 
-    if (event.data.source === "react-devtools-detector"  || event.data.source === "react-devtools-hook") {
-      if (!isExtensionActive) {
-        sendMessage("background", "REACT_JS_FOUND", event.data.payload);
-        isExtensionActive = true;
-      }
+    if (
+      event.data.source === "react-devtools-detector" ||
+      event.data.source === "react-devtools-hook"
+    ) {
+      try {
+        await sendMessage("background", "REACT_JS_FOUND", event.data.payload);
+      } catch (error) {}
     }
   },
-  false
+  false,
 );
 
 onMessage("START_DEVTOOL", (data) => {
@@ -29,8 +34,10 @@ onMessage("DISPATCH_ACTION", (data) => {
   sendToWindow("DISPATCH_USE_REDUCER_ACTION", data);
 });
 
-onWindowMessage("CONTEXT_DATA_UPDATED", data => {
-  sendMessage("background", "CONTEXT_DATA_UPDATED", data);
+onWindowMessage("CONTEXT_DATA_UPDATED", async (data) => {
+  try {
+    await sendMessage("background", "CONTEXT_DATA_UPDATED", data);
+  } catch (error) {}
 });
 
 // function manualScriptToInject() {
