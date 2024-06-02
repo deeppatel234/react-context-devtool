@@ -17,7 +17,7 @@
     "@ext-browser/messaging": "^0.0.6",
     "@uiw/react-json-view": "^2.0.0-alpha.24",
     "classnames": "2.5.1",
-    "codemirror": "5.55.0",
+    "codemirror": "5.58.2",
     "error-stack-parser": "2.1.4",
     "jsondiffpatch": "0.4.1",
     "jsonlint-mod": "1.7.6",
