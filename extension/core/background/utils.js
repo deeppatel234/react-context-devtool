@@ -17,15 +17,15 @@ export const activateExtension = (mode, tabId) => {
 
 export const getSettings = () => {
   const defaultSettings = {
-    startDebugWhen: "extensionLoad",
-    // startDebugWhen: "pageLoad",
+    startDebugWhenV2: "extensionLoad",
+    // startDebugWhenV2: "pageLoad",
     debugUseReducer: true,
     debugContext: true,
   };
 
   return new Promise((resolve) => {
     chrome.storage.local.get(
-      ["startDebugWhen", "debugUseReducer", "debugContext"],
+      ["startDebugWhenV2", "debugUseReducer", "debugContext"],
       (settings) => {
         const settingsToUse = {
           ...defaultSettings,

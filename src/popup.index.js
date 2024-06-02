@@ -12,9 +12,13 @@ import App from "Containers/App";
 
 const Popup = () => {
   const [appData, setAppData] = useState(null);
+  const [settings, setSettings] = useState({});
 
   const loadData = async () => {
     try {
+      const settingsToSave = await sendMessage("background", "GET_SETTINGS");
+      setSettings(settingsToSave);
+
       const data = await sendMessage("background", "GET_CONTEXT_DATA", { currentTab: true });
       setAppData(data);
     } catch (err) {
@@ -33,9 +37,7 @@ const Popup = () => {
     sendMessage(`content:${appData.tabId}`, "DISPATCH_ACTION", action);
   };
 
-  console.log("appData", appData);
-
-  return <App appData={appData} onDispatchAction={onDispatchAction} />;
+  return <App appData={appData} settings={settings} onDispatchAction={onDispatchAction} />;
 };
 
 root.render(<Popup />);

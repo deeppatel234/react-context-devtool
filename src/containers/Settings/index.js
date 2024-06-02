@@ -5,13 +5,13 @@ import Button from "Components/Button";
 import "./index.scss";
 
 const Settings = () => {
-  const [startDebugWhen, setStartDebugWhen] = useState("extensionLoad");
+  const [startDebugWhenV2, setStartDebugWhenV2] = useState("extensionLoad");
   const [debugUseReducer, setDebugUseReducer] = useState(true);
   const [debugContext, setDebugContext] = useState(true);
   const [showSuccessMsg, setShowSuccessMsg] = useState(false);
 
   const onChangeStartDebugWhen = (event) => {
-    setStartDebugWhen(event.target.value);
+    setStartDebugWhenV2(event.target.value);
   };
 
   const onChangeDebugUseReducer = (event) => {
@@ -24,10 +24,10 @@ const Settings = () => {
 
   useEffect(() => {
     chrome.storage.local.get(
-      ["startDebugWhen", "debugUseReducer", "debugContext"],
+      ["startDebugWhenV2", "debugUseReducer", "debugContext"],
       function (result) {
-        if (result.startDebugWhen) {
-          setStartDebugWhen(result.startDebugWhen);
+        if (result.startDebugWhenV2) {
+          setStartDebugWhenV2(result.startDebugWhenV2);
         }
         if (typeof result.debugUseReducer !== "undefined") {
           setDebugUseReducer(result.debugUseReducer);
@@ -41,7 +41,7 @@ const Settings = () => {
 
   const onClickSave = () => {
     const settingstoSave = {
-      startDebugWhen,
+      startDebugWhenV2,
       debugUseReducer,
       debugContext,
     };
@@ -69,10 +69,10 @@ const Settings = () => {
             <input
               type="radio"
               id="extensionLoad"
-              name="startDebugWhen"
+              name="startDebugWhenV2"
               value="extensionLoad"
               className="setting-radio"
-              checked={startDebugWhen === "extensionLoad"}
+              checked={startDebugWhenV2 === "extensionLoad"}
               onChange={onChangeStartDebugWhen}
             />
             <label htmlFor="extensionLoad" className="setting-radio-label">
@@ -86,10 +86,10 @@ const Settings = () => {
             <input
               type="radio"
               id="pageLoad"
-              name="startDebugWhen"
+              name="startDebugWhenV2"
               value="pageLoad"
               className="setting-radio"
-              checked={startDebugWhen === "pageLoad"}
+              checked={startDebugWhenV2 === "pageLoad"}
               onChange={onChangeStartDebugWhen}
             />
             <label htmlFor="pageLoad" className="setting-radio-label">

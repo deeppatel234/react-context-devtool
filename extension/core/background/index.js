@@ -23,7 +23,7 @@ initMessaging({
       tabIdToUse = tab.id;
     }
 
-    if (settings.startDebugWhen === "extensionLoad") {
+    if (settings.startDebugWhenV2 === "extensionLoad") {
       if (portName.includes("popup")) {
         enableTabMap.popup = false;
       }
@@ -46,7 +46,7 @@ initMessaging({
   onPortConnect: async ({ portName, tabId }) => {
     const settings = await getSettings();
 
-    if (settings.startDebugWhen === "extensionLoad") {
+    if (settings.startDebugWhenV2 === "extensionLoad") {
       if (portName.includes("popup")) {
         enableTabMap.popup = true;
       }
@@ -92,11 +92,11 @@ onMessage("REACT_JS_FOUND", async (data, { sender }) => {
   });
 
   if (isScriptLoaded) {
-    let startDebug = settings.startDebugWhen === "pageLoad";
+    let startDebug = settings.startDebugWhenV2 === "pageLoad";
 
     if (!startDebug) {
       startDebug =
-        settings.startDebugWhen === "extensionLoad" &&
+        settings.startDebugWhenV2 === "extensionLoad" &&
         (enableTabMap.popup || enableTabMap.devtool[sender.tab.id]);
     }
 
