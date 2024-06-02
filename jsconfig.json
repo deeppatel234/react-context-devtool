@@ -3,10 +3,10 @@
     "target": "es6",
     "baseUrl": "./",
     "paths": {
-      "Src/*": ["packages/devtool-extenstion/src/*"],
-      "Components/*": ["packages/devtool-extenstion/src/components/*"],
-      "Containers/*": ["packages/devtool-extenstion/src/containers/*"],
-      "Utils/*": ["packages/devtool-extenstion/src/utils/*"]
+      "Src/*": ["src/*"],
+      "Components/*": ["src/components/*"],
+      "Containers/*": ["src/containers/*"],
+      "Utils/*": ["src/utils/*"]
     }
   },
   "exclude": ["node_modules", "dist"]
