@@ -1,8 +1,6 @@
 import { onMessage, sendMessage } from "@ext-browser/messaging/contentWindow";
 
 export function installHook({ settings }) {
-  console.log("start debuging");
-
   let renderer = null;
   const reactInfo = {};
   let enabled = false;
@@ -155,8 +153,6 @@ export function installHook({ settings }) {
     if (!node.type) {
       return;
     }
-
-    // console.log("node", node);
 
     if (!node.type._context.__reactContextDevtoolDebugId) {
       node.type._context.__reactContextDevtoolDebugId = getUniqId();

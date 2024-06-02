@@ -4,8 +4,6 @@ import { getCurrentTab } from "./utils";
 const catchData = {};
 
 export const saveCatchData = async ({ id: tabId, title }, data = {}) => {
-  console.log("data", data);
-
   if (!catchData[tabId]) {
     catchData[tabId] = {
       tabId,

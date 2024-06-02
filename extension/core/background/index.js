@@ -117,6 +117,5 @@ onMessage("REACT_JS_FOUND", async (data, { sender }) => {
 });
 
 onMessage("CONTEXT_DATA_UPDATED", (data, { sender }) => {
-  console.log("CONTEXT_DATA_UPDATED");
   saveCatchData(sender.tab, data);
 });
