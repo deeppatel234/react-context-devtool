@@ -14,7 +14,7 @@
     "start:dev:firefox": "npm run build:firefox:dev && cross-env DEV_FOR=firefox npm run start:dev"
   },
   "dependencies": {
-    "@ext-browser/messaging": "^0.0.7",
+    "@ext-browser/messaging": "^0.0.8",
     "@uiw/react-json-view": "^2.0.0-alpha.24",
     "classnames": "2.5.1",
     "codemirror": "5.55.0",
