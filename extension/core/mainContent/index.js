@@ -6,6 +6,7 @@ const start = () => {
   const hook = installHook();
 
   hook.init();
+  // console.log("INIT_DEBUGGING");
 
   try {
     onMessage("START_DEBUGGING", ({ settings }) => {
