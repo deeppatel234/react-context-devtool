@@ -1,10 +1,12 @@
 import { onMessage, sendMessage } from "@ext-browser/messaging/contentWindow";
+import { parseData } from "./helpers";
 
-export function installHook({ settings }) {
+export function installHook() {
   let renderer = null;
   const reactInfo = {};
   let enabled = false;
   let fiberRoot = null;
+  let settings = {};
 
   const initData = {
     useReducer: {},
@@ -36,8 +38,6 @@ export function installHook({ settings }) {
   const getUniqId = uniqId();
 
   const sendDataToDevtool = () => {
-    const helpers = window.__REACT_CONTEXT_DEVTOOL_GLOBAL_HOOK.helpers;
-
     const dataToSend = {
       reactInfo,
       contextKeys: fiberNodeToDebug.contextKeys,
@@ -49,7 +49,7 @@ export function installHook({ settings }) {
 
       if (debugObj.valueChanged) {
         memo[key] = {
-          value: helpers.parseData(debugObj.value),
+          value: parseData(debugObj.value),
           displayName: debugObj.displayName,
         };
       }
@@ -62,8 +62,8 @@ export function installHook({ settings }) {
 
       if (debugObj.valueChanged) {
         memo[key] = {
-          actions: debugObj.actions.map(helpers.parseData),
-          state: debugObj.state.map(helpers.parseData),
+          actions: debugObj.actions.map(parseData),
+          state: debugObj.state.map(parseData),
           displayName: debugObj.displayName,
         };
       }
@@ -218,6 +218,10 @@ export function installHook({ settings }) {
   };
 
   const onCommitFiberRoot = (reactFiberRoot) => {
+    if (!settings.debugUseReducer && !settings.debugContext) {
+      return;
+    }
+
     if (!enabled) {
       return null;
     }
@@ -287,8 +291,7 @@ export function installHook({ settings }) {
   const init = () => {
     if (
       typeof window === "undefined" ||
-      !window.__REACT_DEVTOOLS_GLOBAL_HOOK__ ||
-      (!settings.debugUseReducer && !settings.debugContext)
+      !window.__REACT_DEVTOOLS_GLOBAL_HOOK__
     ) {
       return false;
     }
@@ -318,8 +321,15 @@ export function installHook({ settings }) {
     fiberNodeToDebug = initData;
   };
 
+  const setSettings = (newSettings) => {
+    if (newSettings) {
+      settings = newSettings;
+    }
+  };
+
   return {
     init,
+    setSettings,
     startDebug,
     stopDebug,
   };
