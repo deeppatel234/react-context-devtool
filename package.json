@@ -1,6 +1,6 @@
 {
   "name": "react-context-devtool",
-  "version": "4.0.0",
+  "version": "4.2.0",
   "description": "React Context Devtool",
   "scripts": {
     "build:chrome": "cross-env NODE_ENV=production node ./browser/chrome/build",
@@ -14,7 +14,7 @@
     "start:dev:firefox": "npm run build:firefox:dev && cross-env DEV_FOR=firefox npm run start:dev"
   },
   "dependencies": {
-    "@ext-browser/messaging": "^0.0.6",
+    "@ext-browser/messaging": "^0.0.7",
     "@uiw/react-json-view": "^2.0.0-alpha.24",
     "classnames": "2.5.1",
     "codemirror": "5.55.0",
