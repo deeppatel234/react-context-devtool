@@ -106,7 +106,6 @@ onMessage("REACT_JS_FOUND", async (data, { sender }) => {
       try {
         await sendMessage(`content:${sender.tab.id}`, "START_DEVTOOL", {
           settings,
-          reactDevtoolPayload: data,
         });
       } catch (error) {
         console.error(error);
