@@ -51,8 +51,8 @@ export const parseData = (data) => {
     return v;
   };
 
-  if (typeof data !== "object") {
-    return data;
+  if (typeof data === "undefined") {
+    return "undefined";
   }
 
   return JSON.parse(JSON.stringify(data, stringifyResolver));
