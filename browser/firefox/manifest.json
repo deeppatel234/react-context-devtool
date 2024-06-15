@@ -3,7 +3,12 @@
   "version": "4.2",
   "description": "Devtool for React Context and useReducer",
   "manifest_version": 3,
-  "minimum_chrome_version": "109",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{7421498a-8968-4dd4-bf57-5d3c4ccd6a60}",
+      "strict_min_version": "109.0"
+    }
+  },
   "icons": {
     "16": "assets/icons/icon16.png",
     "32": "assets/icons/icon32.png",
@@ -27,27 +32,18 @@
     "page": "options/options.html",
     "open_in_tab": false
   },
-  "permissions": [
-    "storage",
-    "scripting"
-  ],
+  "permissions": ["storage", "scripting"],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "mainContent.js"
-      ],
-      "matches": [
-        "<all_urls>"
-      ],
+      "resources": ["mainContent.js"],
+      "matches": ["<all_urls>"],
       "extension_ids": []
     }
   ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
