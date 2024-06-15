@@ -30,12 +30,14 @@ const Sidebar = () => {
   });
 
   useEffect(() => {
-    if (contextList.length) {
-      setDebug({ id: contextList[0].value, type: contextList[0].type });
-    } else if (useReducerList.length) {
-      setDebug({ id: useReducerList[0].value, type: useReducerList[0].type });
+    if (!selectedDebug?.id) {
+      if (contextList.length) {
+        setDebug({ id: contextList[0].value, type: contextList[0].type });
+      } else if (useReducerList.length) {
+        setDebug({ id: useReducerList[0].value, type: useReducerList[0].type });
+      }
     }
-  }, []);
+  }, [contextList, useReducerList, selectedDebug]);
 
   const onSelectFilter = (filter) => {
     if (selectedFilters.includes(filter)) {
