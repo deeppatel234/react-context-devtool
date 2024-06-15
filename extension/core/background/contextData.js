@@ -68,11 +68,15 @@ export const saveCatchData = async ({ id: tabId, title }, data = {}) => {
 
   try {
     await sendMessage(`devtool:${tabId}`, "CONTEXT_DATA", catchData[tabId]);
-  } catch (err) {}
+  } catch (err) {
+    console.log("Error on send message devtool", err);
+  }
 
   try {
     await sendMessage("popup", "CONTEXT_DATA", catchData[tabId]);
-  } catch (err) {}
+  } catch (err) {
+    console.log("Error on send message popup", err);
+  }
 };
 
 export const removeCatchData = (tabId) => {
