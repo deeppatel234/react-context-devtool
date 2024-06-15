@@ -76,6 +76,7 @@ module.exports = ({ mode, distPath } = {}) => {
       new webpack.DefinePlugin({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         PACKAGE_VERSION: JSON.stringify(pkg.version),
+        DEV_FOR: JSON.stringify(process.env.DEV_FOR),
       }),
       new MiniCssExtractPlugin({
         filename: "[name].css",
