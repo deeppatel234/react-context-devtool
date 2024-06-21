@@ -40,8 +40,8 @@ export function installHook() {
   const sendDataToDevtool = () => {
     const dataToSend = {
       reactInfo,
-      contextKeys: fiberNodeToDebug.contextKeys,
-      useReducerKeys: fiberNodeToDebug.useReducerKeys,
+      contextKeys: [...fiberNodeToDebug.contextKeys],
+      useReducerKeys: [...fiberNodeToDebug.useReducerKeys],
     };
 
     dataToSend.context = dataToSend.contextKeys.reduce((memo, key) => {
@@ -117,7 +117,7 @@ export function installHook() {
         };
       }
 
-      fiberNodeToDebug.useReducerKeys.push(debugId);
+      fiberNodeToDebug.useReducerKeys.add(debugId);
       const debugObj = fiberNodeToDebug.useReducer[debugId];
 
       debugObj.hook = hook;
@@ -159,7 +159,7 @@ export function installHook() {
     }
 
     const debugId = node.type._context.__reactContextDevtoolDebugId;
-    fiberNodeToDebug.contextKeys.push(debugId);
+    fiberNodeToDebug.contextKeys.add(debugId);
 
     const valueChanged = !(
       fiberNodeToDebug.context[debugId] &&
@@ -217,6 +217,26 @@ export function installHook() {
     }
   };
 
+  const debounce = (func, wait, immediate) => {
+    let timeout;
+    return function () {
+      const context = this;
+      const args = arguments;
+      const later = function () {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      };
+      const callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) {
+        func.apply(context, args);
+      }
+    };
+  };
+
   const onCommitFiberRoot = (reactFiberRoot) => {
     if (!settings.debugUseReducer && !settings.debugContext) {
       return;
@@ -237,8 +257,8 @@ export function installHook() {
         traverseFiberTree(node.child);
       }
 
-      fiberNodeToDebug.contextKeys = [];
-      fiberNodeToDebug.useReducerKeys = [];
+      fiberNodeToDebug.contextKeys = new Set();
+      fiberNodeToDebug.useReducerKeys = new Set();
 
       traverseFiberTree(reactFiberRoot.current);
 
@@ -249,6 +269,8 @@ export function installHook() {
       }
     }
   };
+
+  const onCommit = debounce(onCommitFiberRoot, 100, true);
 
   const debugFiber = (params) => {
     const reactDebtoolGlobalhook = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
@@ -281,7 +303,7 @@ export function installHook() {
         (debugFunction) =>
         (rendererID, root, ...args) => {
           fiberRoot = root;
-          onCommitFiberRoot(root);
+          onCommit(root);
           return debugFunction(rendererID, root, ...args);
         }
       )(reactDebtoolGlobalhook.onCommitFiberRoot);

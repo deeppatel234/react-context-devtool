@@ -12,6 +12,10 @@ export const isHTMLElement = function (el) {
 
 // Find some better way to detect react fiber node object
 export const isReactNode = (k, v) => {
+  if (v?.$$typeof) {
+    return true;
+  }
+
   return k.startsWith("__reactFiber") && v.stateNode;
 };
 
