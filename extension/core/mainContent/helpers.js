@@ -18,12 +18,16 @@ export const isReactNode = (k, v) => {
 
   return k.startsWith("__reactFiber") && v.stateNode;
 };
-
 export const parseData = (data) => {
   // For Detecting Circular Structures
   const seen = new WeakMap();
 
   const stringifyResolver = function (k, v) {
+    // Handle cross-origin Window objects
+    if (v && v === window) {
+      return "<Window>";
+    }
+
     if (typeof v === "function") {
       return "function () {}";
     }
@@ -59,5 +63,10 @@ export const parseData = (data) => {
     return "undefined";
   }
 
-  return JSON.parse(JSON.stringify(data, stringifyResolver));
+  try {
+    return JSON.parse(JSON.stringify(data, stringifyResolver));
+  } catch (error) {
+    console.error("Failed to parse data:", error);
+    return "<Unserializable Data>";
+  }
 };
