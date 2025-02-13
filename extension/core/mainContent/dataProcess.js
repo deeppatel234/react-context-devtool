@@ -154,11 +154,15 @@ export function installHook() {
       return;
     }
 
-    if (!node.type._context.__reactContextDevtoolDebugId) {
-      node.type._context.__reactContextDevtoolDebugId = getUniqId("context");
+    // React 18: node.type._context
+    // React 19: node.type (context is directly on the type)
+    const context = node.type._context || node.type;
+
+    if (!context.__reactContextDevtoolDebugId) {
+      context.__reactContextDevtoolDebugId = getUniqId("context");
     }
 
-    const debugId = node.type._context.__reactContextDevtoolDebugId;
+    const debugId = context.__reactContextDevtoolDebugId;
     fiberNodeToDebug.contextKeys.add(debugId);
 
     const valueChanged = !(
@@ -171,7 +175,7 @@ export function installHook() {
       value: node.pendingProps.value,
       displayName:
         node.pendingProps.displayName ||
-        node.type._context.displayName ||
+        context.displayName ||
         (node._debugOwner?.elementType?.name
           ? `Child Of ${node._debugOwner?.elementType?.name}`
           : null) ||
