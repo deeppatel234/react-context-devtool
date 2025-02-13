@@ -1,6 +1,6 @@
 {
   "name": "React Context DevTool",
-  "version": "4.3",
+  "version": "4.4",
   "description": "Devtool for React Context and useReducer",
   "manifest_version": 3,
   "browser_specific_settings": {
